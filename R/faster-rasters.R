@@ -20,7 +20,7 @@
 #' @docType methods
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
-#' @rdname fasterRaster
+#' @rdname faster-rasters
 #' @examples
 #'\dontrun{
 #' library(raster)
@@ -88,7 +88,7 @@ fastMask <- function(stack, polygon) {
 #' @export
 #' @importFrom plyr mapvalues
 #' @importFrom raster extract raster
-#' @rdname fasterRaster
+#' @rdname faster-rasters
 #'
 fastRasterize <- function(polygon, ras, field) {
   nonNACellIDs <- extract(ras, polygon, cellnumbers = TRUE)
