@@ -1,6 +1,12 @@
-#' Faster masking of a raster using a polygon
+#' Faster operations on rasters with internal parallel aware
 #'
-#' Description needed
+#' These alternatives to \code{mask} and \code{rasterize} are not as general as
+#' the originals. However, they use \code{raster::extract} internally,
+#' which is parallel-aware. So, using these functions with a cluster
+#' having been created via \code{beginCluster} will be much faster
+#' than mask and rasterize. However, only a few situations will work
+#' with these functions (e.g., \code{fastMask} must be given a stack --
+#' a Raster will likely not work)
 #'
 #' @note HAS NOT BEEN FULLY TESTED
 #'
@@ -73,19 +79,9 @@ fastMask <- function(stack, polygon) {
   maskedStack
 }
 
-#' Faster rasterizing of a polygon
-#'memory.limit
-#' Description needed.
-#'
-#' @note HAS NOT BEEN FULLY TESTED
-#'
-#' @param polygon    A \code{SpatialPolygons} object.
-#'
 #' @param ras        A \code{RasterLayer} object.
 #'
 #' @param field      The field to use from \code{polygon}.
-#'
-#' @return A \code{Raster*} object.
 #'
 #' @author Eliot Mcintire
 #' @docType methods
