@@ -1,0 +1,35 @@
+Package: amc
+Type: Package
+Title: Alex's Miscellaneous Code
+Version: 0.1.0
+Date: 2017-03-15
+Authors@R: c(
+    person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
+    role = c("aut", "cre", "cph")),
+    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
+    role = c("ctb")),
+    person(c("Josh"), "O'Brien", role = c("ctb"))
+    )
+Description: A collection of variously useful functions.
+Imports:
+  base64enc,
+  digest,
+  httr,
+  magrittr,
+  methods,
+  plyr,
+  raster,
+  rgdal,
+  sp,
+  utils
+Suggests:
+  knitr,
+  rmarkdown,
+  testthat
+BugReports: https://github.com/achubaty/amc/issues
+License: GPL-3
+ByteCompile: yes
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr, rmarkdown
+RoxygenNote: 6.0.1
