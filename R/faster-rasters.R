@@ -14,7 +14,46 @@
 #' @docType methods
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
-#' @rdname fastMask
+#' @rdname fasterRaster
+#' @examples
+#'\dontrun{
+#' library(raster)
+#' library(SpaDES)
+#' beginCluster(2)
+#' r <- raster(extent(0,15,0,15), vals = 0)
+#' poly <- list()
+#' poly[[1]] <- SpaDES::randomPolygons(r,numTypes = 10 )
+#' poly[[2]] <- SpaDES::randomPolygons(r,numTypes = 10 )
+#' origStack <- stack(poly)
+#'
+#' shp <- origStack[[1]]
+#' shp[shp==shp[1]] <- NA # take a chunk out of the raster
+#' shp <- rasterToPolygons(shp, dissolve=TRUE) # convert to polygon
+#'
+#' # original mask function in raster
+#' newStack1 <- mask(origStack, mask=shp)
+#' # fastMask uses 2 clusters
+#' newStack2 <- fastMask(stack = origStack, polygon = shp)
+#'
+#' # test all equal
+#' identical(newStack1, newStack2)
+#' newStack1 <- stack(newStack1)
+#' newStack2 <- stack(newStack2)
+#' if(interactive()) {
+#'   clearPlot()
+#'   Plot(newStack2)
+#' }
+#'
+#' # rasterize
+#' shpRas1 <- rasterize(shp, origStack)
+#' shpRas2 <- fastRasterize(shp, origStack)
+#' identical(shpRas1, shpRas2)
+#'
+#' if(interactive()) {
+#'   clearPlot()
+#'   Plot(shpRas2)
+#' }
+#'}
 #'
 fastMask <- function(stack, polygon) {
   croppedStack <- crop(stack, polygon)
@@ -47,7 +86,7 @@ fastMask <- function(stack, polygon) {
 #' @export
 #' @importFrom plyr mapvalues
 #' @importFrom raster extract raster
-#' @rdname fastRasterize
+#' @rdname fasterRaster
 #'
 fastRasterize <- function(polygon, ras, field) {
   nonNACellIDs <- extract(ras, polygon, cellnumbers = TRUE)
