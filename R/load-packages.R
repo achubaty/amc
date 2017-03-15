@@ -1,4 +1,4 @@
-#' Load packages.
+#' Load packages
 #'
 #' Load and optionally install additional packages.
 #'
@@ -63,3 +63,25 @@ setMethod("loadPackages",
           definition = function(packageList, install, quiet) {
             loadPackages(unlist(packageList), install, quiet)
 })
+
+#' Detach and unload a package
+#'
+#' A simple wrapper to \code{detach} using \code{unload = TRUE}.
+#'
+#' @param package  The name of a currently attached package.
+#'
+#' @author Alex Chubaty
+#' @docType methods
+#' @export
+#' @rdname detach
+#' @seealso \code{\link{detach}}
+#'
+.detach <- function(package) {
+  pkg <- deparse(substitute(package))
+  pkg <- paste(unlist(strsplit(pkg, "\"")), collapse = "")
+  expr <- paste0("detach(package:", pkg, ", unload=TRUE)")
+  tryCatch(eval(parse(text = expr)), error = function(c) {
+    c$message <- paste0("Package ", pkg, " is not attached.\n")
+    message(c)
+  })
+}
