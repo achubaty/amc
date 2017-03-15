@@ -18,17 +18,33 @@
 #' @examples
 #'\dontrun{
 #' library(raster)
-#' library(SpaDES)
+#' library(sp)
 #' beginCluster(2)
-#' r <- raster(extent(0,15,0,15), vals = 0)
+#'
+#' Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
+#' Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
+#' Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
+#'
+#' Srs1 = Polygons(list(Sr1), "s1")
+#' Srs2 = Polygons(list(Sr2), "s2")
+#' Srs3 = Polygons(list(Sr3), "s3")
+#' shp = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
+#' d <- data.frame(vals=  1:3, other = letters[1:3])
+#' row.names(d) <- names(shp)
+#' shp <- SpatialPolygonsDataFrame(shp, data = d)
 #' poly <- list()
-#' poly[[1]] <- SpaDES::randomPolygons(r,numTypes = 10 )
-#' poly[[2]] <- SpaDES::randomPolygons(r,numTypes = 10 )
+#' poly[[1]] <- raster(extent(shp), vals = 0, res = c(0.5,0.5))
+#' poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5,0.5))
 #' origStack <- stack(poly)
 #'
-#' shp <- origStack[[1]]
-#' shp[shp==shp[1]] <- NA # take a chunk out of the raster
-#' shp <- rasterToPolygons(shp, dissolve=TRUE) # convert to polygon
+#' # rasterize
+#' shpRas1 <- rasterize(shp, origStack)
+#' shpRas2 <- fastRasterize(shp, origStack)
+#' all.equal(shpRas1, shpRas2)
+#'
+#' if(interactive()) {
+#'   plot(shpRas2)
+#' }
 #'
 #' # original mask function in raster
 #' newStack1 <- mask(origStack, mask=shp)
@@ -40,20 +56,10 @@
 #' newStack1 <- stack(newStack1)
 #' newStack2 <- stack(newStack2)
 #' if(interactive()) {
-#'   clearPlot()
-#'   Plot(newStack2)
+#'   plot(newStack2[[1]])
+#'   plot(shp, add=TRUE)
 #' }
-#'
-#' # rasterize
-#' shpRas1 <- rasterize(shp, origStack)
-#' shpRas2 <- fastRasterize(shp, origStack)
-#' identical(shpRas1, shpRas2)
-#'
-#' if(interactive()) {
-#'   clearPlot()
-#'   Plot(shpRas2)
 #' }
-#'}
 #'
 fastMask <- function(stack, polygon) {
   croppedStack <- crop(stack, polygon)
