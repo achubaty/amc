@@ -5,7 +5,7 @@
 \alias{loadPackages}
 \alias{loadPackages,character-method}
 \alias{loadPackages,list-method}
-\title{Load packages.}
+\title{Load packages}
 \usage{
 loadPackages(packageList, install = FALSE, quiet = TRUE)
 
