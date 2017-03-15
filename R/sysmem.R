@@ -80,7 +80,10 @@ sysmem <- function(x = "gb") {
 #' @rdname guesstimate
 #'
 #' @examples
-#' guesstimate(4, 0.80, "gb")
+#' \dontrun{
+#' guesstimate(4)
+#' guesstimate(4, 0.90, "mb")
+#' }
 #'
 guesstimate <- function(ram, prop = 0.80, units = "gb") {
   if (ram >= sysmem(units)) {

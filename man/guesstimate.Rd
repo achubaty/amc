@@ -28,7 +28,10 @@ Tries to be conservative by assuming no more than 80% system memory use.
 You should take these numbers with several grains of salt.
 }
 \examples{
-guesstimate(4, 0.80, "gb")
+\dontrun{
+guesstimate(4)
+guesstimate(4, 0.90, "mb")
+}
 
 }
 \author{
