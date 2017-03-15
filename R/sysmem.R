@@ -95,7 +95,6 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
   }
 }
 
-
 #' Manual garbage collection
 #'
 #' This shouldn't be necessary, since R (usually) handles this correctly and
@@ -106,9 +105,9 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
 #' @author Alex Chubaty
 #' @docType methods
 #' @export
-#' @rdname cleanup
+#' @rdname gc
 #' @seealso \code{\link{gc}}
 #'
-.cleanup <- function() {
+.gc <- function() {
   for (i in 1:10) gc()
 }
