@@ -94,3 +94,21 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
     return(cpus)
   }
 }
+
+
+#' Manual garbage collection
+#'
+#' This shouldn't be necessary, since R (usually) handles this correctly and
+#' automatically. However, sometimes when working with large geospatial data
+#' (using \code{raster} and \code{sp} packages) it can help to free recently
+#' unallocated memory manually.
+#'
+#' @author Alex Chubaty
+#' @docType methods
+#' @export
+#' @rdname cleanup
+#' @seealso \code{\link{gc}}
+#'
+.cleanup <- function() {
+  for (i in 1:10) gc()
+}
