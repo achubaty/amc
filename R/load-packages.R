@@ -73,13 +73,13 @@ setMethod("loadPackages",
 #' @author Alex Chubaty
 #' @docType methods
 #' @export
-#' @rdname detach
+#' @rdname detachPackage
 #' @seealso \code{\link{detach}}
 #'
-.detach <- function(package) {
+detachPackage <- function(package) {
   pkg <- deparse(substitute(package))
   pkg <- paste(unlist(strsplit(pkg, "\"")), collapse = "")
-  expr <- paste0("detach(package:", pkg, ", unload=TRUE)")
+  expr <- paste0("detach(package:", pkg, ", unload = TRUE)")
   tryCatch(eval(parse(text = expr)), error = function(c) {
     c$message <- paste0("Package ", pkg, " is not attached.\n")
     message(c)
