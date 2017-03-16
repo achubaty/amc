@@ -25,7 +25,6 @@ Imports:
 Suggests:
   knitr,
   rmarkdown,
-  SpaDES,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
 License: GPL-3

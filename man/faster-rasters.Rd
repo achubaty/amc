@@ -4,7 +4,7 @@
 \name{fastMask}
 \alias{fastMask}
 \alias{fastRasterize}
-\title{Faster operations on rasters with internal parallel aware}
+\title{Faster operations on rasters}
 \usage{
 fastMask(stack, polygon)
 
@@ -25,11 +25,11 @@ A \code{Raster*} object.
 \description{
 These alternatives to \code{mask} and \code{rasterize} are not as general as
 the originals. However, they use \code{raster::extract} internally,
-which is parallel-aware. So, using these functions with a cluster
-having been created via \code{beginCluster} will be much faster
-than mask and rasterize. However, only a few situations will work
-with these functions (e.g., \code{fastMask} must be given a stack --
-a Raster will likely not work)
+which is parallel-aware. So, using these functions with a cluster having been
+created via \code{beginCluster} will be much faster than \code{mask} and
+\code{rasterize}. However, only a few situations will work with these
+functions (e.g., \code{fastMask} must be given a \code{RasterStack};
+a \code{RasterLayer} will likely not work).
 }
 \note{
 HAS NOT BEEN FULLY TESTED
@@ -38,22 +38,23 @@ HAS NOT BEEN FULLY TESTED
 \dontrun{
 library(raster)
 library(sp)
+
 beginCluster(2)
 
-Sr1 = Polygon(cbind(c(2,4,4,1,2),c(2,3,5,4,2)))
-Sr2 = Polygon(cbind(c(5,4,2,5),c(2,3,2,2)))
-Sr3 = Polygon(cbind(c(4,4,5,10,4),c(5,3,2,5,5)))
+Sr1 <- Polygon(cbind(c(2, 4, 4, 1, 2), c(2, 3, 5, 4, 2)))
+Sr2 <- Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2)))
+Sr3 <- Polygon(cbind(c(4, 4, 5, 10, 4), c(5, 3, 2, 5, 5)))
 
-Srs1 = Polygons(list(Sr1), "s1")
-Srs2 = Polygons(list(Sr2), "s2")
-Srs3 = Polygons(list(Sr3), "s3")
-shp = SpatialPolygons(list(Srs1,Srs2,Srs3), 1:3)
-d <- data.frame(vals=  1:3, other = letters[1:3])
+Srs1 <- Polygons(list(Sr1), "s1")
+Srs2 <- Polygons(list(Sr2), "s2")
+Srs3 <- Polygons(list(Sr3), "s3")
+shp <- SpatialPolygons(list(Srs1, Srs2, Srs3), 1:3)
+d <- data.frame(vals = 1:3, other = letters[1:3])
 row.names(d) <- names(shp)
 shp <- SpatialPolygonsDataFrame(shp, data = d)
 poly <- list()
-poly[[1]] <- raster(extent(shp), vals = 0, res = c(0.5,0.5))
-poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5,0.5))
+poly[[1]] <- raster(extent(shp), vals = 0, res = c(0.5, 0.5))
+poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5, 0.5))
 origStack <- stack(poly)
 
 # rasterize
@@ -61,23 +62,25 @@ shpRas1 <- rasterize(shp, origStack)
 shpRas2 <- fastRasterize(shp, origStack)
 all.equal(shpRas1, shpRas2)
 
-if(interactive()) {
-  plot(shpRas2)
-}
+if (interactive()) plot(shpRas2)
 
 # original mask function in raster
-newStack1 <- mask(origStack, mask=shp)
-# fastMask uses 2 clusters
+newStack1 <- mask(origStack, mask = shp)
+
+# fastMask uses cluster
 newStack2 <- fastMask(stack = origStack, polygon = shp)
 
 # test all equal
 identical(newStack1, newStack2)
 newStack1 <- stack(newStack1)
 newStack2 <- stack(newStack2)
-if(interactive()) {
+
+if (interactive()) {
   plot(newStack2[[1]])
-  plot(shp, add=TRUE)
+  plot(shp, add = TRUE)
 }
+
+endCluster()
 }
 
 }
