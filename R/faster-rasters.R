@@ -1,12 +1,12 @@
-#' Faster operations on rasters with internal parallel aware
+#' Faster operations on rasters
 #'
 #' These alternatives to \code{mask} and \code{rasterize} are not as general as
 #' the originals. However, they use \code{raster::extract} internally,
-#' which is parallel-aware. So, using these functions with a cluster
-#' having been created via \code{beginCluster} will be much faster
-#' than mask and rasterize. However, only a few situations will work
-#' with these functions (e.g., \code{fastMask} must be given a stack --
-#' a Raster will likely not work)
+#' which is parallel-aware. So, using these functions with a cluster having been
+#' created via \code{beginCluster} will be much faster than \code{mask} and
+#' \code{rasterize}. However, only a few situations will work with these
+#' functions (e.g., \code{fastMask} must be given a \code{RasterStack};
+#' a \code{RasterLayer} will likely not work).
 #'
 #' @note HAS NOT BEEN FULLY TESTED
 #'
