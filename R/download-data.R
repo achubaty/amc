@@ -32,7 +32,7 @@ dl.data <- function(urls, dest = ".", checksum = TRUE, unzip = FALSE) {
             needDownload <- TRUE
           }
         } else {
-          message("No hash file exists. Assuming current file (", basename(f),") is correct.")
+          message("No hash file exists. Assuming current file (", basename(f), ") is correct.")
           hash <- digest::digest(file = dest_file, algo = "xxhash64")
           write.table(data.frame(filename = dest_file, checksum = hash),
                       file = checksum_file)
