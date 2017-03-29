@@ -21,6 +21,7 @@
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
 #' @rdname faster-rasters
+#'
 #' @examples
 #'\dontrun{
 #' library(raster)
@@ -86,8 +87,6 @@ fastMask <- function(stack, polygon) {
 #'
 #' @param field      The field to use from \code{polygon}.
 #'
-#' @author Eliot Mcintire
-#' @docType methods
 #' @export
 #' @importFrom plyr mapvalues
 #' @importFrom raster extract raster

@@ -86,6 +86,4 @@ endCluster()
 }
 \author{
 Eliot Mcintire
-
-Eliot Mcintire
 }
