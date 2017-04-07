@@ -89,10 +89,10 @@ fastMask <- function(stack, polygon) {
 #' @param field      The field to use from \code{polygon}.
 #'
 #' @export
-#' @importFrom plyr mapvalues
-#' @importFrom raster raster getCluster returnCluster cellFromPolygon
-#' @importFrom parallel clusterExport parLapply sendCall
 #' @importFrom data.table data.table
+#' @importFrom parallel clusterExport parLapply
+#' @importFrom plyr mapvalues
+#' @importFrom raster cellFromPolygon getCluster raster returnCluster
 #' @rdname faster-rasters
 #'
 fastRasterize <- function(polygon, ras, field) {
@@ -105,7 +105,7 @@ fastRasterize <- function(polygon, ras, field) {
                   function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
                                          ID = x))
   lapplyFun <- "lapply"
-  if(useParallel){
+  if (useParallel) {
     lapplyFun <- "parLapply"
     argList <- append(list(cl = cl), argList)
     on.exit(returnCluster())
@@ -113,15 +113,13 @@ fastRasterize <- function(polygon, ras, field) {
     message("Using cluster with ", nodes, " nodes")
     utils::flush.console()
     .sendCall <- eval(parse(text = "parallel:::sendCall"))
-    parallel::clusterExport(cl, c("polygon", "ras"),
-                            envir = environment())
-
+    parallel::clusterExport(cl, c("polygon", "ras"), envir = environment())
   }
   nonNACellIDs <- do.call(lapplyFun, argList)
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(ras)
   singleRas[] <- NA
-  singleRas[nonNACellIDs$cell]<- nonNACellIDs$ID
+  singleRas[nonNACellIDs$cell] <- nonNACellIDs$ID
   if (!missing(field)) {
     if (length(field) == 1) {
       singleRas[] <- plyr::mapvalues(singleRas[], from = allpolygonIndex, to = polygon[[field]])

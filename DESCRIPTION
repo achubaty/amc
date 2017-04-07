@@ -13,10 +13,12 @@ Authors@R: c(
 Description: A collection of variously useful functions.
 Imports:
   base64enc,
+  data.table,
   digest,
   httr,
   magrittr,
   methods,
+  parallel,
   plyr,
   raster,
   rgdal,
