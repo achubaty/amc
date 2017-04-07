@@ -14,6 +14,7 @@
 #'
 #' @param polygon    A \code{SpatialPolygons} object.
 #'
+#'
 #' @return A \code{Raster*} object.
 #'
 #' @author Eliot Mcintire
@@ -93,16 +94,33 @@ fastMask <- function(stack, polygon) {
 #' @rdname faster-rasters
 #'
 fastRasterize <- function(polygon, ras, field) {
-  nonNACellIDs <- extract(ras, polygon, cellnumbers = TRUE)
-  polygonIDs <- seq_along(nonNACellIDs)
-  nonNACellIDs <- lapply(polygonIDs, function(x) cbind(nonNACellIDs[[x]], "ID" = x))
+  polydata <- polygon@data
+  row.names(polygon@data) <- 1:nrow(polydata)
+  allpolygonIndex <- 1:nrow(polydata)
+  useParallel <- try(cl <- getCluster(), silent = TRUE)
+  if(is(useParallel, "try-error")){
+    nonNACellIDs <- lapply(allpolygonIndex,
+                           function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
+                                                  ID = x))
+  } else {
+    on.exit(returnCluster())
+    nodes <- min(length(allpolygonIndex), length(cl))
+    message("Using cluster with ", nodes, " nodes")
+    utils::flush.console()
+    .sendCall <- eval(parse(text = "parallel:::sendCall"))
+    parallel::clusterExport(cl, c("polygon", "ras"),
+                            envir = environment())
+    nonNACellIDs <- parallel::parLapply(cl, allpolygonIndex,
+                                        function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
+                                                               ID = x))
+  }
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(ras)
   singleRas[] <- NA
-  singleRas[nonNACellIDs[, "cell"]] <- nonNACellIDs[, "ID"]
+  singleRas[nonNACellIDs$cell]<- nonNACellIDs$ID
   if (!missing(field)) {
     if (length(field) == 1) {
-      singleRas[] <- mapvalues(singleRas[], from = polygonIDs, to = polygon[[field]])
+      singleRas[] <- plyr::mapvalues(singleRas[], from = allpolygonIndex, to = polygon[[field]])
       numFields <- 1
     } else {
       numFields <- 2
@@ -113,6 +131,6 @@ fastRasterize <- function(polygon, ras, field) {
   if (numFields == 3) {
     field <- names(polygon)
   }
-  levels(singleRas) <- data.frame(ID = polygonIDs, polygon[field])
+  levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field])
   singleRas
 }
