@@ -90,19 +90,24 @@ fastMask <- function(stack, polygon) {
 #'
 #' @export
 #' @importFrom plyr mapvalues
-#' @importFrom raster extract raster
+#' @importFrom raster raster getCluster returnCluster cellFromPolygon
+#' @importFrom parallel clusterExport parLapply sendCall
+#' @importFrom data.table data.table
 #' @rdname faster-rasters
 #'
 fastRasterize <- function(polygon, ras, field) {
   polydata <- polygon@data
   row.names(polygon@data) <- 1:nrow(polydata)
   allpolygonIndex <- 1:nrow(polydata)
-  useParallel <- try(cl <- getCluster(), silent = TRUE)
-  if(is(useParallel, "try-error")){
-    nonNACellIDs <- lapply(allpolygonIndex,
-                           function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
-                                                  ID = x))
-  } else {
+  cl <- tryCatch(getCluster(), error = function(x) FALSE, silent = TRUE)
+  useParallel <- is(cl, "cluster")
+  argList <- list(allpolygonIndex,
+                  function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
+                                         ID = x))
+  lapplyFun <- "lapply"
+  if(useParallel){
+    lapplyFun <- "parLapply"
+    argList <- append(list(cl = cl), argList)
     on.exit(returnCluster())
     nodes <- min(length(allpolygonIndex), length(cl))
     message("Using cluster with ", nodes, " nodes")
@@ -110,10 +115,9 @@ fastRasterize <- function(polygon, ras, field) {
     .sendCall <- eval(parse(text = "parallel:::sendCall"))
     parallel::clusterExport(cl, c("polygon", "ras"),
                             envir = environment())
-    nonNACellIDs <- parallel::parLapply(cl, allpolygonIndex,
-                                        function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
-                                                               ID = x))
+
   }
+  nonNACellIDs <- do.call(lapplyFun, argList)
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(ras)
   singleRas[] <- NA
