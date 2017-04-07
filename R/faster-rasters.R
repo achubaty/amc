@@ -101,9 +101,9 @@ fastRasterize <- function(polygon, ras, field) {
   allpolygonIndex <- 1:nrow(polydata)
   cl <- tryCatch(getCluster(), error = function(x) FALSE, silent = TRUE)
   useParallel <- is(cl, "cluster")
-  argList <- list(allpolygonIndex,
-                  function(x) data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])),
-                                         ID = x))
+  argList <- list(allpolygonIndex, function(x) {
+    data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])), ID = x)
+  })
   lapplyFun <- "lapply"
   if (useParallel) {
     lapplyFun <- "parLapply"
