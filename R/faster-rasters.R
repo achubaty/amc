@@ -47,9 +47,21 @@
 #' origStack <- stack(poly)
 #'
 #' # rasterize
-#' shpRas1 <- rasterize(shp, origStack)
-#' shpRas2 <- fastRasterize(shp, origStack)
-#' all.equal(shpRas1, shpRas2)
+#' shpRas1_character <- rasterize(shp, origStack, field = "other")
+#' shpRas1_numeric <- rasterize(shp, origStack, field = "vals")
+#' shpRas1_multiF <- rasterize(shp, origStack, field = c("other", "vals"))
+#' shpRas1_missingF <- rasterize(shp, origStack)
+#'
+#' shpRas2_character <- fastRasterize(shp, origStack, field = "other")
+#' shpRas2_numeric <- fastRasterize(shp, origStack, field = "vals")
+#' shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"))
+#' shpRas2_missingF <- fastRasterize(shp, origStack)
+#'
+#' testthat::expect_equal(shpRas1_character, shpRas2_character)
+#' testthat::expect_equal(shpRas1_numeric, shpRas2_numeric)
+#' testthat::expect_equal(shpRas1_multiF, shpRas2_multiF)
+#' testthat::expect_equal(shpRas1_missingF, shpRas2_missingF)
+#'
 #'
 #' if (interactive()) plot(shpRas2)
 #'
@@ -97,6 +109,7 @@ fastMask <- function(stack, polygon) {
 #'
 fastRasterize <- function(polygon, ras, field) {
   polydata <- polygon@data
+  polyOrgRowName <- row.names(polydata)
   row.names(polygon@data) <- 1:nrow(polydata)
   allpolygonIndex <- 1:nrow(polydata)
   cl <- tryCatch(getCluster(), error = function(x) FALSE, silent = TRUE)
@@ -121,7 +134,7 @@ fastRasterize <- function(polygon, ras, field) {
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(ras)
   singleRas[] <- NA
-  singleRas[nonNACellIDs$cell]<- nonNACellIDs$ID
+  singleRas[nonNACellIDs$cell]<- as.numeric(nonNACellIDs$ID)
   if (!missing(field)) {
     if (length(field) == 1) {
       singleRas[] <- plyr::mapvalues(singleRas[], from = allpolygonIndex, to = polygon[[field]])
@@ -132,9 +145,13 @@ fastRasterize <- function(polygon, ras, field) {
   } else {
     numFields <- 3
   }
+  if(numFields == 2){
+    levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field], row.names = polyOrgRowName)
+    singleRas@data@attributes[[1]] <- singleRas@data@attributes[[1]][,field]
+  }
   if (numFields == 3) {
     field <- names(polygon)
+    levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field], row.names = polyOrgRowName)
   }
-  levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field])
   singleRas
 }
