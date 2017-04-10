@@ -13,6 +13,8 @@ Authors@R: c(
     person(c("Josh"), "O'Brien", role = c("ctb"))
     )
 Description: A collection of variously useful functions.
+Depends:
+  R (>= 3.3.0)
 Imports:
   base64enc,
   data.table,
