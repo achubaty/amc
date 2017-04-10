@@ -8,15 +8,19 @@ Authors@R: c(
     role = c("aut", "cre", "cph")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("ctb")),
+    person(c("Yong"), "Luo", email = "yong.luo@canada.ca",
+    role = c("ctb")),
     person(c("Josh"), "O'Brien", role = c("ctb"))
     )
 Description: A collection of variously useful functions.
 Imports:
   base64enc,
+  data.table,
   digest,
   httr,
   magrittr,
   methods,
+  parallel,
   plyr,
   raster,
   rgdal,

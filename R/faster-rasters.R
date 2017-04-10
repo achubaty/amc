@@ -14,9 +14,10 @@
 #'
 #' @param polygon    A \code{SpatialPolygons} object.
 #'
+#'
 #' @return A \code{Raster*} object.
 #'
-#' @author Eliot Mcintire
+#' @author Eliot Mcintire and Yong Luo
 #' @docType methods
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
@@ -46,9 +47,9 @@
 #' origStack <- stack(poly)
 #'
 #' # rasterize
-#' shpRas1 <- rasterize(shp, origStack)
+#' shpRas1 <- raster::rasterize(shp, origStack)
 #' shpRas2 <- fastRasterize(shp, origStack)
-#' all.equal(shpRas1, shpRas2)
+#' expect_equal(shpRas1, shpRas2)
 #'
 #' if (interactive()) plot(shpRas2)
 #'
@@ -88,21 +89,41 @@ fastMask <- function(stack, polygon) {
 #' @param field      The field to use from \code{polygon}.
 #'
 #' @export
+#' @importFrom data.table data.table
+#' @importFrom parallel clusterExport parLapply
 #' @importFrom plyr mapvalues
-#' @importFrom raster extract raster
+#' @importFrom raster cellFromPolygon getCluster raster returnCluster
 #' @rdname faster-rasters
 #'
 fastRasterize <- function(polygon, ras, field) {
-  nonNACellIDs <- extract(ras, polygon, cellnumbers = TRUE)
-  polygonIDs <- seq_along(nonNACellIDs)
-  nonNACellIDs <- lapply(polygonIDs, function(x) cbind(nonNACellIDs[[x]], "ID" = x))
+  polydata <- polygon@data
+  polyOrgRowName <- row.names(polydata)
+  row.names(polygon@data) <- 1:nrow(polydata)
+  allpolygonIndex <- 1:nrow(polydata)
+  cl <- tryCatch(getCluster(), error = function(x) FALSE, silent = TRUE)
+  useParallel <- is(cl, "cluster")
+  argList <- list(allpolygonIndex, function(x) {
+    data.table(cell = unlist(cellFromPolygon(ras, polygon[row.names(polygon@data) == as.character(x),])), ID = x)
+  })
+  lapplyFun <- "lapply"
+  if (useParallel) {
+    lapplyFun <- "parLapply"
+    argList <- append(list(cl = cl), argList)
+    on.exit(returnCluster())
+    nodes <- min(length(allpolygonIndex), length(cl))
+    message("Using cluster with ", nodes, " nodes")
+    utils::flush.console()
+    .sendCall <- eval(parse(text = "parallel:::sendCall"))
+    parallel::clusterExport(cl, c("polygon", "ras"), envir = environment())
+  }
+  nonNACellIDs <- do.call(lapplyFun, argList)
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(ras)
   singleRas[] <- NA
-  singleRas[nonNACellIDs[, "cell"]] <- nonNACellIDs[, "ID"]
+  singleRas[nonNACellIDs$cell] <- as.numeric(nonNACellIDs$ID)
   if (!missing(field)) {
     if (length(field) == 1) {
-      singleRas[] <- mapvalues(singleRas[], from = polygonIDs, to = polygon[[field]])
+      singleRas[] <- plyr::mapvalues(singleRas[], from = allpolygonIndex, to = polygon[[field]])
       numFields <- 1
     } else {
       numFields <- 2
@@ -110,9 +131,13 @@ fastRasterize <- function(polygon, ras, field) {
   } else {
     numFields <- 3
   }
+  if (numFields == 2) {
+    levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field], row.names = polyOrgRowName)
+    singleRas@data@attributes[[1]] <- singleRas@data@attributes[[1]][, field]
+  }
   if (numFields == 3) {
     field <- names(polygon)
+    levels(singleRas) <- data.frame(ID = allpolygonIndex, polygon[field], row.names = polyOrgRowName)
   }
-  levels(singleRas) <- data.frame(ID = polygonIDs, polygon[field])
   singleRas
 }
