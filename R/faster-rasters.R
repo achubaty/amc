@@ -17,7 +17,7 @@
 #'
 #' @return A \code{Raster*} object.
 #'
-#' @author Eliot Mcintire
+#' @author Eliot Mcintire and Yong Luo
 #' @docType methods
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
