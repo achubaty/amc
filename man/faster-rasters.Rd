@@ -58,21 +58,9 @@ poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5, 0.5))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1_character <- rasterize(shp, origStack, field = "other")
-shpRas1_numeric <- rasterize(shp, origStack, field = "vals")
-shpRas1_multiF <- rasterize(shp, origStack, field = c("other", "vals"))
-shpRas1_missingF <- rasterize(shp, origStack)
-
-shpRas2_character <- fastRasterize(shp, origStack, field = "other")
-shpRas2_numeric <- fastRasterize(shp, origStack, field = "vals")
-shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"))
-shpRas2_missingF <- fastRasterize(shp, origStack)
-
-testthat::expect_equal(shpRas1_character, shpRas2_character)
-testthat::expect_equal(shpRas1_numeric, shpRas2_numeric)
-testthat::expect_equal(shpRas1_multiF, shpRas2_multiF)
-testthat::expect_equal(shpRas1_missingF, shpRas2_missingF)
-
+shpRas1 <- raster::rasterize(shp, origStack)
+shpRas2 <- fastRasterize(shp, origStack)
+expect_equal(shpRas1, shpRas2)
 
 if (interactive()) plot(shpRas2)
 

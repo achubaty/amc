@@ -26,10 +26,10 @@ test_that("faster-rasters functions produce correct results", {
   shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"))
   shpRas2_missingF <- fastRasterize(shp, origStack)
 
-  testthat::expect_equal(shpRas1_character, shpRas2_character)
-  testthat::expect_equal(shpRas1_numeric, shpRas2_numeric)
-  testthat::expect_equal(shpRas1_multiF, shpRas2_multiF)
-  testthat::expect_equal(shpRas1_missingF, shpRas2_missingF)
+  expect_identical(shpRas1_character, shpRas2_character)
+  expect_identical(shpRas1_numeric, shpRas2_numeric)
+  expect_identical(shpRas1_multiF, shpRas2_multiF)
+  expect_identical(shpRas1_missingF, shpRas2_missingF)
 
   ## mask
   newStack1 <- raster::mask(origStack, mask = shp)
