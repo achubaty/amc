@@ -30,6 +30,7 @@ Imports:
   utils
 Suggests:
   knitr,
+  maptools,
   rmarkdown,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
