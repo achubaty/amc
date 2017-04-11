@@ -1,4 +1,6 @@
 test_that("spelling errors", {
+  skip_on_appveyor() ## no suitable spellchecker installed
+  skip_on_travis()   ## no suitable spellchecker installed
   skip_on_cran()
   skip_if_not_installed("hunspell")
 
