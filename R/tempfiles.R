@@ -1,11 +1,11 @@
-#' Create a temporory file
+#' Create a temporary file
 #'
 #' This is a wrapper around \code{tempfile()} that actually creates the file,
 #' to ensure a correctly normalized filepath (i.e., on macOS)..
 #'
-#' @param ext  Flie extension to give to the nwely create file.
+#' @param ext  File extension to give to the newly create file.
 #'
-#' @return  A chracter string indicating the filepath to the newly created file.
+#' @return  Character string indicating the filepath to the newly created file.
 #'
 #' @author Alex Chubaty
 #' @docType methods

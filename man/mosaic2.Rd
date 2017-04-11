@@ -16,7 +16,7 @@ mosaic2(x, y, ...)
 
 \item{y}{\code{Raster*} object}
 
-\item{...}{Additonal Raster or Extent objects}
+\item{...}{Additional Raster or Extent objects.}
 
 \item{fun}{Function (e.g., \code{mean}, \code{min}, or \code{max}, that accepts
 a \code{na.rm} argument).}

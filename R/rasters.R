@@ -78,7 +78,7 @@ setMethod(
 #'
 #' @param x   \code{Raster*} object
 #' @param y   \code{Raster*} object
-#' @param ... Additonal Raster or Extent objects
+#' @param ... Additional Raster or Extent objects.
 #' @param fun Function (e.g., \code{mean}, \code{min}, or \code{max}, that accepts
 #'            a \code{na.rm} argument).
 #' @param tolerance Numeric. Permissible difference in origin (relative to the

@@ -3,15 +3,15 @@
 \docType{methods}
 \name{tf}
 \alias{tf}
-\title{Create a temporory file}
+\title{Create a temporary file}
 \usage{
 tf(ext = ".tif")
 }
 \arguments{
-\item{ext}{Flie extension to give to the nwely create file.}
+\item{ext}{File extension to give to the newly create file.}
 }
 \value{
-A chracter string indicating the filepath to the newly created file.
+Character string indicating the filepath to the newly created file.
 }
 \description{
 This is a wrapper around \code{tempfile()} that actually creates the file,
