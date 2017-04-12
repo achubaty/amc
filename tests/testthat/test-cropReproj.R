@@ -25,8 +25,8 @@ test_that("cropReproj works correctly", {
   sa.rast1 <- crop(r, ext) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.rast2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
 
-  rc1 <- cropReproj(r, sa.rast1)
-  rc2 <- cropReproj(r, sa.rast2)
+  rc1 <- cropReproj(r, sa.rast1, layerNames = "test")
+  rc2 <- cropReproj(r, sa.rast2, layerNames = "test")
 
   expect_equal(rc1, rc2)
   expect_equivalent(rc1, rc2)
@@ -54,8 +54,8 @@ test_that("cropReproj works correctly", {
   sa.spdf1 <- crop(r, ext.spdf) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.spdf2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
 
-  rc3 <- cropReproj(r, sa.spdf1)
-  rc4 <- cropReproj(r, sa.spdf2)
+  rc3 <- cropReproj(r, sa.spdf1, layerNames = "test")
+  rc4 <- cropReproj(r, sa.spdf2, layerNames = "test")
 
   expect_equal(stack(sa.spdf1), rc3)
   expect_equal(stack(sa.spdf2), rc4)

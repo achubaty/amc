@@ -34,8 +34,7 @@ cropReproj(x, studyArea, ...)
 If not specified, a temporary file will be used.}
 }
 \value{
-\code{RasterStack} object (which can be susbsequently
-        \code{\link[raster]{unstack}}ed as needed).
+\code{Raster} object.
 }
 \description{
 This function is geared toward use with study areas that are too large to work

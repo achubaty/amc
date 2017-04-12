@@ -19,8 +19,7 @@
 #'
 #' @param ...        Additional arguments (not used).
 #'
-#' @return \code{RasterStack} object (which can be susbsequently
-#'         \code{\link[raster]{unstack}}ed as needed).
+#' @return \code{Raster} object.
 #'
 #' @author Alex Chubaty and Eliot Mcintire
 #' @docType methods
@@ -57,12 +56,10 @@ setMethod(
       crop(studyArea, filename = tempfiles[[3]], overwrite = TRUE) %>%
       set_names(layerNames)
 
-    if (is.null(filename)) {
-      a <- writeRaster(a, filename = tf(".tif"), overwrite = TRUE)
-    } else {
-      a <- writeRaster(a, filename = filename, overwrite = TRUE)
-    }
-    return(stack(a))
+    a <- writeRaster(a, filename = filename, overwrite = TRUE) %>%
+      set_names(layerNames)
+
+    return(a)
 })
 
 #' @export
@@ -88,8 +85,10 @@ setMethod(
       crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
       set_names(layerNames)
 
-    a <- writeRaster(a, filename = filename, overwrite = TRUE)
-    return(stack(a))
+    a <- writeRaster(a, filename = filename, overwrite = TRUE) %>%
+      set_names(layerNames)
+
+    return(a)
 })
 
 #' @export
