@@ -21,7 +21,7 @@ test_that("cropReproj works correctly", {
   ext.prj <- spTransform(ext.sp, CRS(prj))
   ext.prj.spdf <- spTransform(ext.spdf, CRS(prj))
 
-  ## with RasterStack
+  ## with RasterLayer
   sa.rast1 <- crop(r, ext) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.rast2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
 
