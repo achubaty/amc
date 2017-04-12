@@ -54,9 +54,13 @@ test_that("cropReproj works correctly", {
   sa.spdf1 <- crop(r, ext.spdf) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.spdf2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
 
-  rc1 <- cropReproj(r, sa.spdf1)
-  rc2 <- cropReproj(r, sa.spdf2)
+  rc3 <- cropReproj(r, sa.spdf1)
+  rc4 <- cropReproj(r, sa.spdf2)
 
-  expect_equal(stack(sa.rast), rc1)
-  expect_equal(stack(sa.rast), rc2)
+  expect_equal(stack(sa.spdf1), rc3)
+  expect_equal(stack(sa.spdf2), rc4)
+
+  ## compare raster vs spdf outputs
+  expect_equal(rc1, rc3)
+  expect_equal(rc2, rc4)
 })
