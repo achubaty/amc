@@ -4,7 +4,9 @@
 \name{cropReproj}
 \alias{cropReproj}
 \alias{cropReproj,RasterStack,SpatialPolygonsDataFrame-method}
-\alias{cropReproj,character,SpatialPolygonsDataFrame-method}
+\alias{cropReproj,RasterStack,Raster-method}
+\alias{cropReproj,RasterLayer,ANY-method}
+\alias{cropReproj,character,ANY-method}
 \title{Crop and reproject a raster to a given study area}
 \usage{
 cropReproj(x, studyArea, ...)
@@ -12,8 +14,14 @@ cropReproj(x, studyArea, ...)
 \S4method{cropReproj}{RasterStack,SpatialPolygonsDataFrame}(x, studyArea,
   layerNames, filename = NULL, ...)
 
-\S4method{cropReproj}{character,SpatialPolygonsDataFrame}(x, studyArea,
-  layerNames, filename = NULL, ...)
+\S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames,
+  filename = NULL, ...)
+
+\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames,
+  filename = NULL, ...)
+
+\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames,
+  filename = NULL, ...)
 }
 \arguments{
 \item{x}{\code{RasterStack} object or the filepath to such object.}
@@ -26,6 +34,10 @@ cropReproj(x, studyArea, ...)
 
 \item{filename}{Optional output filepath to use with \code{\link{writeRaster}}.
 If not specified, a temporary file will be used.}
+}
+\value{
+\code{RasterStack} object (which can be susbsequently
+        \code{\link[raster]{unstack}}ed as needed).
 }
 \description{
 This function is geared toward use with study areas that are too large to work

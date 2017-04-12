@@ -19,6 +19,9 @@
 #'
 #' @param ...        Additional arguments (not used).
 #'
+#' @return \code{RasterStack} object (which can be susbsequently
+#'         \code{\link[raster]{unstack}}ed as needed).
+#'
 #' @author Alex Chubaty and Eliot Mcintire
 #' @docType methods
 #' @export
@@ -57,18 +60,55 @@ setMethod(
     } else {
       a <- writeRaster(a, filename = filename, overwrite = TRUE)
     }
-    return(a)
+    return(stack(a))
 })
 
 #' @export
 #' @rdname cropReproj
 setMethod(
   "cropReproj",
-  signature("character", "SpatialPolygonsDataFrame"),
+  signature("RasterStack", "Raster"),
+  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+    stopifnot(nlayers(x) == length(layerNames))
+
+    tempfiles <- lapply(rep(".tif", 4), tf)
+    on.exit(lapply(tf, unlink))
+
+    ## TO DO: can this part be made parallel?
+    a <- set_names(x, layerNames)
+    b <- projectRaster(studyArea, crs = CRS(proj4string(a)),
+                       filename = tempfiles[[1]], overwrite = TRUE)
+    a <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
+      projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
+                    filename = tempfiles[[3]], overwrite = TRUE) %>%
+      crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
+      set_names(layerNames)
+
+    if (is.null(filename)) {
+      a <- writeRaster(a, filename = tf(".tif"), overwrite = TRUE)
+    } else {
+      a <- writeRaster(a, filename = filename, overwrite = TRUE)
+    }
+    return(stack(a))
+})
+
+#' @export
+#' @rdname cropReproj
+setMethod(
+  "cropReproj",
+  signature("RasterLayer", "ANY"),
+  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+    cropReproj(stack(x), studyArea, layerNames, filename, ...)
+})
+
+#' @export
+#' @rdname cropReproj
+setMethod(
+  "cropReproj",
+  signature("character", "ANY"),
   definition = function(x, studyArea, layerNames, filename = NULL, ...) {
     stopifnot(file.exists(x))
-    x <- stack(x = x)
-    cropReproj(x, studyArea, layerNames, filename, ...)
+    cropReproj(stack(x), studyArea, layerNames, filename, ...)
 })
 
 #' Merge Raster* objects using a function for overlapping areas
