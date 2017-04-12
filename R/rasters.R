@@ -146,7 +146,8 @@ setMethod("mosaic2",
   tempfiles <- list(tf(".tif"))
 
   ## TO DO: can this part be made parallel?
-  out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance, filename = tempfiles[[1]]) %>%
+  out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
+                filename = tempfiles[[1]], overwrite = TRUE) %>%
     writeRaster(filename = filename, overwrite = TRUE) %>%
     set_names(layerName)
   return(out)
