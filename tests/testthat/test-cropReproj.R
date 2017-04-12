@@ -31,11 +31,11 @@ test_that("cropReproj works correctly", {
   expect_equal(rc1, rc2)
   expect_equivalent(rc1, rc2)
 
-  expect_equal(stack(sa.rast), rc1)
-  expect_equivalent(stack(sa.rast), rc1)
+  expect_equal(sa.rast, rc1)
+  expect_equivalent(sa.rast, rc1)
 
-  expect_equal(stack(sa.rast), rc2)
-  expect_equivalent(stack(sa.rast), rc2)
+  expect_equal(sa.rast, rc2)
+  expect_equivalent(sa.rast, rc2)
 
   plot(rc1)
   plot(rc2)
