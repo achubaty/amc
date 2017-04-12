@@ -12,16 +12,14 @@
 cropReproj(x, studyArea, ...)
 
 \S4method{cropReproj}{RasterStack,SpatialPolygonsDataFrame}(x, studyArea,
-  layerNames, filename = NULL, ...)
+  layerNames, filename, ...)
 
-\S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames,
-  filename = NULL, ...)
+\S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames, filename,
+  ...)
 
-\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames,
-  filename = NULL, ...)
+\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename, ...)
 
-\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames,
-  filename = NULL, ...)
+\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames, filename, ...)
 }
 \arguments{
 \item{x}{\code{RasterStack} object or the filepath to such object.}

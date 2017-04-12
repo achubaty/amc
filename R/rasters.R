@@ -40,7 +40,9 @@ setGeneric("cropReproj",
 setMethod(
   "cropReproj",
   signature("RasterStack", "SpatialPolygonsDataFrame"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  definition = function(x, studyArea, layerNames, filename, ...) {
+    if (missing(filename)) filename <- tf(".tif")
+    if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
     tempfiles <- lapply(rep(".tif", 3), tf)
@@ -68,7 +70,9 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("RasterStack", "Raster"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  definition = function(x, studyArea, layerNames, filename, ...) {
+    if (missing(filename)) filename <- tf(".tif")
+    if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
     tempfiles <- lapply(rep(".tif", 4), tf)
@@ -76,7 +80,7 @@ setMethod(
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
-    b <- projectRaster(studyArea, crs = CRS(proj4string(a)),
+    b <- projectRaster(studyArea, a, method = "ngb",
                        filename = tempfiles[[1]], overwrite = TRUE)
     a <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
       projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
@@ -84,11 +88,7 @@ setMethod(
       crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
       set_names(layerNames)
 
-    if (is.null(filename)) {
-      a <- writeRaster(a, filename = tf(".tif"), overwrite = TRUE)
-    } else {
-      a <- writeRaster(a, filename = filename, overwrite = TRUE)
-    }
+    a <- writeRaster(a, filename = filename, overwrite = TRUE)
     return(stack(a))
 })
 
@@ -97,7 +97,7 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("RasterLayer", "ANY"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  definition = function(x, studyArea, layerNames, filename, ...) {
     cropReproj(stack(x), studyArea, layerNames, filename, ...)
 })
 
@@ -106,7 +106,7 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("character", "ANY"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  definition = function(x, studyArea, layerNames, filename, ...) {
     stopifnot(file.exists(x))
     cropReproj(stack(x), studyArea, layerNames, filename, ...)
 })
