@@ -19,8 +19,15 @@ test_that("cropReproj works correctly", {
   ext.prj <- spTransform(ext.sp, CRS(prj))
   ext.prj.spdf <- spTransform(ext.spdf, CRS(prj))
 
-  ## RasterLayer,RasterLayer
+  ## character,RasterLayer
   sa.rast <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
+  rc0 <- cropReproj(f, sa.rast, layerNames = "test")
+
+  expect_true(is(rc0, "RasterStack"))
+  expect_equivalent(stack(sa.rast), rc0)
+  expect_equivalent(sa.rast, unstack(rc0)[[1]])
+
+  ## RasterLayer,RasterLayer
   rc1 <- cropReproj(r, sa.rast, layerNames = "test")
 
   expect_true(is(rc1, "RasterStack"))
