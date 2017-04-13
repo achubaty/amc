@@ -19,7 +19,7 @@
 #'
 #' @param ...        Additional arguments (not used).
 #'
-#' @return \code{Raster} object.
+#' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
 #'
 #' @author Alex Chubaty and Eliot Mcintire
 #' @docType methods
@@ -40,26 +40,24 @@ setMethod(
   "cropReproj",
   signature("RasterStack", "SpatialPolygonsDataFrame"),
   definition = function(x, studyArea, layerNames, filename, ...) {
-    if (missing(filename)) filename <- tf(".tif")
+    if (missing(filename)) filename <- tf(".grd")
     if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
-    tempfiles <- lapply(rep(".tif", 3), tf)
+    tempfiles <- lapply(rep(".grd", 3), tf)
     on.exit(lapply(tf, unlink))
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
     b <- spTransform(studyArea, CRSobj = CRS(proj4string(a)))
-    a <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
+    out <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
       projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[2]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[3]], overwrite = TRUE) %>%
-      set_names(layerNames)
+      set_names(layerNames) %>%
+      writeRaster(filename = filename, overwrite = TRUE)
 
-    a <- writeRaster(a, filename = filename, overwrite = TRUE) %>%
-      set_names(layerNames)
-
-    return(a)
+    return(stack(out))
 })
 
 #' @export
@@ -68,27 +66,25 @@ setMethod(
   "cropReproj",
   signature("RasterStack", "Raster"),
   definition = function(x, studyArea, layerNames, filename, ...) {
-    if (missing(filename)) filename <- tf(".tif")
+    if (missing(filename)) filename <- tf(".grd")
     if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
-    tempfiles <- lapply(rep(".tif", 4), tf)
+    tempfiles <- lapply(rep(".grd", 4), tf)
     on.exit(lapply(tf, unlink))
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
     b <- projectRaster(studyArea, a, method = "ngb",
                        filename = tempfiles[[1]], overwrite = TRUE)
-    a <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
+    out <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
       projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[3]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
-      set_names(layerNames)
+      set_names(layerNames) %>%
+      writeRaster(filename = filename, overwrite = TRUE)
 
-    a <- writeRaster(a, filename = filename, overwrite = TRUE) %>%
-      set_names(layerNames)
-
-    return(a)
+    return(stack(out))
 })
 
 #' @export

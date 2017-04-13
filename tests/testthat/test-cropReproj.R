@@ -8,6 +8,7 @@ test_that("cropReproj works correctly", {
 
   f <- system.file("external/test.grd", package = "raster")
   r <- raster(f)
+  s <- stack(r, r * 2, r * 3)
 
   ext <- extent(c(xmin = 179000, xmax = 181000, ymin = 330000, ymax = 333000))
   ext.sp <- as(ext, "SpatialPolygons")
@@ -18,7 +19,7 @@ test_that("cropReproj works correctly", {
   ext.prj <- spTransform(ext.sp, CRS(prj))
   ext.prj.spdf <- spTransform(ext.spdf, CRS(prj))
 
-  ## with RasterLayer
+  ## RasterLayer,RasterLayer
   sa.rast1 <- crop(r, ext) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.rast2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
 
@@ -49,7 +50,7 @@ test_that("cropReproj works correctly", {
     plot(ext.prj, add = TRUE)
   }
 
-  ## with SpatialPolygonsDataFrame
+  ## RasterLayer,SpatialPolygonsDataFrame
   sa.spdf1 <- crop(r, ext.spdf) %>% projectRaster(crs = CRS(prj), method = "ngb")
   sa.spdf2 <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
 
@@ -62,7 +63,27 @@ test_that("cropReproj works correctly", {
   #expect_equal(stack(sa.spdf2), rc4)
   expect_equivalent(stack(sa.spdf2), rc4)
 
-  ## compare raster vs spdf outputs
+  # compare raster vs spdf outputs
   expect_equivalent(rc1, rc3)
   expect_equivalent(rc2, rc4)
+
+  ## RasterStack,RasterLayer
+  sln <- c("one", "two", "three")
+  sc1 <- cropReproj(s, sa.rast1, layerNames = sln)
+  sc2 <- cropReproj(s, sa.rast2, layerNames = sln)
+
+  # ensure stacks are produced from stacks
+  expect_true(is(sc1, "RasterStack"))
+  expect_true(is(sc2, "RasterStack"))
+
+  #expect_equal(sc1, sc2)
+  #expect_equivalent(sc1, sc2)
+
+  sa.stck1 <- stack(sa.rast1, sa.rast1 * 2, sa.rast1 * 3) %>% set_names(sln)
+  #expect_equal(sa.stck1, sc1)
+  expect_equivalent(sa.stck1, sc1)
+
+  sa.stck2 <- stack(sa.rast2, sa.rast2 * 2, sa.rast2 * 3) %>% set_names(sln)
+  #expect_equal(sa.stck2, sc2)
+  expect_equivalent(sa.stck2, sc2)
 })
