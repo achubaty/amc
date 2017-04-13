@@ -41,20 +41,19 @@ test_that("cropReproj works correctly", {
 
   ## RasterLayer,SpatialPolygonsDataFrame
   sa.spdf <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
-  rc2 <- cropReproj(r, sa.spdf, layerNames = "test")
+  rc2 <- cropReproj(r, ext.spdf, layerNames = "test")
   expect_true(is(rc2, "RasterStack"))
   expect_equivalent(stack(sa.spdf), rc2)
 
   ## RasterStack,RasterLayer
   sln <- c("one", "two", "three")
+  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln)
   sc1 <- cropReproj(s, sa.rast, layerNames = sln)
   expect_true(is(sc1, "RasterStack"))
-
-  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln)
   expect_equivalent(sa.stck, sc1)
 
   ## RasterStack,SpatialPolygonsDataFrame
-  sc2 <- cropReproj(s, sa.spdf, layerNames = sln)
+  sc2 <- cropReproj(s, ext.spdf, layerNames = sln)
   expect_true(is(sc2, "RasterStack"))
   expect_equivalent(sa.stck, sc2)
 
