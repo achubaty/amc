@@ -23,8 +23,11 @@ test_that("cropReproj works correctly", {
   sa.rast <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
   rc1 <- cropReproj(r, sa.rast, layerNames = "test")
 
+  expect_true(is(rc1, "RasterStack"))
   expect_equivalent(stack(sa.rast), rc1)
+  expect_equivalent(sa.rast, unstack(rc1)[[1]])
 
+  # visual inspection
   if (interactive()) {
     plot(rc1)
     plot(ext.prj, add = TRUE)
@@ -38,21 +41,24 @@ test_that("cropReproj works correctly", {
 
   ## RasterLayer,SpatialPolygonsDataFrame
   sa.spdf <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
-
   rc2 <- cropReproj(r, sa.spdf, layerNames = "test")
-
+  expect_true(is(rc2, "RasterStack"))
   expect_equivalent(stack(sa.spdf), rc2)
-
-  # compare raster vs spdf outputs
-  expect_equivalent(rc1, rc2)
 
   ## RasterStack,RasterLayer
   sln <- c("one", "two", "three")
   sc1 <- cropReproj(s, sa.rast, layerNames = sln)
-
-  # ensure stacks are produced from stacks
   expect_true(is(sc1, "RasterStack"))
 
-  sa.stck1 <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln)
-  expect_equivalent(sa.stck1, sc1)
+  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln)
+  expect_equivalent(sa.stck, sc1)
+
+  ## RasterStack,SpatialPolygonsDataFrame
+  sc2 <- cropReproj(s, sa.spdf, layerNames = sln)
+  expect_true(is(sc2, "RasterStack"))
+  expect_equivalent(sa.stck, sc2)
+
+  ## compare raster vs spdf outputs
+  expect_equivalent(rc1, rc2)
+  expect_equivalent(sc1, sc2)
 })
