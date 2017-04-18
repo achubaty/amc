@@ -139,6 +139,7 @@ setMethod("mosaic2",
           definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
                                 layerName = "layer") {
   tempfiles <- list(tf(".tif"))
+  on.exit(unlink(tmpfiles))
 
   ## TO DO: can this part be made parallel?
   out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
