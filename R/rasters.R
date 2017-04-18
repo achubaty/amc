@@ -134,17 +134,20 @@ setGeneric("mosaic2",
 
 #' @export
 #' @rdname mosaic2
-setMethod("mosaic2",
-          signature("RasterLayer", "RasterLayer"),
-          definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
-                                layerName = "layer") {
-  tempfiles <- list(tf(".tif"))
-  on.exit(unlink(tmpfiles))
+setMethod(
+  "mosaic2",
+  signature("RasterLayer", "RasterLayer"),
+  definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
+                        layerName = "layer") {
+    if (missing(filename)) filename <- tf(".grd")
+    if (missing(layerName)) layerName <- names(x)
+    tempfiles <- list(tf(".tif"))
+    on.exit(unlink(tempfiles))
 
-  ## TO DO: can this part be made parallel?
-  out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
-                filename = tempfiles[[1]], overwrite = TRUE) %>%
-    writeRaster(filename = filename, overwrite = TRUE) %>%
-    set_names(layerName)
-  return(out)
+    ## TO DO: can this part be made parallel?
+    out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
+                  filename = tempfiles[[1]], overwrite = TRUE) %>%
+      writeRaster(filename = filename, overwrite = TRUE) %>%
+      set_names(layerName)
+    return(out)
 })
