@@ -4,18 +4,18 @@
 #'
 #' @param x   A \code{RasterLayer} object or the name of one.
 #'
-#' @param cropWith   Extent object, or any object from which an Extent object can
+#' @param crop   Raster*, SpatialPolygons*, Extent* object from which an Extent can
 #'                   be extracted (see Details of \code{\link[raster]{crop}}).
 #'
-#' @param maskWith   Raster* or Spatial object passed to \code{\link[raster]{mask}}.
+#' @param mask   Raster* or Spatial object passed to \code{\link[raster]{mask}}.
 #'
-#' @param reprojectTo   Raster* or Spatial object passed to \code{\link[raster]{crs}}.
+#' @param reprojectTo   A character or object of class 'CRS' that is used to set the output projection.
 #'
-#' @param outPath   Path where fileOut is saved.
+#' @param outPath   Path where filename is saved.
 #'
-#' @param fileOut   File name to write to (\code{\link[raster]{writeRaster}}).
+#' @param filename   Output filename to write to (\code{\link[raster]{writeRaster}}).
 #'
-#' @param formatOut File format to write out (\code{\link[raster]{writeRaster}}).
+#' @param format File format to write out (\code{\link[raster]{writeRaster}}).
 #'                   If not specified, GTiff will be used.
 #'
 #' @param timings   Logical indicating whether Sys.time messages should be
@@ -23,13 +23,12 @@
 #'
 #' @param ...   Additional arguments to the aforementioned \code{raster} functions.
 #'
-#' @return A \code{RasterLayer} abject.
+#' @return A \code{RasterLayer} object.
 #'
-#' @importFrom raster compareCRS crop crs mask projectRaster writeRaster
+#' @importFrom raster compareCRS crop crs mask projectRaster writeRaster extent projectExtent
 #' @importFrom sp spTransform
 #' @importFrom magrittr set_names
 #' @importFrom utils capture.output
-#' @export
 #' @docType methods
 #' @examples
 #' if (require(maptools)) {
@@ -49,99 +48,190 @@
 #'   canada <- wrld_simpl[which(wrld_simpl@data$NAME == 'Canada'),]
 #'
 #'   # dataPrepRast
-#'   x <- dataPrepRast(inputrast, cropWith = canada , maskWith = canada,
+#'   x <- dataPrepRast(inputrast, crop = canada , mask = canada,
 #'                     reprojectTo = inputrast, timings = TRUE)
 #' }
-#'
-dataPrepRast <- function(x, cropWith = NULL, maskWith = NULL, reprojectTo = NULL,
-                         outPath = NULL, fileOut = NULL, formatOut = "GTiff",
-                         timings = FALSE, ...) {
-  cwd <- getwd()
-  if (!is.null(outPath)) {
-    setwd(outPath)
-    on.exit(setwd(cwd))
-  }
-  if (!is.null(cropWith)) cropWithname <- deparse(substitute(cropWith))
-  if (!is.null(maskWith)) maskWithname <- deparse(substitute(maskWith))
-  xname <- deparse(substitute(x))
+setGeneric("dataPrepRast",
+           function(x, crop, ...) {
+             standardGeneric("dataPrepRast")
+           })
 
-  # Set input list with names
-  inputls <- list(x, cropWith, maskWith, reprojectTo) %>%
-    set_names(c("x", "cropWith", "maskWith", "reprojectTo"))
-
-  # remove NULL
-  ilst <- inputls[!sapply(inputls, is.null)]
-
-  # set output projection. If not defined, derive reprojectTo using crs of param x
-  if (is.null(reprojectTo)) {
-    if (!is.na(crs(ilst$x))) {
-      reprojectTo <- crs(ilst$x)
-    } else {
-      stop(paste("You must provide a coordinate system (reprojectTo) or",
-                 "have your input object assigned to a coordinate reference."))
+#' @export
+#' @rdname dataPrepRast
+setMethod(
+  "dataPrepRast",
+  signature("RasterLayer", "RasterLayer"),
+  definition = function(x, crop, mask= NULL, reprojectTo = NULL, outPath = NULL,
+                        filename = NULL, format = "GTiff", timings = FALSE, ...) {
+    cwd <- getwd()
+    if (!is.null(outPath)) {
+      setwd(outPath)
+      on.exit(setwd(cwd))
     }
-  } else {
-    reprojectTo <- crs(ilst$reprojectTo)
-  }
+    if(missing(mask)) mask <- NULL
+    if(missing(reprojectTo)) reprojectTo <- NULL
 
-  # reproject all inputs into the same CRS
-  ilst <- lapply(ilst, function(i) {
-    if (is(i, "SpatialPolygonsDataFrame")) {
-      if (!compareCRS(i, reprojectTo)) {
-        i <- spTransform(i, reprojectTo)
+    if (is.na(crs(x)))
+        stop("Input object must have a coordinate system assigned.")
+    ## PRE-CROP
+    if (!is.null(crop)) {
+      if(is.na(crs(crop))) stop("Crop object must have a coordinate system assigned.")
+
+      if (timings) preTime <- Sys.time()
+      # Reproject crop if CRS don't match
+      if(!compareCRS(x, crop)){
+        crop <- projectExtent(crop, crs= crs(x), method = "ngb")
       }
-    } else if (is(i, "RasterLayer")) {
-      if (!compareCRS(i, reprojectTo)) {
-        i <- projectRaster(i, crs = reprojectTo)
+      # crop
+      x <- crop(x, crop)
+      if (timings) {
+        message(paste("finished croping...took ", format(Sys.time() - preTime, digits = 2)))
       }
-    } else {
-      stop("object class is not recognized")
     }
-    return(i)
+
+    # SET OUTPUT PROJECTION.
+    if (!is.null(reprojectTo)) {
+      reprojectTo <- crs(reprojectTo)
+      if(!compareCRS(x, reprojectTo)){
+        x <- projectRaster(x, crs = reprojectTo)
+      }
+    }
+    # CROP
+    if (!is.null(crop)){
+      if(!compareCRS(x, crop)){
+        crop <- projectExtent(crop, crs= crs(x))
+      }
+     x <- crop(x, crop)
+    }
+
+   # MASK
+   if (!is.null(mask)) {
+     if(is.na(crs(mask)))  stop("Mask object must have a coordinate system assigned.")
+     if (timings) preTime <- Sys.time()
+     if (is(mask, "SpatialPolygonsDataFrame")) {
+       if(!compareCRS(x, mask)) {
+          mask <- spTransform(mask, crs(x))
+       }
+     }else{
+       if(!compareRaster(x, mask, stopiffalse=FALSE)){
+          mask <- projectRaster(mask, x, method = "ngb")
+       }
+     }
+
+    # check if mask intersect to avoid empty output
+    noIntersect<-is.null(raster::intersect(extent(x), extent(mask)))
+    # Make it fail if no intersect
+    if(noIntersect) stop("Input does not intersect mask")
+
+    # mask
+    x <- mask(x, mask = mask)
+    if (timings) {
+      message(paste("finished masking...took ", format(Sys.time() - preTime, digits = 2 )))
+    }
+   }
+
+  if (!is.null(filename)) {
+    writeRaster(x, filename = filename, format = format, overwrite = TRUE)
+  }else{
+    if(!inMemory(x)){
+      writeRaster(x, filename = filename, format = format, overwrite = TRUE)
+    }
+  }
+  return(x)
+})
+
+#' @export
+#' @rdname dataPrepRast
+setMethod(
+    "dataPrepRast",
+    signature("RasterLayer", "SpatialPolygonsDataFrame"),
+    definition = function(x, crop, mask, reprojectTo,
+                          outPath = NULL, filename = NULL, format = "GTiff",
+                          timings = FALSE, ...) {
+      if(is.na(crs(crop))) stop("Crop object must have a coordinate system assigned.")
+
+      crop <- spTransform(crop, crs(x))
+      crop <- raster(extent(crop), crs=crs(x), val=1)
+      dataPrepRast(x, crop = crop, mask, reprojectTo, outPath = NULL,
+                    filename = NULL, format = "GTiff", timings = FALSE, ...)
+})
+
+#' @export
+#' @rdname dataPrepRast
+setMethod(
+  "dataPrepRast",
+  signature("RasterLayer", "Extent"),
+  definition = function(x, crop, mask, reprojectTo, outPath = NULL, filename = NULL,
+                        format = "GTiff", timings = FALSE, ...) {
+
+    if (is.na(crs(x)))
+      stop("Input object must have a coordinate system assigned.")
+
+    crop <- raster(crop, crs=crs(x))
+    dataPrepRast(x, crop = crop, mask, reprojectTo, outPath = NULL,
+                 filename = NULL, format = "GTiff", timings = FALSE, ...)
+})
+
+#' @export
+#' @rdname dataPrepRast
+setMethod(
+  "dataPrepRast",
+  signature(x= "RasterLayer", crop= "missing"),
+  definition = function(x, crop, mask, reprojectTo, outPath = NULL, filename = NULL,
+                        format = "GTiff", timings = FALSE, ...) {
+
+    cwd <- getwd()
+    if (!is.null(outPath)) {
+      setwd(outPath)
+      on.exit(setwd(cwd))
+    }
+    if(missing(mask)) mask <- NULL
+    if(missing(reprojectTo)) reprojectTo <- NULL
+
+    if (is.na(crs(x)))
+      stop("Input object must have a coordinate system assigned.")
+
+    # SET OUTPUT PROJECTION.
+    if (!is.null(reprojectTo)) {
+      reprojectTo <- crs(reprojectTo)
+      if(!compareCRS(x,reprojectTo)){
+        x <- projectRaster(x, crs = reprojectTo)
+      }
+    }
+    # MASK
+    if (!is.null(mask)) {
+      if(is.na(crs(mask)))  stop("Mask object must have a coordinate system assigned.")
+      if (timings) preTime <- Sys.time()
+      if (is(mask, "SpatialPolygonsDataFrame")) {
+        if(!compareCRS(x, mask)) {
+          mask <- spTransform(mask, crs(x))
+        }
+      }else{
+        # Fix projection or extent.
+        if(!compareRaster(x, mask, stopiffalse=FALSE)){
+          mask <- projectRaster(mask, x, method = "ngb")
+        }
+      }
+
+      # check if mask intersect to avoid empty output
+      noIntersect<-is.null(raster::intersect(extent(x), extent(mask)))
+      # Make it fail if no intersect
+      if(noIntersect) stop("Input does not intersect mask object")
+
+      # mask
+      x <- mask(x, mask = mask)
+      if (timings) {
+        message(paste("finished masking...took ", format(Sys.time() - preTime, digits = 2 )))
+      }
+    }
+
+    if (!is.null(filename)) {
+      writeRaster(x, filename = filename, format = format, overwrite = TRUE)
+    }else{
+      if(!inMemory(x)){
+        writeRaster(x, filename = filename, format = format, overwrite = TRUE)
+      }
+    }
+    return(x)
   })
 
-  # crop
-  if (!is.null(cropWith)) {
-    if (timings) preTime <- Sys.time()
-    # Test if x and maskWith intersect.
-    # To avoid empty output if extents do not intersect while using rasterize()
-    doIntersect <- isIntersect(ilst$x, ilst$cropWith)
-    if (doIntersect) {
-      ilst$x <- crop(ilst$x, ilst$cropWith)
-      if (timings) {
-        msg <- capture.output(
-          print(paste("finished croping ", xname, "with", cropWithname)),
-          print(paste("took", format(Sys.time() - preTime, digits = 2)))
-        )
-        message(msg)
-      }
-    } else {
-      message("Crop did not occur.")
-    }
-  }
-
-  # mask
-  if (!is.null(maskWith)) {
-    if (timings) preTime <- Sys.time()
-    # Test if x and maskWith intersect.
-    # To avoid empty output if extents do not intersect while using rasterize()
-    doIntersect <- isIntersect(ilst$x, ilst$maskWith)
-    if (doIntersect) {
-      ilst$x <- mask(ilst$x, mask = ilst$maskWith)
-      if (timings) {
-        msg <- capture.output(
-          print(paste("finished masking ", xname, "with", maskWithname)),
-          print(paste("took", format(Sys.time() - preTime, digits = 2)))
-        )
-        message(msg)
-      }
-    } else {
-      message("Mask did not occur.")
-    }
-  }
-
-  if (!is.null(fileOut)) {
-    writeRaster(ilst$x, filename = fileOut, format = formatOut, overwrite = TRUE)
-  }
-  return(invisible(ilst$x))
-}

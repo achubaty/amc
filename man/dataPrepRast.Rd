@@ -3,36 +3,54 @@
 \docType{methods}
 \name{dataPrepRast}
 \alias{dataPrepRast}
+\alias{dataPrepRast,RasterLayer,RasterLayer-method}
+\alias{dataPrepRast,RasterLayer,SpatialPolygonsDataFrame-method}
+\alias{dataPrepRast,RasterLayer,Extent-method}
+\alias{dataPrepRast,RasterLayer,missing-method}
 \title{Crop, reproject, and mask a raster map}
 \usage{
-dataPrepRast(x, cropWith = NULL, maskWith = NULL, reprojectTo = NULL,
-  outPath = NULL, fileOut = NULL, formatOut = "GTiff", timings = FALSE,
+dataPrepRast(x, crop, ...)
+
+\S4method{dataPrepRast}{RasterLayer,RasterLayer}(x, crop, mask = NULL,
+  reprojectTo = NULL, outPath = NULL, filename = NULL, format = "GTiff",
+  timings = FALSE, ...)
+
+\S4method{dataPrepRast}{RasterLayer,SpatialPolygonsDataFrame}(x, crop, mask,
+  reprojectTo, outPath = NULL, filename = NULL, format = "GTiff",
+  timings = FALSE, ...)
+
+\S4method{dataPrepRast}{RasterLayer,Extent}(x, crop, mask, reprojectTo,
+  outPath = NULL, filename = NULL, format = "GTiff", timings = FALSE,
+  ...)
+
+\S4method{dataPrepRast}{RasterLayer,missing}(x, crop, mask, reprojectTo,
+  outPath = NULL, filename = NULL, format = "GTiff", timings = FALSE,
   ...)
 }
 \arguments{
 \item{x}{A \code{RasterLayer} object or the name of one.}
 
-\item{cropWith}{Extent object, or any object from which an Extent object can
+\item{crop}{Raster*, SpatialPolygons*, Extent* object from which an Extent can
 be extracted (see Details of \code{\link[raster]{crop}}).}
 
-\item{maskWith}{Raster* or Spatial object passed to \code{\link[raster]{mask}}.}
+\item{...}{Additional arguments to the aforementioned \code{raster} functions.}
 
-\item{reprojectTo}{Raster* or Spatial object passed to \code{\link[raster]{crs}}.}
+\item{mask}{Raster* or Spatial object passed to \code{\link[raster]{mask}}.}
 
-\item{outPath}{Path where fileOut is saved.}
+\item{reprojectTo}{A character or object of class 'CRS' that is used to set the output projection.}
 
-\item{fileOut}{File name to write to (\code{\link[raster]{writeRaster}}).}
+\item{outPath}{Path where filename is saved.}
 
-\item{formatOut}{File format to write out (\code{\link[raster]{writeRaster}}).
+\item{filename}{Output filename to write to (\code{\link[raster]{writeRaster}}).}
+
+\item{format}{File format to write out (\code{\link[raster]{writeRaster}}).
 If not specified, GTiff will be used.}
 
 \item{timings}{Logical indicating whether Sys.time messages should be
 suppressed. Default is \code{FALSE}.}
-
-\item{...}{Additional arguments to the aforementioned \code{raster} functions.}
 }
 \value{
-A \code{RasterLayer} abject.
+A \code{RasterLayer} object.
 }
 \description{
 This script reprojects and crop a raster using a raster or polygon object.
@@ -55,8 +73,7 @@ if (require(maptools)) {
   canada <- wrld_simpl[which(wrld_simpl@data$NAME == 'Canada'),]
 
   # dataPrepRast
-  x <- dataPrepRast(inputrast, cropWith = canada , maskWith = canada,
+  x <- dataPrepRast(inputrast, crop = canada , mask = canada,
                     reprojectTo = inputrast, timings = TRUE)
 }
-
 }
