@@ -1,4 +1,4 @@
-#' Source a file hosted in a pubic or private github repo
+#' Source a file hosted in a pubic or private GitHub repo
 #'
 #' @param repo   Name of the GitHub repository in the form \code{"user/repo"}.
 #'

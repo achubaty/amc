@@ -8,17 +8,17 @@
 guesstimate(ram, prop = 0.8, units = "gb")
 }
 \arguments{
-\item{ram}{How much ram is required per cpu.}
+\item{ram}{How much ram is required per CPU.}
 
 \item{prop}{Proportion of overall RAM to devote to R. Default \code{0.80}.}
 
-\item{units}{Units of memory. One of either "kb", "mb", "gb".}
+\item{units}{Units of memory. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.}
 }
 \value{
-number of cpus to allocate to cluster.
+Integer. Number of CPUs to allocate to cluster.
 }
 \description{
-Take a wild stab at guessing how many cpus to use in cluster when you have
+Take a wild stab at guessing how many CPUs to use in cluster when you have
 some idea of how much RAM is needed per CPU.
 }
 \details{
@@ -30,7 +30,7 @@ You should take these numbers with several grains of salt.
 \examples{
 \dontrun{
 guesstimate(4)
-guesstimate(4, 0.90, "mb")
+guesstimate(4, 0.90, "MB")
 }
 
 }

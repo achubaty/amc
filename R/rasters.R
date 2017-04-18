@@ -19,6 +19,8 @@
 #'
 #' @param ...        Additional arguments (not used).
 #'
+#' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
+#'
 #' @author Alex Chubaty and Eliot Mcintire
 #' @docType methods
 #' @export
@@ -37,38 +39,71 @@ setGeneric("cropReproj",
 setMethod(
   "cropReproj",
   signature("RasterStack", "SpatialPolygonsDataFrame"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  definition = function(x, studyArea, layerNames, filename, ...) {
+    if (missing(filename)) filename <- tf(".grd")
+    if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
-    tempfiles <- lapply(rep(".tif", 3), tf)
+    tempfiles <- lapply(rep(".grd", 3), tf)
     on.exit(lapply(tf, unlink))
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
     b <- spTransform(studyArea, CRSobj = CRS(proj4string(a)))
-    a <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
+    out <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
       projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[2]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[3]], overwrite = TRUE) %>%
-      set_names(layerNames)
+      set_names(layerNames) %>%
+      writeRaster(filename = filename, overwrite = TRUE)
 
-    if (is.null(filename)) {
-      a <- writeRaster(a, filename = tf(".tif"), overwrite = TRUE)
-    } else {
-      a <- writeRaster(a, filename = filename, overwrite = TRUE)
-    }
-    return(a)
+    return(stack(out))
 })
 
 #' @export
 #' @rdname cropReproj
 setMethod(
   "cropReproj",
-  signature("character", "SpatialPolygonsDataFrame"),
-  definition = function(x, studyArea, layerNames, filename = NULL, ...) {
+  signature("RasterStack", "Raster"),
+  definition = function(x, studyArea, layerNames, filename, ...) {
+    if (missing(filename)) filename <- tf(".grd")
+    if (missing(layerNames)) layerNames <- names(x)
+    stopifnot(nlayers(x) == length(layerNames))
+
+    tempfiles <- lapply(rep(".grd", 4), tf)
+    on.exit(lapply(tf, unlink))
+
+    ## TO DO: can this part be made parallel?
+    a <- set_names(x, layerNames)
+    b <- projectRaster(studyArea, a, method = "ngb",
+                       filename = tempfiles[[1]], overwrite = TRUE)
+    out <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
+      projectRaster(., crs = CRS(proj4string(studyArea)), method = "ngb",
+                    filename = tempfiles[[3]], overwrite = TRUE) %>%
+      crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
+      set_names(layerNames) %>%
+      writeRaster(filename = filename, overwrite = TRUE)
+
+    return(stack(out))
+})
+
+#' @export
+#' @rdname cropReproj
+setMethod(
+  "cropReproj",
+  signature("RasterLayer", "ANY"),
+  definition = function(x, studyArea, layerNames, filename, ...) {
+    cropReproj(stack(x), studyArea, layerNames, filename, ...)
+})
+
+#' @export
+#' @rdname cropReproj
+setMethod(
+  "cropReproj",
+  signature("character", "ANY"),
+  definition = function(x, studyArea, layerNames, filename, ...) {
     stopifnot(file.exists(x))
-    x <- stack(x = x)
-    cropReproj(x, studyArea, layerNames, filename, ...)
+    cropReproj(stack(x), studyArea, layerNames, filename, ...)
 })
 
 #' Merge Raster* objects using a function for overlapping areas
@@ -78,7 +113,7 @@ setMethod(
 #'
 #' @param x   \code{Raster*} object
 #' @param y   \code{Raster*} object
-#' @param ... Additonal Raster or Extent objects
+#' @param ... Additional Raster or Extent objects.
 #' @param fun Function (e.g., \code{mean}, \code{min}, or \code{max}, that accepts
 #'            a \code{na.rm} argument).
 #' @param tolerance Numeric. Permissible difference in origin (relative to the
@@ -99,15 +134,20 @@ setGeneric("mosaic2",
 
 #' @export
 #' @rdname mosaic2
-setMethod("mosaic2",
-          signature("RasterLayer", "RasterLayer"),
-          definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
-                                layerName = "layer") {
-  tempfiles <- list(tf(".tif"))
+setMethod(
+  "mosaic2",
+  signature("RasterLayer", "RasterLayer"),
+  definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
+                        layerName = "layer") {
+    if (missing(filename)) filename <- tf(".grd")
+    if (missing(layerName)) layerName <- names(x)
+    tempfiles <- list(tf(".tif"))
+    on.exit(unlink(tempfiles))
 
-  ## TO DO: can this part be made parallel?
-  out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance, filename = tempfiles[[1]]) %>%
-    writeRaster(filename = filename, overwrite = TRUE) %>%
-    set_names(layerName)
-  return(out)
+    ## TO DO: can this part be made parallel?
+    out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
+                  filename = tempfiles[[1]], overwrite = TRUE) %>%
+      writeRaster(filename = filename, overwrite = TRUE) %>%
+      set_names(layerName)
+    return(out)
 })

@@ -3,7 +3,7 @@
 \docType{methods}
 \name{source_github}
 \alias{source_github}
-\title{Source a file hosted in a pubic or private github repo}
+\title{Source a file hosted in a pubic or private GitHub repo}
 \usage{
 source_github(repo, branch = "master", file,
   auth = Sys.getenv("GITHUB_PAT"))
@@ -21,7 +21,7 @@ By default, checks for \code{GITHUB_PAT} environment variable.
 See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.}
 }
 \description{
-Source a file hosted in a pubic or private github repo
+Source a file hosted in a pubic or private GitHub repo
 }
 \examples{
 \dontrun{
