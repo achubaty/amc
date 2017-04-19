@@ -5,22 +5,33 @@
 \alias{get_deps}
 \title{Get package dependencies (offline)}
 \usage{
-get_deps(path)
+get_deps(path, dependencies = NA)
 }
 \arguments{
 \item{path}{A local file path to a package directory.}
+
+\item{dependencies}{Logical indicating whether to also install uninstalled
+packages which these packages depend on/link to/import/suggest
+(and so on recursively).
+Can also be a character vector, a subset of
+\code{c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances")}.\cr
+The default, \code{NA}, means \code{c("Depends", "Imports", "LinkingTo")}.
+\code{TRUE} means to use \code{c("Depends", "Imports", "LinkingTo", "Suggests")}.}
 }
 \value{
-A list of package dependencies.
+A character vector of package dependencies.
 }
 \description{
 Read a package's dependencies from file, rather than searching CRAN.
-From \url{http://stackoverflow.com/a/30225680/1380598}.
+Based on \url{http://stackoverflow.com/a/30225680/1380598}.
 }
 \examples{
 get_deps(system.file(package = "amc"))
+get_deps(system.file(package = "amc"), TRUE)
 
 }
 \author{
 Josh O'Brien
+
+Alex CHubaty
 }

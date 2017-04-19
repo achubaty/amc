@@ -58,9 +58,9 @@ poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5, 0.5))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1 <- rasterize(shp, origStack)
+shpRas1 <- raster::rasterize(shp, origStack)
 shpRas2 <- fastRasterize(shp, origStack)
-all.equal(shpRas1, shpRas2)
+expect_equal(shpRas1, shpRas2)
 
 if (interactive()) plot(shpRas2)
 
@@ -85,7 +85,5 @@ endCluster()
 
 }
 \author{
-Eliot Mcintire
-
-Eliot Mcintire
+Eliot Mcintire and Yong Luo
 }

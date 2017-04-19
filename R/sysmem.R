@@ -4,7 +4,7 @@
 #' Other processes running on the computer will eat into this total,
 #' and as such, you should take these numbers with a grain of salt.
 #'
-#' @param  x  Units to use for output. One of either "kb", "mb", "gb".
+#' @param  x  Units to use for output. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.
 #'
 #' @return Total amount of system memory (RAM) in \code{units}.
 #'
@@ -17,9 +17,9 @@
 #' @examples
 #' sysmem()
 #'
-sysmem <- function(x = "gb") {
-  x <- tolower(as.character(x))
-  allowed <- c("kb", "mb", "gb")
+sysmem <- function(x = "GB") {
+  x <- toupper(as.character(x))
+  allowed <- c("KB", "MB", "GB")
   if (!(x %in% allowed)) {
     last <- length(allowed)
     err.msg <- paste("specify", paste(allowed[-last], collapse = ", "), "or", allowed[last], sep = " ")
@@ -50,29 +50,29 @@ sysmem <- function(x = "gb") {
   }
 
   switch(x,
-         "kb" = ram.kb,
-         "mb" = ram.mb,
-         "gb" = ram.gb,
+         "KB" = ram.kb,
+         "MB" = ram.mb,
+         "GB" = ram.gb,
          NA_character_
   )
 }
 
 #' Guesstimate the number of CPUs for cluster operations
 #'
-#' Take a wild stab at guessing how many cpus to use in cluster when you have
+#' Take a wild stab at guessing how many CPUs to use in cluster when you have
 #' some idea of how much RAM is needed per CPU.
 #'
 #' Tries to be conservative by assuming no more than 80% system memory use.
 #'
 #' @note You should take these numbers with several grains of salt.
 #'
-#' @param ram  How much ram is required per cpu.
+#' @param ram  How much ram is required per CPU.
 #'
 #' @param prop  Proportion of overall RAM to devote to R. Default \code{0.80}.
 #'
-#' @param units Units of memory. One of either "kb", "mb", "gb".
+#' @param units Units of memory. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.
 #'
-#' @return number of cpus to allocate to cluster.
+#' @return Integer. Number of CPUs to allocate to cluster.
 #'
 #' @author Alex Chubaty
 #' @docType methods
@@ -82,7 +82,7 @@ sysmem <- function(x = "gb") {
 #' @examples
 #' \dontrun{
 #' guesstimate(4)
-#' guesstimate(4, 0.90, "mb")
+#' guesstimate(4, 0.90, "MB")
 #' }
 #'
 guesstimate <- function(ram, prop = 0.80, units = "gb") {
@@ -94,7 +94,7 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
     }
     cpus <- floor(prop * sysmem(units) / ram)
     if (cpus < 1) cpus <- 1
-    return(cpus)
+    return(as.integer(cpus))
   }
 }
 

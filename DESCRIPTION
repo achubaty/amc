@@ -1,28 +1,35 @@
 Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
-Version: 0.1.0
-Date: 2017-03-15
+Version: 0.1.0.9000
+Date: 2017-04-19
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("ctb")),
+    person(c("Yong"), "Luo", email = "yong.luo@canada.ca",
+    role = c("ctb")),
     person(c("Josh"), "O'Brien", role = c("ctb"))
     )
 Description: A collection of variously useful functions.
+Depends:
+  R (>= 3.3.0)
 Imports:
   base64enc,
+  data.table,
   digest,
   httr,
   magrittr,
   methods,
+  parallel,
   plyr,
   raster,
   rgdal,
   sp,
   utils
 Suggests:
+  hunspell,
   knitr,
   rmarkdown,
   testthat

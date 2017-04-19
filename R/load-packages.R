@@ -16,10 +16,10 @@
 #'
 #' @seealso \code{\link{require}}.
 #'
-#' @export
 #' @docType methods
-#' @rdname loadPackages
 #' @importFrom utils install.packages
+#' @export
+#' @rdname loadPackages
 #'
 #' @author Alex Chubaty
 #'
@@ -34,6 +34,7 @@ setGeneric("loadPackages", function(packageList, install = FALSE, quiet = TRUE) 
   standardGeneric("loadPackages")
 })
 
+#' @export
 #' @rdname loadPackages
 setMethod("loadPackages",
           signature = "character",
@@ -57,6 +58,7 @@ setMethod("loadPackages",
             return(invisible(loaded))
 })
 
+#' @export
 #' @rdname loadPackages
 setMethod("loadPackages",
           signature = "list",

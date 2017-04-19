@@ -5,10 +5,10 @@
 \alias{sysmem}
 \title{Check system memory}
 \usage{
-sysmem(x = "gb")
+sysmem(x = "GB")
 }
 \arguments{
-\item{x}{Units to use for output. One of either "kb", "mb", "gb".}
+\item{x}{Units to use for output. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.}
 }
 \value{
 Total amount of system memory (RAM) in \code{units}.
