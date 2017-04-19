@@ -58,7 +58,9 @@ warnings_are_errors: true
 
 r_binary_packages:
   - covr
+  - data.table
   - knitr
+  - plyr
   - raster
   - rgdal
   - sp
