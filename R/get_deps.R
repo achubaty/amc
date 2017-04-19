@@ -27,7 +27,7 @@
 #'
 get_deps <- function(path, dependencies = NA) {
   allTypes <- c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances")
-  if (is.na(dependencies)) {
+  if (any(is.na(dependencies))) {
     dependencies <-  c("Depends", "Imports", "LinkingTo")
   } else if (isTRUE(dependencies)) {
     dependencies <- c("Depends", "Imports", "LinkingTo", "Suggests")
@@ -43,5 +43,7 @@ get_deps <- function(path, dependencies = NA) {
     sapply(., strsplit, split = "\\(") %>%
     sapply(., `[`, 1) %>%
     unname()
-  return(sort(val[val != "R"]))
+  val <- val[val != "R"]
+  if (length(val) == 0L) val <- character(0)
+  return(sort(val))
 }
