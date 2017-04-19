@@ -2,7 +2,7 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Version: 0.1.0.9000
-Date: 2017-04-10
+Date: 2017-04-19
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
