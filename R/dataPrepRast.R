@@ -1,13 +1,13 @@
-#' Crop, reproject, and mask a raster map
+#' Reproject, crop and mask a raster map
 #'
-#' This script reprojects and crop a raster using a raster or polygon object.
+#' This script reprojects, crop and mask a raster using a Raster* object or a SpatialPolygon object.
 #'
 #' @param x   A \code{RasterLayer} object or the name of one.
 #'
 #' @param crop   Raster*, SpatialPolygons*, Extent* object from which an Extent can
 #'                   be extracted (see Details of \code{\link[raster]{crop}}).
 #'
-#' @param mask   Raster* or Spatial object passed to \code{\link[raster]{mask}}.
+#' @param mask   Raster* or SpatialPolygons* object passed to \code{\link[raster]{mask}}.
 #'
 #' @param reprojectTo   A character or object of class 'CRS' that is used to set the output projection.
 #'
@@ -25,7 +25,7 @@
 #'
 #' @return A \code{RasterLayer} object.
 #'
-#' @importFrom raster compareCRS crop crs mask projectRaster writeRaster extent projectExtent
+#' @importFrom raster compareCRS crop crs mask projectRaster writeRaster extent projectExtent compareRaster
 #' @importFrom sp spTransform
 #' @importFrom magrittr set_names
 #' @importFrom utils capture.output
@@ -80,7 +80,7 @@ setMethod(
       if (timings) preTime <- Sys.time()
       # Reproject crop if CRS don't match
       if(!compareCRS(x, crop)){
-        crop <- projectExtent(crop, crs= crs(x), method = "ngb")
+        crop <- projectExtent(crop, crs= crs(x))
       }
       # crop
       x <- crop(x, crop)
@@ -132,10 +132,6 @@ setMethod(
 
   if (!is.null(filename)) {
     writeRaster(x, filename = filename, format = format, overwrite = TRUE)
-  }else{
-    if(!inMemory(x)){
-      writeRaster(x, filename = filename, format = format, overwrite = TRUE)
-    }
   }
   return(x)
 })
@@ -227,10 +223,6 @@ setMethod(
 
     if (!is.null(filename)) {
       writeRaster(x, filename = filename, format = format, overwrite = TRUE)
-    }else{
-      if(!inMemory(x)){
-        writeRaster(x, filename = filename, format = format, overwrite = TRUE)
-      }
     }
     return(x)
   })

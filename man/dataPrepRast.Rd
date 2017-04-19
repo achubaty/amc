@@ -7,7 +7,7 @@
 \alias{dataPrepRast,RasterLayer,SpatialPolygonsDataFrame-method}
 \alias{dataPrepRast,RasterLayer,Extent-method}
 \alias{dataPrepRast,RasterLayer,missing-method}
-\title{Crop, reproject, and mask a raster map}
+\title{Reproject, crop and mask a raster map}
 \usage{
 dataPrepRast(x, crop, ...)
 
@@ -35,7 +35,7 @@ be extracted (see Details of \code{\link[raster]{crop}}).}
 
 \item{...}{Additional arguments to the aforementioned \code{raster} functions.}
 
-\item{mask}{Raster* or Spatial object passed to \code{\link[raster]{mask}}.}
+\item{mask}{Raster* or SpatialPolygons* object passed to \code{\link[raster]{mask}}.}
 
 \item{reprojectTo}{A character or object of class 'CRS' that is used to set the output projection.}
 
@@ -53,7 +53,7 @@ suppressed. Default is \code{FALSE}.}
 A \code{RasterLayer} object.
 }
 \description{
-This script reprojects and crop a raster using a raster or polygon object.
+This script reprojects, crop and mask a raster using a Raster* object or a SpatialPolygon object.
 }
 \examples{
 if (require(maptools)) {
