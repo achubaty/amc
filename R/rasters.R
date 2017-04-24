@@ -17,6 +17,10 @@
 #' @param filename   Optional output filepath to use with \code{\link{writeRaster}}.
 #'                   If not specified, a temporary file will be used.
 #'
+#' @param inRAM      Logical (default \code{FALSE}) indicating whether function
+#'                   operations should be performed in memory or, if \code{TRUE},
+#'                   using temporary files.
+#'
 #' @param ...        Additional arguments (not used).
 #'
 #' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
@@ -39,13 +43,17 @@ setGeneric("cropReproj",
 setMethod(
   "cropReproj",
   signature("RasterStack", "SpatialPolygonsDataFrame"),
-  definition = function(x, studyArea, layerNames, filename, ...) {
+  definition = function(x, studyArea, layerNames, filename, inRAM = FALSE, ...) {
     if (missing(filename)) filename <- tf(".grd")
     if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
-    tempfiles <- lapply(rep(".grd", 3), tf)
-    on.exit(lapply(tf, unlink))
+    if (isTRUE(inRAM)) {
+      tempfiles <- list("", "", "")
+    } else {
+      tempfiles <- lapply(rep(".grd", 3), tf)
+      on.exit(lapply(tf, unlink))
+    }
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
@@ -65,13 +73,17 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("RasterStack", "Raster"),
-  definition = function(x, studyArea, layerNames, filename, ...) {
+  definition = function(x, studyArea, layerNames, filename, inRAM = FALSE, ...) {
     if (missing(filename)) filename <- tf(".grd")
     if (missing(layerNames)) layerNames <- names(x)
     stopifnot(nlayers(x) == length(layerNames))
 
-    tempfiles <- lapply(rep(".grd", 4), tf)
-    on.exit(lapply(tf, unlink))
+    if (isTRUE(inRAM)) {
+      tempfiles <- list("", "", "", "")
+    } else {
+      tempfiles <- lapply(rep(".grd", 4), tf)
+      on.exit(lapply(tf, unlink))
+    }
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
