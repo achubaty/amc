@@ -17,9 +17,11 @@ cropReproj(x, studyArea, ...)
 \S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames, filename,
   inRAM = FALSE, ...)
 
-\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename, ...)
+\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename,
+  inRAM = FALSE, ...)
 
-\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames, filename, ...)
+\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames, filename,
+  inRAM = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{RasterStack} object or the filepath to such object.}

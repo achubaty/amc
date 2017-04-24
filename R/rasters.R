@@ -104,8 +104,8 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("RasterLayer", "ANY"),
-  definition = function(x, studyArea, layerNames, filename, ...) {
-    cropReproj(stack(x), studyArea, layerNames, filename, ...)
+  definition = function(x, studyArea, layerNames, filename, inRAM = FALSE, ...) {
+    cropReproj(stack(x), studyArea, layerNames, filename, inRAM, ...)
 })
 
 #' @export
@@ -113,9 +113,9 @@ setMethod(
 setMethod(
   "cropReproj",
   signature("character", "ANY"),
-  definition = function(x, studyArea, layerNames, filename, ...) {
+  definition = function(x, studyArea, layerNames, filename, inRAM = FALSE, ...) {
     stopifnot(file.exists(x))
-    cropReproj(stack(x), studyArea, layerNames, filename, ...)
+    cropReproj(stack(x), studyArea, layerNames, filename, inRAM, ...)
 })
 
 #' Merge Raster* objects using a function for overlapping areas
