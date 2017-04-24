@@ -123,15 +123,21 @@ setMethod(
 #' Provides a wrapper around \code{\link[raster]{mosaic}} that cleans up any
 #' temporary intermediate files used, and sets the layer name of the resulting raster.
 #'
-#' @param x   \code{Raster*} object
-#' @param y   \code{Raster*} object
-#' @param ... Additional Raster or Extent objects.
-#' @param fun Function (e.g., \code{mean}, \code{min}, or \code{max}, that accepts
-#'            a \code{na.rm} argument).
-#' @param tolerance Numeric. Permissible difference in origin (relative to the
-#'                  cell resolution). See \code{\link{all.equal}}.
-#' @param filename  Character. Output filename (optional).
-#' @param layerName Character. Name of the resulting raster layer.
+#' @param x          \code{Raster*} object
+#' @param y          \code{Raster*} object
+#' @param ...        Additional Raster or Extent objects.
+#' @param fun        Function (e.g., \code{mean}, \code{min}, or \code{max}, that
+#'                   accepts a \code{na.rm} argument).
+#' @param tolerance  Numeric. Permissible difference in origin (relative to the
+#'                   cell resolution). See \code{\link{all.equal}}.
+#'
+#' @param filename   Character. Output filename (optional).
+#'
+#' @param layerName  Character. Name of the resulting raster layer.
+#'
+#' @param inRAM      Logical (default \code{FALSE}) indicating whether function
+#'                   operations should be performed in memory or, if \code{TRUE},
+#'                   using temporary files.
 #'
 #' @author Alex Chubaty
 #' @docType methods
@@ -150,11 +156,16 @@ setMethod(
   "mosaic2",
   signature("RasterLayer", "RasterLayer"),
   definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
-                        layerName = "layer") {
+                        layerName = "layer", inRAM = FALSE) {
     if (missing(filename)) filename <- tf(".grd")
     if (missing(layerName)) layerName <- names(x)
-    tempfiles <- list(tf(".tif"))
-    on.exit(unlink(tempfiles))
+
+    if (isTRUE(inRAM)) {
+      tempfiles <- list("")
+    } else {
+      tempfiles <- list(tf(".tif"))
+      on.exit(unlink(tempfiles))
+    }
 
     ## TO DO: can this part be made parallel?
     out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
