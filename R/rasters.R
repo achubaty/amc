@@ -1,3 +1,5 @@
+utils::globalVariables(c("ID", "VALUE"))
+
 #' Crop and reproject a raster to a given study area
 #'
 #' This function is geared toward use with study areas that are too large to work
@@ -117,6 +119,48 @@ setMethod(
     stopifnot(file.exists(x))
     cropReproj(stack(x), studyArea, layerNames, filename, inRAM, ...)
 })
+
+
+#' Convert \code{data.table} to a \code{RasterLayer} for plotting, etc.
+#'
+#' DETAILED DESCRIPTION NEEDED
+#'
+#' @param dt  \code{data.table} object with columns \code{ID}, \code{X}, \code{Y},
+#'            and the values to assign to the raster specified by column \code{val}.
+#'
+#' @param r   \code{Raster*} object.
+#'
+#' @param val The name of the column in \code{dt} containing the values for the raster.
+#'
+#' @return A \code{RasterLayer} object.
+#'
+#' @author Alex Chubaty
+#' @docType methods
+#' @export
+#' @importFrom data.table ':=' data.table setkey
+#' @importFrom sp SpatialPoints
+#' @importFrom raster cellFromXY ncell
+#' @rdname dt2raster
+#'
+# @examples
+#'
+dt2raster <- function(dt, r, val) {
+  stopifnot(is(dt, "data.table"),
+            all(c("ID", "X", "Y") %in% colnames(dt)),
+            is(r, "Raster"),
+            is.character(val))
+
+  xy <- SpatialPoints(cbind(dt$X, dt$Y))
+  ids <- cellFromXY(r, xy)
+  tmp <- data.table(ID  = ids, VALUE = dt[[val]])
+  tmp <- tmp[, VALUE := sum(VALUE), by = ID]
+  setkey(tmp, ID)
+
+  rout <- r
+  if (length(tmp$ID)) rout[tmp$ID] <- tmp$VALUE
+  if (ncell(rout) - length(tmp$ID) > 0) rout[!tmp$ID] <- NA
+  return(rout)
+}
 
 #' Merge Raster* objects using a function for overlapping areas
 #'
