@@ -43,7 +43,7 @@ test_that("rescale works correctly", {
 
   ## rescaling values of a raster
   f <- system.file("external/test.grd", package = "raster")
-  r <- raster(f)
+  r <- raster::raster(f)
 
   r1 <- rescale(r)
   expect_equal(raster::minValue(r1), 0)

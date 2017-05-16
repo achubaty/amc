@@ -63,7 +63,7 @@ inRange <- function(x, a = 0, b = 1) {
 #' rescale(x, c(-1, 1))
 #'
 #' f <- system.file("external/test.grd", package = "raster")
-#' r <- raster(f)
+#' r <- raster::raster(f)
 #' rescale(r) # defaults to new range [0,1]
 #' rescale(r, c(-1, 1))
 #'
