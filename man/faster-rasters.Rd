@@ -8,7 +8,7 @@
 \usage{
 fastMask(stack, polygon)
 
-fastRasterize(polygon, ras, field)
+fastRasterize(polygon, ras, field, rasterFilenameBase, useGdal, datatype)
 }
 \arguments{
 \item{stack}{A \code{RasterStack} object.}
@@ -18,18 +18,35 @@ fastRasterize(polygon, ras, field)
 \item{ras}{A \code{RasterLayer} object.}
 
 \item{field}{The field to use from \code{polygon}.}
+
+\item{rasterFilenameBase}{Character string giving the base filename, without extension or path}
+
+\item{useGdal}{Logical. If missing (default), the function will}
+
+\item{datatype}{Passed to raster object and disk-format. See \code{\link[raster]{dataType}}}
 }
 \value{
 A \code{Raster*} object.
 }
 \description{
 These alternatives to \code{mask} and \code{rasterize} are not as general as
-the originals. However, they use \code{raster::extract} internally,
-which is parallel-aware. So, using these functions with a cluster having been
-created via \code{beginCluster} will be much faster than \code{mask} and
-\code{rasterize}. However, only a few situations will work with these
-functions (e.g., \code{fastMask} must be given a \code{RasterStack};
-a \code{RasterLayer} will likely not work).
+the originals. \code{fastRasterize} uses either \code{velox} package or--
+if \code{gdal} is installed and accessible by \code{rgdal::getGDALVersionInfo}
+and the version is > 2.0-- then it will default to
+\code{gdalUtils::gdal_rasterize}. This default will be overridden for "small" rasters
+with fewer than 2,000,000 cells as velox is faster in those cases.
+The user can specify whether to use \code{gdal}
+with the \code{useGdal} argument. For \code{fastMask}, the function uses
+use \code{raster::extract} internally,
+which is parallel-aware. So, using this function with a cluster having been
+created via \code{beginCluster} will be much faster than \code{mask}.
+This is experimental and not all combinations of parameters or object types
+will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
+}
+\details{
+\code{fastRasterize} will try to keep the object in memory or on disk, depending on
+whether the input raster was on disk. Also, if \code{rasterFilenameBase} is supplied, then
+it will save to disk, using .tif format.
 }
 \note{
 HAS NOT BEEN FULLY TESTED
@@ -39,9 +56,7 @@ HAS NOT BEEN FULLY TESTED
 library(raster)
 library(sp)
 
-beginCluster(2)
-
-Sr1 <- Polygon(cbind(c(2, 4, 4, 1, 2), c(2, 3, 5, 4, 2)))
+Sr1 <- Polygon(cbind(c(2, 4, 4, 0.9, 2), c(2, 3, 5, 4, 2)))
 Sr2 <- Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2)))
 Sr3 <- Polygon(cbind(c(4, 4, 5, 10, 4), c(5, 3, 2, 5, 5)))
 
@@ -53,14 +68,18 @@ d <- data.frame(vals = 1:3, other = letters[1:3])
 row.names(d) <- names(shp)
 shp <- SpatialPolygonsDataFrame(shp, data = d)
 poly <- list()
-poly[[1]] <- raster(extent(shp), vals = 0, res = c(0.5, 0.5))
-poly[[2]] <- raster(extent(shp), vals = 1, res = c(0.5, 0.5))
+poly[[1]] <- raster(extent(shp), vals = 0, res = c(1, 1))
+poly[[2]] <- raster(extent(shp), vals = 1, res = c(1, 1))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1 <- raster::rasterize(shp, origStack)
-shpRas2 <- fastRasterize(shp, origStack)
-expect_equal(shpRas1, shpRas2)
+shpRas1 <- raster::rasterize(shp, origStack, field="vals")
+shpRas2 <- fastRasterize(shp, origStack, field="vals", useGdal=FALSE, datatype="FLT4S")
+shpRas3 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S")
+if(require("testthat")) {
+  expect_equal(shpRas1, shpRas2)
+  expect_equal(shpRas1, shpRas3)
+}
 
 if (interactive()) plot(shpRas2)
 
@@ -85,5 +104,5 @@ endCluster()
 
 }
 \author{
-Eliot Mcintire and Yong Luo
+Eliot Mcintire
 }
