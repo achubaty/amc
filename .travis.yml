@@ -24,7 +24,7 @@ matrix:
     - tlmgr install xcolor
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
-    - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" >> ~/.Rprofile
+    - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
 
   - os: linux
     dist: trusty
@@ -37,7 +37,7 @@ matrix:
     - tlmgr install xcolor
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
-    - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" >> ~/.Rprofile
+    - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
     after_success:
     - Rscript -e 'library(covr); coveralls(coverage = print(package_coverage(quiet = FALSE)))'
 
@@ -52,7 +52,7 @@ matrix:
     - tlmgr install xcolor
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
-    - echo "options(repos = c(CRAN='http://cran.rstudio.com'))" >> ~/.Rprofile
+    - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
 
   - os: osx
     osx_image: xcode8
