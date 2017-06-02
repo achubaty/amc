@@ -4,14 +4,11 @@
 \name{fastMask}
 \alias{fastMask}
 \alias{fastRasterize}
-\alias{fastCrop}
 \title{Faster operations on rasters}
 \usage{
 fastMask(stack, polygon)
 
 fastRasterize(polygon, ras, field, filename, useGdal, datatype)
-
-fastCrop(x, y, ...)
 }
 \arguments{
 \item{stack}{A \code{RasterStack} object.}
@@ -46,9 +43,6 @@ which is parallel-aware. So, using this function with a cluster having been
 created via \code{beginCluster} will be much faster than \code{mask}.
 }
 \details{
-\code{fastRasterize} will try to keep the object in memory or on disk,
-depending on whether the input raster was on disk.
-
 \code{fastRasterize} will try to keep the object in memory or on disk,
 depending on whether the input raster was on disk.
 }

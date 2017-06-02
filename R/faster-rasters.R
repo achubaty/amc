@@ -117,14 +117,13 @@ fastMask <- function(stack, polygon) {
 #'
 fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
   keepInMemory <- inMemory(ras) & missing(filename)
-  if (missing(useGdal)) {
+
+  if(!missing(useGdal)) {
+    useGdal <- checkGdalVers2()
+  } else {
     useGdal <- FALSE
     if (ncell(ras) > 2e6) {
-      vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
-      if (!isTRUE(vers)) {
-        if (as.numeric(substr(strsplit(strsplit(vers, split = ",")[[1]][1], split = " ")[[1]][2], 1, 1)) >= 2)
-          useGdal <- TRUE
-      }
+      useGdal <- checkGdalVers2()
     }
   }
   rstFilename <- if (!missing(filename)) {
@@ -253,4 +252,19 @@ fastCrop <- function(x, y, ...) {
     a <- v1$as.RasterLayer(band=1)
   }
   a
+}
+
+
+#' Check for gdal version 2
+#'
+#' Used by many functions in amc
+#'
+#' @importFrom rgdal getGDALVersionInfo
+checkGdalVers2 <-  function() {
+  vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
+  if (!isTRUE(vers)) {
+    if (as.numeric(substr(strsplit(strsplit(vers, split = ",")[[1]][1], split = " ")[[1]][2], 1, 1)) >= 2)
+      useGdal <- TRUE
+  }
+  return(useGdal)
 }
