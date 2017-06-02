@@ -262,6 +262,7 @@ fastCrop <- function(x, y, ...) {
 #' @importFrom rgdal getGDALVersionInfo
 checkGdalVers2 <-  function() {
   vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
+  useGdal <- FALSE
   if (!isTRUE(vers)) {
     if (as.numeric(substr(strsplit(strsplit(vers, split = ",")[[1]][1], split = " ")[[1]][2], 1, 1)) >= 2)
       useGdal <- TRUE
