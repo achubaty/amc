@@ -114,7 +114,6 @@ fastMask <- function(stack, polygon) {
 #' \code{fastRasterize} will try to keep the object in memory or on disk,
 #' depending on whether the input raster was on disk.
 #'
-
 fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
   keepInMemory <- inMemory(ras) & missing(filename)
   if(missing(useGdal)) {
@@ -228,4 +227,29 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
   a
 
   return(a)
+}
+
+
+#' @export
+#' @importFrom raster extent
+#' @importClassesFrom velox VeloxRaster
+#' @importFrom velox velox
+#' @rdname faster-rasters
+#' @param x
+#' @inheritParams raster crop
+#' @details
+#' \code{fastRasterize} will try to keep the object in memory or on disk,
+#' depending on whether the input raster was on disk.
+#'
+fastCrop <- function(x, y, ...) {
+  v1 <- velox(x) # velox package is much faster than raster package for rasterize function,
+  # but not as fast as gdal_rasterize for large polygons
+  if(is(y, "Raster")) y <- extent(y)
+  v1$crop(y)
+  if(length(names(x))>1) {
+    a <- v1$as.RasterStack()
+  } else {
+    a <- v1$as.RasterLayer(band=1)
+  }
+  a
 }
