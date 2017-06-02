@@ -186,8 +186,8 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
 
     tmpShpFilename <- tempfile(fileext = ".shp")
 
-    # write the polygon object to disk as a shapefile
-    shapefile(polygon, filename = tmpShpFilename)
+    # write the polygon object to disk as a shapefile -- can't handle NAs without showing a warning
+    suppressWarnings(shapefile(polygon, filename = tmpShpFilename))
 
     # Run rasterize from gdal
     gdalUtils::gdal_rasterize(a = fieldTmp, tr = res(ras), a_nodata = NA_integer_,
