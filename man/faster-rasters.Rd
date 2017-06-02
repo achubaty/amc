@@ -53,7 +53,6 @@ types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 \examples{
 \dontrun{
 library(raster)
-library(sp)
 
 Sr1 <- Polygon(cbind(c(2, 4, 4, 0.9, 2), c(2, 3, 5, 4, 2)))
 Sr2 <- Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2)))
@@ -63,18 +62,21 @@ Srs1 <- Polygons(list(Sr1), "s1")
 Srs2 <- Polygons(list(Sr2), "s2")
 Srs3 <- Polygons(list(Sr3), "s3")
 shp <- SpatialPolygons(list(Srs1, Srs2, Srs3), 1:3)
-d <- data.frame(vals = 1:3, other = letters[1:3])
+d <- data.frame(vals = 1:3, other = letters[3:1], stringsAsFactors = FALSE)
 row.names(d) <- names(shp)
 shp <- SpatialPolygonsDataFrame(shp, data = d)
 poly <- list()
-poly[[1]] <- raster(extent(shp), vals = 0, res = c(1, 1))
-poly[[2]] <- raster(extent(shp), vals = 1, res = c(1, 1))
+poly[[1]] <- raster(raster::extent(shp), vals = 0, res = c(1, 1))
+poly[[2]] <- raster(raster::extent(shp), vals = 1, res = c(1, 1))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1 <- raster::rasterize(shp, origStack, field = "vals")
+shpRas1 <- rasterize(shp, origStack, field = "vals")
 shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGdal = FALSE, datatype = "FLT4S")
 shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S")
+shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S",
+                         filename = "newMap")
+
 if (require("testthat")) {
   expect_equal(shpRas1, shpRas2)
   expect_equal(shpRas1, shpRas3)
