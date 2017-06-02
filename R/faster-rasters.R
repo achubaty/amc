@@ -51,7 +51,7 @@
 #' shpRas2 <- fastRasterize(shp, origStack, field="vals", useGdal=FALSE, datatype="FLT4S")
 #' shpRas3 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S")
 #' shpRas4 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S",
-#'                          rasterFilenameBase = "newMap")
+#'                          filename = "newMap")
 #' if(require("testthat")) {
 #'   expect_equal(shpRas1, shpRas2)
 #'   expect_equal(shpRas1, shpRas3)
@@ -115,9 +115,9 @@ fastMask <- function(stack, polygon) {
 #' depending on whether the input raster was on disk.
 #'
 
-  keepInMemory <- inMemory(ras) & missing(rasterFilenameBase)
-  if(missing(useGdal)) {
 fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
+  keepInMemory <- inMemory(ras) & missing(filename)
+  if(missing(useGdal)) {
     useGdal <- FALSE
     if (ncell(ras) > 2e6) {
       vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
@@ -190,7 +190,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
     shapefile(polygon, filename = tmpShpFilename)
 
     # Run rasterize from gdal
-    gdalUtils::gdal_rasterize(a = field, tr = res(ras), a_nodata = NA_integer_,
+    gdalUtils::gdal_rasterize(a = fieldTmp, tr = res(ras), a_nodata = NA_integer_,
                               tmpShpFilename,
                               te = c(xmin(ras), ymin(ras), xmax(ras), ymax(ras)),
                               rstFilename, ot = datatypeGdal)
@@ -206,6 +206,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
     whichID <- names(polygon) %in% "ID"
     whichOther <- names(polygon) %in% field
     levels(a) <- data.frame(as.data.frame(polygon[,whichID]),as.data.frame(polygon[,whichOther]))
+    names(a) <- "layer"
   } else {
     names(a) <- field
   }

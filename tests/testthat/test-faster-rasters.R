@@ -45,6 +45,34 @@ test_that("faster-rasters functions produce correct results", {
 
   expect_equivalent(shpRas1_missingF, shpRas2_missingF)
 
+
+  ### USING GDAL
+  shpRas2_character <- fastRasterize(shp, origStack, field = "other", useGdal = TRUE)
+  shpRas2_numeric <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE)
+  shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"), useGdal = TRUE)
+  shpRas2_missingF <- fastRasterize(shp, origStack, useGdal = TRUE)
+
+  # character
+  expect_false(identical(shpRas1_character, shpRas2_character)) # because no label
+  expect_equivalent(shpRas1_character, shpRas2_character)
+
+  shpRas2b_character <- raster(extent(shpRas2_character), res=res(shpRas2_character), vals=0)
+  shpRas2b_character[] <- shpRas2_character[]
+  expect_true(identical(shpRas1_character, shpRas2b_character)) # because no label
+
+  #numeric
+  expect_false(identical(shpRas1_numeric, shpRas2_numeric)) # because of "layer" label in rasterize
+  shpRas2_numeric@data@names <- ""
+  dataType(shpRas2_numeric) <- "FLT4S"
+  shpRas2_numeric@file@nodatavalue <- -Inf
+  shpRas2_numeric@file@blockcols <- 0L
+  shpRas2_numeric@file@blockrows <- 0L
+  expect_identical(shpRas1_numeric, shpRas2_numeric)
+
+  expect_equivalent(shpRas1_multiF, shpRas2_multiF)
+
+  expect_equivalent(shpRas1_missingF, shpRas2_missingF)
+
   # gdal_rasterize and velox have different rounding compared to rasterize
   #  when polygon splits a raster perfectly in 2 -- there is one difference here in Sr1 1 instead of 0.9
   Sr1 <- sp::Polygon(cbind(c(2, 4, 4, 1, 2), c(2, 3, 5, 4, 2)))
