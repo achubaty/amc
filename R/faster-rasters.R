@@ -228,13 +228,16 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
 }
 
 
+#' fastCrop
+#'
+#' This function is a wrapper around velox crop function.
+#'
 #' @export
 #' @importFrom raster extent
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
-#' @rdname faster-rasters
-#' @param x
-#' @inheritParams raster crop
+#' @param x Raster to crop
+#' @inheritParams raster::crop
 #' @details
 #' \code{fastRasterize} will try to keep the object in memory or on disk,
 #' depending on whether the input raster was on disk.
