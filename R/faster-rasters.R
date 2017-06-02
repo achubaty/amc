@@ -1,25 +1,22 @@
 #' Faster operations on rasters
 #'
 #' These alternatives to \code{mask} and \code{rasterize} are not as general as
-#' the originals. \code{fastRasterize} uses either \code{velox} package or--
+#' the originals. \code{fastRasterize} uses either \code{velox} package or,
 #' if \code{gdal} is installed and accessible by \code{rgdal::getGDALVersionInfo}
-#' and the version is > 2.0-- then it will default to
-#' \code{gdalUtils::gdal_rasterize}. This default will be overridden for "small" rasters
-#' with fewer than 2,000,000 cells as velox is faster in those cases.
-#' The user can specify whether to use \code{gdal}
-#' with the \code{useGdal} argument. For \code{fastMask}, the function uses
-#' use \code{raster::extract} internally,
+#' and the version is > 2.0, then it will default to \code{gdalUtils::gdal_rasterize}.
+#' This default will be overridden for "small" rasters (fewer than 2e+6 cells),
+#' as \code{velox} is faster in those cases.
+#' The user can specify whether to use \code{GDAL} with the \code{useGdal} argument.
+#' For \code{fastMask}, the function uses use \code{raster::extract} internally,
 #' which is parallel-aware. So, using this function with a cluster having been
 #' created via \code{beginCluster} will be much faster than \code{mask}.
-#' This is experimental and not all combinations of parameters or object types
-#' will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 #'
-#' @note HAS NOT BEEN FULLY TESTED
+#' @note This is experimental and not all combinations of parameters or object
+#' types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 #'
 #' @param stack      A \code{RasterStack} object.
 #'
 #' @param polygon    A \code{SpatialPolygons} object.
-#'
 #'
 #' @return A \code{Raster*} object.
 #'
@@ -77,8 +74,6 @@
 #'   plot(newStack2[[1]])
 #'   plot(shp, add = TRUE)
 #' }
-#'
-#' endCluster()
 #' }
 #'
 fastMask <- function(stack, polygon) {
@@ -97,7 +92,9 @@ fastMask <- function(stack, polygon) {
 #'
 #' @param field      The field to use from \code{polygon}.
 #'
-#' @param rasterFilenameBase Character string giving the base filename, without extension or path
+#' @param filename Character string giving the filename. Note: if \code{filename}
+#'                 is supplied, only the basename of the file is used, and the
+#'                 the output raster will be saved using \code{.tif} format.
 #'
 #' @param useGdal Logical. If missing (default), the function will
 #'
@@ -108,33 +105,37 @@ fastMask <- function(stack, polygon) {
 #' @importFrom velox velox
 #' @importFrom rgdal getGDALVersionInfo
 #' @importFrom gdalUtils gdal_rasterize
-#' @importFrom raster shapefile raster setMinMax inMemory
+#' @importFrom raster 'dataType<-' extension inMemory setMinMax shapefile raster res tmpDir xmax xmin ymax ymin
+#' @importFrom rgdal getGDALVersionInfo
+#' @importClassesFrom velox VeloxRaster
+#' @importFrom velox velox
 #' @rdname faster-rasters
 #' @details
-#' \code{fastRasterize} will try to keep the object in memory or on disk, depending on
-#' whether the input raster was on disk. Also, if \code{rasterFilenameBase} is supplied, then
-#' it will save to disk, using .tif format.
+#' \code{fastRasterize} will try to keep the object in memory or on disk,
+#' depending on whether the input raster was on disk.
 #'
-fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, datatype) {
 
   keepInMemory <- inMemory(ras) & missing(rasterFilenameBase)
   if(missing(useGdal)) {
+fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
     useGdal <- FALSE
-    if(ncell(ras) > 2e6) {
-      vers <- tryCatch(getGDALVersionInfo(str = "--version"), error=function(x) TRUE)
-      if(!isTRUE(vers)) {
-
-        if(as.numeric(substr(strsplit(strsplit(vers, split=",")[[1]][1], split=" ")[[1]][2],1,1))>=2)
+    if (ncell(ras) > 2e6) {
+      vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
+      if (!isTRUE(vers)) {
+        if (as.numeric(substr(strsplit(strsplit(vers, split = ",")[[1]][1], split = " ")[[1]][2], 1, 1)) >= 2)
           useGdal <- TRUE
       }
     }
   }
-  #browser()
-  rstFilename <- if(!missing(rasterFilenameBase)) paste0(rasterFilenameBase,".tif") else tempfile(fileext = ".tif")
+  rstFilename <- if (!missing(filename)) {
+    extension(basename(filename), ".tif")
+  } else {
+    tempfile(fileext = ".tif")
+  }
 
   # These are taken from ?dataType from the raster package and http://www.gdal.org/frmt_gtiff.html
-  types <- data.frame(rasterTypes=c("INT1S", "INT1U", "INT2S", "INT2U", "INT4S", "INT4U", "FLT4S", "FLT4U"),
-                      gdalTypes=c("16Int", "U16Int", "16Int", "U16Int","32Int", "U32Int", "32Float", "32Float"),
+  types <- data.frame(rasterTypes = c("INT1S", "INT1U", "INT2S", "INT2U", "INT4S", "INT4U", "FLT4S", "FLT4U"),
+                      gdalTypes = c("16Int", "U16Int", "16Int", "U16Int","32Int", "U32Int", "32Float", "32Float"),
                       stringsAsFactors = FALSE)
 
 
@@ -186,15 +187,13 @@ fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, data
     tmpShpFilename <- tempfile(fileext = ".shp")
 
     # write the polygon object to disk as a shapefile
-    shapefile(polygon, filename=tmpShpFilename)
+    shapefile(polygon, filename = tmpShpFilename)
 
     # Run rasterize from gdal
-    gdalUtils::gdal_rasterize(a=fieldTmp, tr=res(ras),
-                               a_nodata=NA_integer_,
-                               tmpShpFilename,
-                               te=c(xmin(ras), ymin(ras),
-                                    xmax(ras), ymax(ras)),
-                               rstFilename, ot = datatypeGdal)
+    gdalUtils::gdal_rasterize(a = field, tr = res(ras), a_nodata = NA_integer_,
+                              tmpShpFilename,
+                              te = c(xmin(ras), ymin(ras), xmax(ras), ymax(ras)),
+                              rstFilename, ot = datatypeGdal)
     a <- raster(rstFilename)
   } else {
     v1 <- velox(ras) # velox package is much faster than raster package for rasterize function,
@@ -227,4 +226,5 @@ fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, data
 
   a
 
+  return(a)
 }

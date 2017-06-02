@@ -8,7 +8,7 @@
 \usage{
 fastMask(stack, polygon)
 
-fastRasterize(polygon, ras, field, rasterFilenameBase, useGdal, datatype)
+fastRasterize(polygon, ras, field, filename, useGdal, datatype)
 }
 \arguments{
 \item{stack}{A \code{RasterStack} object.}
@@ -19,7 +19,9 @@ fastRasterize(polygon, ras, field, rasterFilenameBase, useGdal, datatype)
 
 \item{field}{The field to use from \code{polygon}.}
 
-\item{rasterFilenameBase}{Character string giving the base filename, without extension or path}
+\item{filename}{Character string giving the filename. Note: if \code{filename}
+is supplied, only the basename of the file is used, and the
+the output raster will be saved using \code{.tif} format.}
 
 \item{useGdal}{Logical. If missing (default), the function will}
 
@@ -30,26 +32,23 @@ A \code{Raster*} object.
 }
 \description{
 These alternatives to \code{mask} and \code{rasterize} are not as general as
-the originals. \code{fastRasterize} uses either \code{velox} package or--
+the originals. \code{fastRasterize} uses either \code{velox} package or,
 if \code{gdal} is installed and accessible by \code{rgdal::getGDALVersionInfo}
-and the version is > 2.0-- then it will default to
-\code{gdalUtils::gdal_rasterize}. This default will be overridden for "small" rasters
-with fewer than 2,000,000 cells as velox is faster in those cases.
-The user can specify whether to use \code{gdal}
-with the \code{useGdal} argument. For \code{fastMask}, the function uses
-use \code{raster::extract} internally,
+and the version is > 2.0, then it will default to \code{gdalUtils::gdal_rasterize}.
+This default will be overridden for "small" rasters (fewer than 2e+6 cells),
+as \code{velox} is faster in those cases.
+The user can specify whether to use \code{GDAL} with the \code{useGdal} argument.
+For \code{fastMask}, the function uses use \code{raster::extract} internally,
 which is parallel-aware. So, using this function with a cluster having been
 created via \code{beginCluster} will be much faster than \code{mask}.
-This is experimental and not all combinations of parameters or object types
-will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 }
 \details{
-\code{fastRasterize} will try to keep the object in memory or on disk, depending on
-whether the input raster was on disk. Also, if \code{rasterFilenameBase} is supplied, then
-it will save to disk, using .tif format.
+\code{fastRasterize} will try to keep the object in memory or on disk,
+depending on whether the input raster was on disk.
 }
 \note{
-HAS NOT BEEN FULLY TESTED
+This is experimental and not all combinations of parameters or object
+types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 }
 \examples{
 \dontrun{
@@ -73,10 +72,10 @@ poly[[2]] <- raster(extent(shp), vals = 1, res = c(1, 1))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1 <- raster::rasterize(shp, origStack, field="vals")
-shpRas2 <- fastRasterize(shp, origStack, field="vals", useGdal=FALSE, datatype="FLT4S")
-shpRas3 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S")
-if(require("testthat")) {
+shpRas1 <- raster::rasterize(shp, origStack, field = "vals")
+shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGdal = FALSE, datatype = "FLT4S")
+shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S")
+if (require("testthat")) {
   expect_equal(shpRas1, shpRas2)
   expect_equal(shpRas1, shpRas3)
 }
@@ -98,8 +97,6 @@ if (interactive()) {
   plot(newStack2[[1]])
   plot(shp, add = TRUE)
 }
-
-endCluster()
 }
 
 }
