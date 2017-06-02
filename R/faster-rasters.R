@@ -32,7 +32,6 @@
 #' @examples
 #'\dontrun{
 #' library(raster)
-#' library(sp)
 #'
 #' Sr1 <- Polygon(cbind(c(2, 4, 4, 0.9, 2), c(2, 3, 5, 4, 2)))
 #' Sr2 <- Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2)))
@@ -42,7 +41,7 @@
 #' Srs2 <- Polygons(list(Sr2), "s2")
 #' Srs3 <- Polygons(list(Sr3), "s3")
 #' shp <- SpatialPolygons(list(Srs1, Srs2, Srs3), 1:3)
-#' d <- data.frame(vals = 1:3, other = letters[1:3])
+#' d <- data.frame(vals = 1:3, other = letters[3:1], stringsAsFactors=FALSE)
 #' row.names(d) <- names(shp)
 #' shp <- SpatialPolygonsDataFrame(shp, data = d)
 #' poly <- list()
@@ -54,6 +53,8 @@
 #' shpRas1 <- raster::rasterize(shp, origStack, field="vals")
 #' shpRas2 <- fastRasterize(shp, origStack, field="vals", useGdal=FALSE, datatype="FLT4S")
 #' shpRas3 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S")
+#' shpRas4 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S",
+#'                          rasterFilenameBase = "newMap")
 #' if(require("testthat")) {
 #'   expect_equal(shpRas1, shpRas2)
 #'   expect_equal(shpRas1, shpRas3)
@@ -85,10 +86,10 @@ fastMask <- function(stack, polygon) {
   nonNACellIDs <- extract(croppedStack[[1]], polygon, cellnumbers = TRUE)
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(croppedStack[[1]])
-  singleRas[] <- NA
+  suppressWarnings(singleRas[] <- NA_integer_) # for some reason can't handle a raster with all NA
   maskedStack <- stack(lapply(seq_len(nlayers(stack)), function(x) singleRas))
   names(maskedStack) <- names(stack)
-  maskedStack[nonNACellIDs[, "cell"]] <- croppedStack[nonNACellIDs[, "cell"]]
+  suppressWarnings(maskedStack[nonNACellIDs[, "cell"]] <- croppedStack[nonNACellIDs[, "cell"]])
   maskedStack
 }
 
@@ -103,7 +104,8 @@ fastMask <- function(stack, polygon) {
 #' @param datatype Passed to raster object and disk-format. See \code{\link[raster]{dataType}}
 #'
 #' @export
-#' @import velox
+#' @importClassesFrom velox VeloxRaster
+#' @importFrom velox velox
 #' @importFrom rgdal getGDALVersionInfo
 #' @importFrom gdalUtils gdal_rasterize
 #' @importFrom raster shapefile raster setMinMax inMemory
@@ -115,7 +117,7 @@ fastMask <- function(stack, polygon) {
 #'
 fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, datatype) {
 
-  keepInMemory <- inMemory(ras)
+  keepInMemory <- inMemory(ras) & missing(rasterFilenameBase)
   if(missing(useGdal)) {
     useGdal <- FALSE
     if(ncell(ras) > 2e6) {
@@ -127,6 +129,7 @@ fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, data
       }
     }
   }
+  #browser()
   rstFilename <- if(!missing(rasterFilenameBase)) paste0(rasterFilenameBase,".tif") else tempfile(fileext = ".tif")
 
   # These are taken from ?dataType from the raster package and http://www.gdal.org/frmt_gtiff.html
@@ -134,27 +137,49 @@ fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, data
                       gdalTypes=c("16Int", "U16Int", "16Int", "U16Int","32Int", "U32Int", "32Float", "32Float"),
                       stringsAsFactors = FALSE)
 
-  if(missing(datatype)) {
 
+  if(missing(field)) field <- names(polygon)
+
+  needFactor <- if(missing(field) | length(field)>1) {
+    TRUE
+  } else if (length(field)==1) {
+    is.factor(polygon[[field]]) | is.character(polygon[[field]])
+  }
+
+  valsGDAL=c(16, 32, 64)
+  valsRast=data.frame(vals=c(2^8, 2^16, 2^32, 2^128), labels=c(1,2,4,8))
+  intflt <- c("INT", "FLT")
+
+  if(needFactor) {
+    int <- 1
+    rang <- c(1,NROW(polygon))
+    neg <- 2
+  } else {
     int <- if(is.integer(polygon[[field]])) 1 else 2
     rang <- range(polygon[[field]])
-    valsGDAL=c(16, 32, 64)
-    valsRast=data.frame(vals=c(2^8, 2^16, 2^32, 2^128), labels=c(1,2,4,8))
     neg <- if(rang[1]<0 & int==1) 1 else 2
-    hasNA <- anyNA(ras[])
+  }
+
+  if(missing(datatype)) {
 
     if(useGdal) {
       maxV <- which.min(diff(rang)<(2^valsGDAL))
       intflt <- c("Int", "Float")
       datatypeGdal <- paste0("U"[neg], intflt[int], valsGDAL[maxV])
     }
-    maxV <- pmax(pmin(min(which(diff(rang)<(valsRast$vals))), 1 + hasNA), (int==2)*4)
-    intflt <- c("INT", "FLT")
-    datatype <- paste0(intflt[int], valsRast$labels[maxV], c("U", "S")[neg])
 
   } else {
     datatypeGdal <- types$gdalTypes[types$rasterTypes %in% datatype]
   }
+
+  if(needFactor) {
+    attrNames <- names(polygon)
+    if(!("ID" %in% attrNames)) {
+      polygon$ID <- 1:NROW(polygon)
+    }
+  }
+
+  fieldTmp <- if(needFactor) "ID" else field
 
   if(useGdal) {
 
@@ -164,24 +189,42 @@ fastRasterize <- function(polygon, ras, field, rasterFilenameBase, useGdal, data
     shapefile(polygon, filename=tmpShpFilename)
 
     # Run rasterize from gdal
-    gdalUtils::gdal_rasterize(a=field, tr=res(ras),
+    gdalUtils::gdal_rasterize(a=fieldTmp, tr=res(ras),
                                a_nodata=NA_integer_,
                                tmpShpFilename,
                                te=c(xmin(ras), ymin(ras),
                                     xmax(ras), ymax(ras)),
                                rstFilename, ot = datatypeGdal)
     a <- raster(rstFilename)
-    if(keepInMemory) a[] <- getValues(a)
-    a <- setMinMax(a)
   } else {
     v1 <- velox(ras) # velox package is much faster than raster package for rasterize function,
-                     # but not as fast as gdal_rasterize for large polygons
-    v1$rasterize(polygon, field=field, background = NA_integer_)
+    # but not as fast as gdal_rasterize for large polygons
+    v1$rasterize(polygon, field=fieldTmp, background = NA_integer_)
     a <- v1$as.RasterLayer(band=1)
-    if(!keepInMemory | !missing(rasterFilenameBase)) a <- writeRaster(a, filename = file.path(tmpDir(), rstFilename),
-                     overwrite = TRUE, datatype=datatype) # need NA value
   }
-  if(keepInMemory) dataType(a) <- datatype
+
+  if(needFactor) {
+    whichID <- names(polygon) %in% "ID"
+    whichOther <- names(polygon) %in% field
+    levels(a) <- data.frame(as.data.frame(polygon[,whichID]),as.data.frame(polygon[,whichOther]))
+  } else {
+    names(a) <- field
+  }
+
+
+
+  if(isTRUE(tryCatch(minValue(a), warning=function(x) TRUE)))
+    a <- setMinMax(a)
+
+  hasNA <- if(anyNA(a[])) 1 else 0
+  maxV <- pmax(pmax(min(which(diff(rang)<(valsRast$vals))), 1 + hasNA), (int==2)*4)
+  if(missing(datatype)) datatype <- paste0(intflt[int], valsRast$labels[maxV], c("U", "S")[neg])
+
+  dataType(a) <- datatype
+  if(keepInMemory & fromDisk(a)) a[] <- getValues(a)
+  if(!keepInMemory & inMemory(a)) a <- writeRaster(a, filename = file.path(tmpDir(), rstFilename),
+                     overwrite = TRUE, datatype=datatype) # need NA value
+
   a
 
 }
