@@ -68,21 +68,22 @@ Srs1 <- Polygons(list(Sr1), "s1")
 Srs2 <- Polygons(list(Sr2), "s2")
 Srs3 <- Polygons(list(Sr3), "s3")
 shp <- SpatialPolygons(list(Srs1, Srs2, Srs3), 1:3)
-d <- data.frame(vals = 1:3, other = letters[3:1], stringsAsFactors=FALSE)
+d <- data.frame(vals = 1:3, other = letters[3:1], stringsAsFactors = FALSE)
 row.names(d) <- names(shp)
 shp <- SpatialPolygonsDataFrame(shp, data = d)
 poly <- list()
-poly[[1]] <- raster(extent(shp), vals = 0, res = c(1, 1))
-poly[[2]] <- raster(extent(shp), vals = 1, res = c(1, 1))
+poly[[1]] <- raster(raster::extent(shp), vals = 0, res = c(1, 1))
+poly[[2]] <- raster(raster::extent(shp), vals = 1, res = c(1, 1))
 origStack <- stack(poly)
 
 # rasterize
-shpRas1 <- raster::rasterize(shp, origStack, field="vals")
-shpRas2 <- fastRasterize(shp, origStack, field="vals", useGdal=FALSE, datatype="FLT4S")
-shpRas3 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S")
-shpRas4 <- fastRasterize(shp, origStack, field="vals", useGdal=TRUE, datatype="FLT4S",
+shpRas1 <- rasterize(shp, origStack, field = "vals")
+shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGdal = FALSE, datatype = "FLT4S")
+shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S")
+shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S",
                          filename = "newMap")
-if(require("testthat")) {
+
+if (require("testthat")) {
   expect_equal(shpRas1, shpRas2)
   expect_equal(shpRas1, shpRas3)
 }
