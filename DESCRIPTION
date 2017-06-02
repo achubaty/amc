@@ -2,7 +2,7 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Version: 0.1.1.9000
-Date: 2017-06-01
+Date: 2017-06-02
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
@@ -19,6 +19,7 @@ Imports:
   base64enc,
   data.table,
   digest,
+  gdalUtils,
   httr,
   magrittr,
   methods,
@@ -27,7 +28,8 @@ Imports:
   raster,
   rgdal,
   sp,
-  utils
+  utils,
+  velox
 Suggests:
   hunspell,
   knitr,
