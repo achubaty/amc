@@ -1,12 +1,17 @@
 #' Faster operations on rasters
 #'
 #' These alternatives to \code{mask} and \code{rasterize} are not as general as
-#' the originals. \code{fastRasterize} uses either \code{velox} package or,
-#' if \code{gdal} is installed and accessible by \code{rgdal::getGDALVersionInfo}
-#' and the version is > 2.0, then it will default to \code{gdalUtils::gdal_rasterize}.
+#' the originals, and have not been thoroughly tested.
+#'
+#' \code{fastRasterize} uses either \code{velox} package or, if \code{GDAL} (> 2.0)
+#' is installed and accessible by \code{rgdal::getGDALVersionInfo} and the version,
+#' then it will default to \code{gdalUtils::gdal_rasterize}.
 #' This default will be overridden for "small" rasters (fewer than 2e+6 cells),
 #' as \code{velox} is faster in those cases.
-#' The user can specify whether to use \code{GDAL} with the \code{useGdal} argument.
+#' The user can specify whether to use \code{GDAL} with the \code{useGDAL} argument.
+#' \code{fastRasterize} will try to keep the object in memory or on disk,
+#' depending on whether the input raster was on disk.
+#'
 #' For \code{fastMask}, the function uses use \code{raster::extract} internally,
 #' which is parallel-aware. So, using this function with a cluster having been
 #' created via \code{beginCluster} will be much faster than \code{mask}.
@@ -14,9 +19,9 @@
 #' @note This is experimental and not all combinations of parameters or object
 #' types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
 #'
-#' @param stack      A \code{RasterStack} object.
+#' @param stack    A \code{RasterStack} object.
 #'
-#' @param polygon    A \code{SpatialPolygons} object.
+#' @param polygon  A \code{SpatialPolygons} object.
 #'
 #' @return A \code{Raster*} object.
 #'
@@ -48,9 +53,9 @@
 #'
 #' # rasterize
 #' shpRas1 <- rasterize(shp, origStack, field = "vals")
-#' shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGdal = FALSE, datatype = "FLT4S")
-#' shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S")
-#' shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S",
+#' shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGDAL = FALSE, datatype = "FLT4S")
+#' shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGDAL = TRUE, datatype = "FLT4S")
+#' shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGDAL = TRUE, datatype = "FLT4S",
 #'                          filename = "newMap")
 #'
 #' if (require("testthat")) {
@@ -89,41 +94,49 @@ fastMask <- function(stack, polygon) {
   maskedStack
 }
 
-#' @param ras        A \code{RasterLayer} object.
+#' @param ras      A \code{RasterLayer} object.
 #'
-#' @param field      The field to use from \code{polygon}.
+#' @param field    The field to use from \code{polygon}.
 #'
 #' @param filename Character string giving the filename. Note: if \code{filename}
 #'                 is supplied, only the basename of the file is used, and the
 #'                 the output raster will be saved using \code{.tif} format.
 #'
-#' @param useGdal Logical. If missing (default), the function will
+#' @param useGDAL  Logical. If missing (default): GDAL will be used if version >2
+#'                 is available and \code{ras} is larger than 2e+6 pixels.
 #'
 #' @param datatype Passed to raster object and disk-format. See \code{\link[raster]{dataType}}
 #'
 #' @export
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
-#' @importFrom rgdal getGDALVersionInfo
 #' @importFrom gdalUtils gdal_rasterize
 #' @importFrom raster 'dataType<-' extension fromDisk inMemory setMinMax shapefile raster res tmpDir xmax xmin ymax ymin
-#' @importFrom rgdal getGDALVersionInfo
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
 #' @rdname faster-rasters
-#' @details
-#' \code{fastRasterize} will try to keep the object in memory or on disk,
-#' depending on whether the input raster was on disk.
 #'
-fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
+fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
+  minGDALVersion <- 2
+
   keepInMemory <- inMemory(ras) & missing(filename)
 
-  if(!missing(useGdal)) {
-    useGdal <- checkGdalVers2()
-  } else {
-    useGdal <- FALSE
+  if (missing(useGDAL)) {
     if (ncell(ras) > 2e6) {
-      useGdal <- checkGdalVers2()
+      useGDAL <- checkGDALVersion(minGDALVersion)
+    } else {
+      useGDAL <- FALSE
+    }
+  } else {
+    if (isTRUE(useGDAL)) {
+      if (!is.na(getGDALVersion())) {
+        if (getGDALVersion() < minGDALVersion) {
+          warning("Outdate GDAL version detected. A recent version (>2) recommended for best performance.")
+        }
+        useGDAL <- TRUE
+      } else {
+        stop("No suitable GDAL version detected. Please specify 'useGDAL = FALSE'.")
+      }
     }
   }
   rstFilename <- if (!missing(filename)) {
@@ -160,7 +173,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
   }
 
   if (missing(datatype)) {
-    if (useGdal) {
+    if (useGDAL) {
       maxV <- which.min(diff(rang) < (2^valsGDAL))
       intflt <- c("Int", "Float")
       datatypeGdal <- paste0("U"[neg], intflt[int], valsGDAL[maxV])
@@ -178,7 +191,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
 
   fieldTmp <- if (needFactor) "ID" else field
 
-  if (useGdal) {
+  if (useGDAL) {
     tmpShpFilename <- tempfile(fileext = ".shp")
 
     # write the polygon object to disk as a shapefile -- can't handle NAs without showing a warning
@@ -244,28 +257,58 @@ fastRasterize <- function(polygon, ras, field, filename, useGdal, datatype) {
 fastCrop <- function(x, y, ...) {
   v1 <- velox(x) # velox package is much faster than raster package for rasterize function,
   # but not as fast as gdal_rasterize for large polygons
-  if(is(y, "Raster")) y <- extent(y)
+  if (is(y, "Raster")) y <- extent(y)
   v1$crop(y)
-  if(length(names(x))>1) {
+  if (length(names(x)) > 1) {
     a <- v1$as.RasterStack()
   } else {
-    a <- v1$as.RasterLayer(band=1)
+    a <- v1$as.RasterLayer(band = 1)
   }
   a
 }
 
-
-#' Check for gdal version 2
+#' Check the GDAL version in use
 #'
-#' Used by many functions in amc
+#' @return \code{numeric_version}
 #'
+#' @author Alex Chubaty
+#' @author Eliot McIntire
+#' @importFrom magrittr '%>%'
 #' @importFrom rgdal getGDALVersionInfo
-checkGdalVers2 <-  function() {
-  vers <- tryCatch(getGDALVersionInfo(str = "--version"), error = function(x) TRUE)
-  useGdal <- FALSE
-  if (!isTRUE(vers)) {
-    if (as.numeric(substr(strsplit(strsplit(vers, split = ",")[[1]][1], split = " ")[[1]][2], 1, 1)) >= 2)
-      useGdal <- TRUE
+#' @docType methods
+#' @export
+#'
+getGDALVersion <-  function() {
+  vers <- tryCatch(getGDALVersionInfo(), error = function(x) NA_real_)
+  if (!is.na(vers)) {
+    vers <- strsplit(vers, split = ",")[[1]][1] %>%
+      strsplit(., split = " ") %>% `[[`(1) %>% `[`(2) %>%
+      as.numeric_version(.)
   }
-  return(useGdal)
+  return(vers)
+}
+
+#' Check whether the system has a minimum version of GDAL available
+#'
+#' @param version  The minimum GDAL version to check for.
+#'
+#' @return Logical.
+#'
+#' @author Alex Chubaty
+#' @author Eliot McIntire
+#' @docType methods
+#' @export
+#'
+checkGDALVersion <- function(version) {
+  if (missing(version)) stop("Minimum version not specified.")
+
+  if (!is.na(getGDALVersion())) {
+    if (getGDALVersion() >= version) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
+  }
 }

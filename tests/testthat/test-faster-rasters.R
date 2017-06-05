@@ -46,10 +46,10 @@ test_that("faster-rasters functions produce correct results", {
   expect_equivalent(shpRas1_missingF, shpRas2_missingF)
 
   ### USING GDAL
-  shpRas2_character <- fastRasterize(shp, origStack, field = "other", useGdal = TRUE)
-  shpRas2_numeric <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE)
-  shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"), useGdal = TRUE)
-  shpRas2_missingF <- fastRasterize(shp, origStack, useGdal = TRUE)
+  shpRas2_character <- fastRasterize(shp, origStack, field = "other", useGDAL = TRUE)
+  shpRas2_numeric <- fastRasterize(shp, origStack, field = "vals", useGDAL = TRUE)
+  shpRas2_multiF <- fastRasterize(shp, origStack, field = c("other", "vals"), useGDAL = TRUE)
+  shpRas2_missingF <- fastRasterize(shp, origStack, useGDAL = TRUE)
 
   ## character
   expect_false(identical(shpRas1_character, shpRas2_character)) # because no label

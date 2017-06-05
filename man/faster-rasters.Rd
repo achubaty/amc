@@ -8,7 +8,7 @@
 \usage{
 fastMask(stack, polygon)
 
-fastRasterize(polygon, ras, field, filename, useGdal, datatype)
+fastRasterize(polygon, ras, field, filename, useGDAL, datatype)
 }
 \arguments{
 \item{stack}{A \code{RasterStack} object.}
@@ -23,7 +23,8 @@ fastRasterize(polygon, ras, field, filename, useGdal, datatype)
 is supplied, only the basename of the file is used, and the
 the output raster will be saved using \code{.tif} format.}
 
-\item{useGdal}{Logical. If missing (default), the function will}
+\item{useGDAL}{Logical. If missing (default): GDAL will be used if version >2
+is available and \code{ras} is larger than 2e+6 pixels.}
 
 \item{datatype}{Passed to raster object and disk-format. See \code{\link[raster]{dataType}}}
 }
@@ -32,19 +33,21 @@ A \code{Raster*} object.
 }
 \description{
 These alternatives to \code{mask} and \code{rasterize} are not as general as
-the originals. \code{fastRasterize} uses either \code{velox} package or,
-if \code{gdal} is installed and accessible by \code{rgdal::getGDALVersionInfo}
-and the version is > 2.0, then it will default to \code{gdalUtils::gdal_rasterize}.
+the originals, and have not been thoroughly tested.
+}
+\details{
+\code{fastRasterize} uses either \code{velox} package or, if \code{GDAL} (> 2.0)
+is installed and accessible by \code{rgdal::getGDALVersionInfo} and the version,
+then it will default to \code{gdalUtils::gdal_rasterize}.
 This default will be overridden for "small" rasters (fewer than 2e+6 cells),
 as \code{velox} is faster in those cases.
-The user can specify whether to use \code{GDAL} with the \code{useGdal} argument.
+The user can specify whether to use \code{GDAL} with the \code{useGDAL} argument.
+\code{fastRasterize} will try to keep the object in memory or on disk,
+depending on whether the input raster was on disk.
+
 For \code{fastMask}, the function uses use \code{raster::extract} internally,
 which is parallel-aware. So, using this function with a cluster having been
 created via \code{beginCluster} will be much faster than \code{mask}.
-}
-\details{
-\code{fastRasterize} will try to keep the object in memory or on disk,
-depending on whether the input raster was on disk.
 }
 \note{
 This is experimental and not all combinations of parameters or object
@@ -72,9 +75,9 @@ origStack <- stack(poly)
 
 # rasterize
 shpRas1 <- rasterize(shp, origStack, field = "vals")
-shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGdal = FALSE, datatype = "FLT4S")
-shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S")
-shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGdal = TRUE, datatype = "FLT4S",
+shpRas2 <- fastRasterize(shp, origStack, field = "vals", useGDAL = FALSE, datatype = "FLT4S")
+shpRas3 <- fastRasterize(shp, origStack, field = "vals", useGDAL = TRUE, datatype = "FLT4S")
+shpRas4 <- fastRasterize(shp, origStack, field = "vals", useGDAL = TRUE, datatype = "FLT4S",
                          filename = "newMap")
 
 if (require("testthat")) {
