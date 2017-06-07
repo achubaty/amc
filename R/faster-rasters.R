@@ -131,9 +131,13 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
     if (isTRUE(useGDAL)) {
       if (!is.na(getGDALVersion())) {
         if (getGDALVersion() < minGDALVersion) {
-          warning("Outdate GDAL version detected. A recent version (>2) recommended for best performance.")
+          warning("Outdated GDAL version detected. A recent version (>2) recommended for best performance.",
+                  "Using velox package instead")
+          useGDAL <- FALSE
+        } else {
+          useGDAL <- TRUE
         }
-        useGDAL <- TRUE
+        
       } else {
         stop("No suitable GDAL version detected. Please specify 'useGDAL = FALSE'.")
       }
