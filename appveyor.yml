@@ -23,6 +23,10 @@ install:
   ## DO NOT EDIT THIS
   - ps: Bootstrap
 
+cache:
+  - C:\GDAL
+  - C:\RLibrary
+
 # Adapt as necessary starting from here
 
 version: 1.0.{build}-{branch}
