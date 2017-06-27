@@ -36,7 +36,8 @@ if (getRversion() >= "3.1.0") {
 #' @importFrom raster brick filename raster stack
 #' @rdname rdata-objects
 #'
-loadObjects <- function(objects, path = NULL, ext = ".RData", quiet = TRUE, envir = parent.frame()) {
+loadObjects <- function(objects, path = NULL, ext = ".RData", quiet = TRUE,
+                        envir = parent.frame()) {
   if (is.null(path)) {
     path <- "."
   } else if (!dir.exists(path)) {
@@ -71,7 +72,8 @@ loadObjects <- function(objects, path = NULL, ext = ".RData", quiet = TRUE, envi
 
 #' @export
 #' @rdname rdata-objects
-saveObjects <- function(objects, path = NULL, ext = ".RData", quiet = TRUE, envir = parent.frame()) {
+saveObjects <- function(objects, path = NULL, ext = ".RData", quiet = TRUE,
+                        envir = parent.frame()) {
   if (is.null(path)) path <- "."
   out <- lapply(objects, function(x) {
     assign(x, get(x, envir = envir))

@@ -4,10 +4,10 @@ test_that("saving and load objects works correctly", {
   on.exit(unlink(tmpdir, recursive = TRUE), add = TRUE)
   expect_true(dir.exists(tmpdir))
 
-  testfile.grd <- system.file("external/test.grd", package = "raster")
-  testfile.gri <- raster::extension(testfile.grd, ".gri")
-  f.grd <- file.path(tmpdir, "test.grd")
-  f.gri <- raster::extension(f.grd, ".gri")
+  testfile.grd <- system.file("external/test.grd", package = "raster") # nolint
+  testfile.gri <- raster::extension(testfile.grd, ".gri") # nolint
+  f.grd <- file.path(tmpdir, "test.grd") # nolint
+  f.gri <- raster::extension(f.grd, ".gri") # nolint
   expect_true(file.copy(testfile.grd, f.grd))
   expect_true(file.exists(f.grd))
   expect_true(file.copy(testfile.gri, f.gri))
@@ -21,7 +21,7 @@ test_that("saving and load objects works correctly", {
 
   ## saving
   saveObjects(objNames, tmpdir)
-  expected_files <- c(paste0(objNames, ".RData"), basename(c(f.grd, f.gri)))
+  expected_files <- c(paste0(objNames, ".RData"), basename(c(f.grd, f.gri))) # nolint
   expect_identical(list.files(tmpdir), expected_files)
 
   ## loading

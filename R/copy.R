@@ -15,7 +15,7 @@
 #' @export
 #' @rdname dir_copy
 #'
-dir.copy <- function(from, to) {
+dir.copy <- function(from, to) { # nolint
   target <- file.path(to, basename(from))
   if (dir.exists(target)) stop(paste0("Target folder ", target, " already exists."))
 
@@ -33,15 +33,17 @@ dir.copy <- function(from, to) {
   path$type[Sys.readlink(path$from) != ""] <- "link"
 
   # Remove all files that are descendants of links
-  is_child <- function(query, refs) {
+  isChild <- function(query, refs) {
     sapply(refs, function(x) grepl(paste0("^", x), query) & query != x)
   }
-  path <- path[!sapply(path$from, function(x) any(is_child(x, path$from) & path$type == "link")), ]
+  path <- path[!sapply(path$from, function(x) any(isChild(x, path$from) & path$type == "link")), ]
 
   # Make copy
   res1 <- invisible(lapply(path$to[path$type == "folder"], dir.create, recursive = TRUE))
-  res2 <- invisible(file.copy(from = path$from[path$type == "file"], to = path$to[path$type == "file"]))
-  res3 <- invisible(file.symlink(Sys.readlink(path$from[path$type == "link"]), path$to[path$type == "link"]))
+  res2 <- invisible(file.copy(from = path$from[path$type == "file"],
+                              to = path$to[path$type == "file"]))
+  res3 <- invisible(file.symlink(Sys.readlink(path$from[path$type == "link"]),
+                                 path$to[path$type == "link"]))
 
   return(all(res1, res2, res3))
 }

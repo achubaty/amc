@@ -111,7 +111,8 @@ fastMask <- function(stack, polygon) {
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
 #' @importFrom gdalUtils gdal_rasterize
-#' @importFrom raster 'dataType<-' extension fromDisk inMemory setMinMax shapefile raster res tmpDir xmax xmin ymax ymin
+#' @importFrom raster 'dataType<-' extension fromDisk inMemory setMinMax shapefile
+#' @importFrom raster raster res tmpDir xmax xmin ymax ymin
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
 #' @rdname faster-rasters
@@ -131,7 +132,8 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
     if (isTRUE(useGDAL)) {
       if (!is.na(getGDALVersion())) {
         if (getGDALVersion() < minGDALVersion) {
-          warning("Outdated GDAL version detected. A recent version (>2) recommended for best performance.",
+          warning("Outdated GDAL version detected. ",
+                  "A recent version (>2) recommended for best performance. ",
                   "Using velox package instead.")
           useGDAL <- FALSE
         } else {
@@ -149,9 +151,10 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
   }
 
   # These are taken from ?dataType from the raster package and http://www.gdal.org/frmt_gtiff.html
-  types <- data.frame(rasterTypes = c("INT1S", "INT1U", "INT2S", "INT2U", "INT4S", "INT4U", "FLT4S", "FLT4U"),
-                      gdalTypes = c("16Int", "U16Int", "16Int", "U16Int","32Int", "U32Int", "32Float", "32Float"),
-                      stringsAsFactors = FALSE)
+  types <- data.frame(
+    rasterTypes = c("INT1S", "INT1U", "INT2S", "INT2U", "INT4S", "INT4U", "FLT4S", "FLT4U"),
+    gdalTypes = c("16Int", "U16Int", "16Int", "U16Int", "32Int", "U32Int", "32Float", "32Float"),
+    stringsAsFactors = FALSE)
 
   if (missing(field)) field <- names(polygon)
 
@@ -162,12 +165,12 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
   }
 
   valsGDAL <- c(16, 32, 64)
-  valsRast <- data.frame(vals = c(2^8, 2^16, 2^32, 2^128), labels = c(1, 2, 4, 8))
+  valsRast <- data.frame(vals = c(2 ^ 8, 2 ^ 16, 2 ^ 32, 2 ^ 128), labels = c(1, 2, 4, 8))
   intflt <- c("INT", "FLT")
 
   if (needFactor) {
     int <- 1
-    rang <- c(1,NROW(polygon))
+    rang <- c(1, NROW(polygon))
     neg <- 2
   } else {
     int <- if (is.integer(polygon[[field]])) 1 else 2
@@ -177,7 +180,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
 
   if (missing(datatype)) {
     if (useGDAL) {
-      maxV <- which.min(diff(rang) < (2^valsGDAL))
+      maxV <- which.min(diff(rang) < (2 ^ valsGDAL))
       intflt <- c("Int", "Float")
       datatypeGdal <- paste0("U"[neg], intflt[int], valsGDAL[maxV])
     }
@@ -188,7 +191,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
   if (needFactor) {
     attrNames <- names(polygon)
     if (!("ID" %in% attrNames)) {
-      polygon$ID <- 1:NROW(polygon)
+      polygon$ID <- 1:NROW(polygon) # nolint
     }
   }
 
@@ -216,8 +219,8 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
   if (needFactor) {
     whichID <- names(polygon) %in% "ID"
     whichOther <- names(polygon) %in% field
-    levels(a) <- data.frame(as.data.frame(polygon[,whichID]),
-                            as.data.frame(polygon[,whichOther]))
+    levels(a) <- data.frame(as.data.frame(polygon[, whichID]),
+                            as.data.frame(polygon[, whichOther]))
     names(a) <- "layer"
   } else {
     names(a) <- field
@@ -227,7 +230,7 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
     a <- setMinMax(a)
 
   hasNA <- if (anyNA(a[])) 1 else 0
-  maxV <- pmax(pmax(min(which(diff(rang) < (valsRast$vals))), 1 + hasNA), (int == 2)*4)
+  maxV <- pmax(pmax(min(which(diff(rang) < (valsRast$vals))), 1 + hasNA), (int == 2) * 4)
   if (missing(datatype)) {
     datatype <- paste0(intflt[int], valsRast$labels[maxV], c("U", "S")[neg])
   }
@@ -285,7 +288,9 @@ getGDALVersion <-  function() {
   vers <- tryCatch(getGDALVersionInfo(), error = function(x) NA_real_)
   if (!is.na(vers)) {
     vers <- strsplit(vers, split = ",")[[1]][1] %>%
-      strsplit(., split = " ") %>% `[[`(1) %>% `[`(2) %>%
+      strsplit(., split = " ") %>%
+      `[[`(1) %>%
+      `[`(2) %>%
       as.numeric_version(.)
   }
   return(vers)

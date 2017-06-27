@@ -33,7 +33,7 @@ inRange <- function(x, a = 0, b = 1) {
   if (!is.numeric(a) || !is.numeric(b)) stop("invalid (non-numeric) bounds.")
   if (is.na(a) || is.na(b)) stop("invalid (NA) bounds.")
   if (a >= b) stop("a cannot be greater than b.")
-  return((x - a) * (b - x) >= 0) # NAs will propagate -- is this desired?
+  return((x - a) * (b - x) >= 0) # NAs will propagate -- is this desired? # nolint
 }
 
 #' Rescale values to a new range
@@ -67,36 +67,36 @@ inRange <- function(x, a = 0, b = 1) {
 #' rescale(r) # defaults to new range [0,1]
 #' rescale(r, c(-1, 1))
 #'
-rescale <- function(x, new.range = c(0, 1), old.range = NULL) {
+rescale <- function(x, new.range = c(0, 1), old.range = NULL) { # nolint
   if (is.numeric(x)) {
     if (is.null(old.range)) {
-      old.range <- c(min(x, na.rm = TRUE), max(x, na.rm = TRUE))
+      old.range <- c(min(x, na.rm = TRUE), max(x, na.rm = TRUE)) # nolint
       if (old.range[1] == old.range[2]) {
         stop("old.range must be specified for single values of x.")
       }
     }
 
-    x.min <- old.range[1]
-    x.max <- old.range[2]
-    new.max <- new.range[1]
-    new.min <- new.range[2]
+    x.min <- old.range[1] # nolint
+    x.max <- old.range[2] # nolint
+    new.max <- new.range[1] # nolint
+    new.min <- new.range[2] # nolint
 
-    return(new.min + (x - x.min) * ((new.max - new.min) / (x.max - x.min)))
+    return(new.min + (x - x.min) * ((new.max - new.min) / (x.max - x.min))) # nolint
   } else if (is(x, "Raster")) {
     if (is.null(old.range)) {
-      old.range <- c(minValue(x), maxValue(x))
+      old.range <- c(minValue(x), maxValue(x)) # nolint
       if (old.range[1] == old.range[2]) {
         stop("old.range must be specified for single values of x.")
       }
     }
 
-    x.min <- old.range[1]
-    x.max <- old.range[2]
-    new.max <- new.range[1]
-    new.min <- new.range[2]
+    x.min <- old.range[1] # nolint
+    x.max <- old.range[2] # nolint
+    new.max <- new.range[1] # nolint
+    new.min <- new.range[2] # nolint
 
     r <- x
-    r[] <- new.min + (x[] - x.min) * ((new.max - new.min) / (x.max - x.min))
+    r[] <- new.min + (x[] - x.min) * ((new.max - new.min) / (x.max - x.min)) # nolint
     return(r)
   } else {
     stop("x must be a numeric vector or a Raster* object.")

@@ -9,7 +9,7 @@
 #' @param auth   Personal Access Token to use for authorization.
 #'               Required to access files in private repositories.
 #'               By default, checks for \code{GITHUB_PAT} environment variable.
-#'               See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.
+#' See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.
 #'
 #' @author Alex Chubaty
 #' @docType methods
@@ -28,15 +28,15 @@
 #'
 #' source_github(repo, branch, file, auth)
 #' }
-source_github <- function(repo, branch = "master", file,
+source_github <- function(repo, branch = "master", file, # nolint
                           auth = Sys.getenv("GITHUB_PAT")) {
   stopifnot(
     all(sapply(c(repo, branch, file), is.character)),
     all(sapply(c(repo, branch, file), length) == 1)
   )
 
-  header_accept <- "application/vnd.github.v3.raw"
-  header_auth <- if (is.null(auth)) {
+  header_accept <- "application/vnd.github.v3.raw"  # nolint
+  header_auth <- if (is.null(auth)) {  # nolint
     NULL
   } else {
     paste0("auth")

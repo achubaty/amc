@@ -13,8 +13,8 @@ test_that("inRange handles various inputs", {
   ids <- which(inRange(r, 850, 875))
   expect_equal(ids, c(708L, 1502L, 2853L, 3553L, 3638L, 3950L, 5708L, 6333L))
 
-  ## inputs for a & b
-  expect_error(inRange( 0.5, 1, 0))
+  # inputs for a & b
+  expect_error(inRange(0.5, 1, 0))
   expect_error(inRange(-0.5, NA_integer_, 1))
   expect_error(inRange(-0.5, NA_real_, 1))
   expect_error(inRange(-0.5, 0, NA_integer_))
@@ -25,12 +25,12 @@ test_that("inRange handles various inputs", {
 
 
 test_that("rescale works correctly", {
-  ## rescale a single value
+  # rescale a single value
   expect_error(rescale(50))
   expect_equal(rescale(50, c(0, 1), c(0, 100)), 0.5)
   expect_equal(rescale(50, c(-1, 1), c(0, 100)), 0)
 
-  ## simple rescaling of numeric vectors
+  # simple rescaling of numeric vectors
   x <- 0:100
 
   x1 <- rescale(x)

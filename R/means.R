@@ -18,17 +18,17 @@
 #' @examples
 #' series <- 1:10
 #' mean(series)
-#' geometric.mean(series)
-#' harmonic.mean(series)
+#' geometricMean(series)
+#' harmonicMean(series)
 #'
-geometric.mean <- function(x, ...) {
+geometricMean <- function(x, ...) {
     gm <- prod(x, ...) ^ (1 / length(x))
     return(gm)
 }
 
 #' @export
 #' @rdname means
-harmonic.mean <- function(x, ...) {
+harmonicMean <- function(x, ...) {
     if (length(x[x == 0])) stop("Error: contains zero values.")
     hm <- 1 / mean(1 / x, ...)
     return(hm)

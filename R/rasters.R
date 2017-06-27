@@ -153,7 +153,7 @@ dt2raster <- function(dt, r, val) {
   xy <- SpatialPoints(cbind(dt$X, dt$Y))
   ids <- cellFromXY(r, xy)
   tmp <- data.table(ID  = ids, VALUE = dt[[val]])
-  tmp <- tmp[, VALUE := sum(VALUE), by = ID]
+  tmp <- tmp[, VALUE := sum(VALUE), by = ID] # nolint
   setkey(tmp, ID)
 
   rout <- r
