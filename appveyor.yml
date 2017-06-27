@@ -9,7 +9,7 @@ init:
 
 install:
   ## install GDAL2
-  - ps: mkdir C:\gdal | out-null
+  - ps: md -Force C:\gdal | out-null
   - curl http://download.gisinternals.com/sdk/downloads/release-1800-x64-gdal-2-1-3-mapserver-7-0-4.zip --output gdalbin.zip
   - 7z x gdalbin.zip -oC:\gdal
   - curl http://download.gisinternals.com/sdk/downloads/release-1800-x64-gdal-2-1-3-mapserver-7-0-4-libs.zip --output gdallibs.zip
