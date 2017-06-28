@@ -277,9 +277,8 @@ fastCrop <- function(x, y, ...) {
 #'
 #' @return \code{numeric_version}
 #'
-#' @author Alex Chubaty
-#' @author Eliot McIntire
-#' @importFrom magrittr '%>%'
+#' @author Alex Chubaty and  Eliot McIntire
+#' @importFrom magrittr %>%
 #' @importFrom rgdal getGDALVersionInfo
 #' @docType methods
 #' @export

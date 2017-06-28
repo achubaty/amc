@@ -30,7 +30,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #' @author Alex Chubaty and Eliot Mcintire
 #' @docType methods
 #' @export
-#' @importFrom magrittr '%>%' set_names
+#' @importFrom magrittr %>% set_names
 #' @importFrom raster crop projectRaster stack writeRaster
 #' @importFrom sp CRS proj4string spTransform
 #' @rdname cropReproj
@@ -186,7 +186,7 @@ dt2raster <- function(dt, r, val) {
 #' @author Alex Chubaty
 #' @docType methods
 #' @export
-#' @importFrom magrittr '%>%' set_names
+#' @importFrom magrittr %>% set_names
 #' @importFrom raster mosaic writeRaster
 #' @rdname mosaic2
 setGeneric("mosaic2",

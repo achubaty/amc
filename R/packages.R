@@ -19,7 +19,7 @@
 #' @author Alex Chubaty
 #' @docType methods
 #' @export
-#' @importFrom magrittr '%>%'
+#' @importFrom magrittr %>%
 #' @rdname get_deps
 #'
 #' @examples
