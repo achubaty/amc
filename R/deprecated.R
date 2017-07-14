@@ -4,7 +4,7 @@
 #'
 #' @export
 #' @inheritParams .gc
-#' @rdname grainscape-deprecated
+#' @rdname amc-deprecated
 #'
 .cleanup <- function() {
   .Deprecated(".gc", old = ".cleanup")

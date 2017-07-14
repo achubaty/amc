@@ -11,16 +11,16 @@ test_that("cropReproj works correctly", {
   s <- stack(r, r * 2, r * 3)
 
   ext <- extent(c(xmin = 179000, xmax = 181000, ymin = 330000, ymax = 333000))
-  ext.sp <- as(ext, "SpatialPolygons")
+  ext.sp <- as(ext, "SpatialPolygons") # nolint
   proj4string(ext.sp) <- proj4string(r)
-  ext.spdf <- SpatialPolygonsDataFrame(ext.sp, data.frame(X = NA))
+  ext.spdf <- SpatialPolygonsDataFrame(ext.sp, data.frame(X = NA)) # nolint
 
   prj <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0"
-  ext.prj <- spTransform(ext.sp, CRS(prj))
-  ext.prj.spdf <- spTransform(ext.spdf, CRS(prj))
+  ext.prj <- spTransform(ext.sp, CRS(prj))  # nolint
+  ext.prj.spdf <- spTransform(ext.spdf, CRS(prj)) # nolint
 
   ## character,RasterLayer
-  sa.rast <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj)
+  sa.rast <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj) # nolint
   rc0 <- cropReproj(f, sa.rast, layerNames = "test")
 
   expect_true(is(rc0, "RasterStack"))
@@ -47,14 +47,14 @@ test_that("cropReproj works correctly", {
   }
 
   ## RasterLayer,SpatialPolygonsDataFrame
-  sa.spdf <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf)
+  sa.spdf <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf) # nolint
   rc2 <- cropReproj(r, ext.spdf, layerNames = "test")
   expect_true(is(rc2, "RasterStack"))
   expect_equivalent(stack(sa.spdf), rc2)
 
   ## RasterStack,RasterLayer
   sln <- c("one", "two", "three")
-  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln)
+  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln) # nolint
   sc1 <- cropReproj(s, sa.rast, layerNames = sln)
   expect_true(is(sc1, "RasterStack"))
   expect_equivalent(sa.stck, sc1)

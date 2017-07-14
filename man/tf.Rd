@@ -15,7 +15,7 @@ Character string indicating the filepath to the newly created file.
 }
 \description{
 This is a wrapper around \code{tempfile()} that actually creates the file,
-to ensure a correctly normalized filepath (i.e., on macOS)..
+to ensure a correctly normalized filepath (i.e., on macOS).
 }
 \author{
 Alex Chubaty

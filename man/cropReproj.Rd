@@ -12,14 +12,16 @@
 cropReproj(x, studyArea, ...)
 
 \S4method{cropReproj}{RasterStack,SpatialPolygonsDataFrame}(x, studyArea,
-  layerNames, filename, ...)
+  layerNames, filename, inRAM = FALSE, ...)
 
 \S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames, filename,
-  ...)
+  inRAM = FALSE, ...)
 
-\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename, ...)
+\S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename,
+  inRAM = FALSE, ...)
 
-\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames, filename, ...)
+\S4method{cropReproj}{character,ANY}(x, studyArea, layerNames, filename,
+  inRAM = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{RasterStack} object or the filepath to such object.}
@@ -32,6 +34,10 @@ cropReproj(x, studyArea, ...)
 
 \item{filename}{Optional output filepath to use with \code{\link{writeRaster}}.
 If not specified, a temporary file will be used.}
+
+\item{inRAM}{Logical (default \code{FALSE}) indicating whether function
+operations should be performed in memory or, if \code{TRUE},
+using temporary files.}
 }
 \value{
 \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).

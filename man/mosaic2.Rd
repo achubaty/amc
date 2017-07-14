@@ -9,7 +9,7 @@
 mosaic2(x, y, ...)
 
 \S4method{mosaic2}{RasterLayer,RasterLayer}(x, y, ..., fun, tolerance = 0.05,
-  filename = NULL, layerName = "layer")
+  filename = NULL, layerName = "layer", inRAM = FALSE)
 }
 \arguments{
 \item{x}{\code{Raster*} object}
@@ -18,8 +18,8 @@ mosaic2(x, y, ...)
 
 \item{...}{Additional Raster or Extent objects.}
 
-\item{fun}{Function (e.g., \code{mean}, \code{min}, or \code{max}, that accepts
-a \code{na.rm} argument).}
+\item{fun}{Function (e.g., \code{mean}, \code{min}, or \code{max}, that
+accepts a \code{na.rm} argument).}
 
 \item{tolerance}{Numeric. Permissible difference in origin (relative to the
 cell resolution). See \code{\link{all.equal}}.}
@@ -27,6 +27,10 @@ cell resolution). See \code{\link{all.equal}}.}
 \item{filename}{Character. Output filename (optional).}
 
 \item{layerName}{Character. Name of the resulting raster layer.}
+
+\item{inRAM}{Logical (default \code{FALSE}) indicating whether function
+operations should be performed in memory or, if \code{TRUE},
+using temporary files.}
 }
 \description{
 Provides a wrapper around \code{\link[raster]{mosaic}} that cleans up any

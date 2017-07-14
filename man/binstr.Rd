@@ -5,12 +5,12 @@
 \alias{binstr}
 \title{Convert integer to binary string}
 \usage{
-binstr(i, bits.max = NA)
+binstr(i, maxBits = NA)
 }
 \arguments{
 \item{i}{Positive integer <= 2^53 (<= 9.007199e+15).}
 
-\item{bits.max}{Maximum number of bits to print (default \code{NA}).}
+\item{maxBits}{Maximum number of bits to print (default \code{NA}).}
 }
 \value{
 Character vector.

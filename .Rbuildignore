@@ -1,6 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.lintr$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^gdalbin\.zip$
+^gdallibs\.zip$
 ^LICENSE$
 ^vignettes/.*_cache$

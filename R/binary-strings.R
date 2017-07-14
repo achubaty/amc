@@ -4,7 +4,7 @@
 #'
 #' @param i         Positive integer <= 2^53 (<= 9.007199e+15).
 #'
-#' @param bits.max  Maximum number of bits to print (default \code{NA}).
+#' @param maxBits  Maximum number of bits to print (default \code{NA}).
 #'
 #' @return Character vector.
 #'
@@ -31,10 +31,10 @@
 #'
 #' # see also `binary()` and `unbinary()` in the `composition` package (requires x11)
 #'
-binstr <- function(i, bits.max = NA) {
-    if (is.na(bits.max)) bits.max <- ceiling(log2(max(i)))
+binstr <- function(i, maxBits = NA) {
+    if (is.na(maxBits)) maxBits <- ceiling(log2(max(i)))
 
-    a <- 2 ^ ({bits.max - 1}:0)
+    a <- 2 ^ ({maxBits - 1}:0) # nolint
     b <- 2 * a
-    sapply(i, function(x) paste(as.integer((x %% b) >= a), collapse = ""))
+    sapply(i, function(x) paste(as.integer((x %% b) >= a), collapse = "")) # nolint
 }

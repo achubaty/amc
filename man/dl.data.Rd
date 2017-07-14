@@ -12,7 +12,7 @@ dl.data(urls, dest = ".", checksum = TRUE, unzip = FALSE)
 
 \item{dest}{The directory path in which data should be downloaded.}
 
-\item{checksum}{Logical indicating whether downloaded files should be checksummed to verify them.}
+\item{checksum}{Logical indicating whether downloaded files should be checksummed.}
 
 \item{unzip}{Logical indicating whether the file should be unzipped after download.}
 }
