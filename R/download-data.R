@@ -18,13 +18,13 @@
 dl.data <- function(urls, dest = ".", checksum = TRUE, unzip = FALSE) { # nolint
   tmp <- lapply(urls, function(f) {
     destFile <- file.path(dest, basename(f))
-    csumFIle <- file.path(dest, paste0(sub("^([^.]*).*", "\\1", basename(f)), ".checksum"))
+    csumFile <- file.path(dest, paste0(sub("^([^.]*).*", "\\1", basename(f)), ".checksum"))
     needDownload <- TRUE
     if (file.exists(destFile)) {
       if (checksum) {
-        if (file.exists(csumFIle)) {
+        if (file.exists(csumFile)) {
           hash <- digest::digest(file = destFile, algo = "xxhash64")
-          hashCheck <- read.table(csumFIle, stringsAsFactors = FALSE)
+          hashCheck <- read.table(csumFile, stringsAsFactors = FALSE, header = TRUE)
           if (hash == hashCheck$checksum) {
             message("File ", basename(destFile), " already exists. Skipping download.")
             needDownload <- FALSE
@@ -33,7 +33,7 @@ dl.data <- function(urls, dest = ".", checksum = TRUE, unzip = FALSE) { # nolint
           message("No hash file exists. Assuming current file (", basename(f), ") is correct.")
           hash <- digest::digest(file = destFile, algo = "xxhash64")
           write.table(data.frame(filename = destFile, checksum = hash),
-                      file = csumFIle)
+                      file = csumFile, row.names = FALSE)
           needDownload <- FALSE
         }
       } else {
@@ -46,7 +46,7 @@ dl.data <- function(urls, dest = ".", checksum = TRUE, unzip = FALSE) { # nolint
       download.file(f, destFile)
       hash <- digest::digest(file = destFile, algo = "xxhash64")
       write.table(data.frame(filename = destFile, checksum = hash),
-                  file = csumFIle)
+                  file = csumFile, row.names = FALSE)
 
       if (unzip) unzip(destFile, exdir = dest, overwrite = TRUE)
     }
