@@ -24,7 +24,7 @@ install:
   - ps: Bootstrap
 
 cache:
-  - C:\RLibrary
+  - C:\RLibrary -> appveyor_cache.txt
 
 # Adapt as necessary starting from here
 
