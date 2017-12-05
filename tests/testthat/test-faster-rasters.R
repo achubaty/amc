@@ -60,7 +60,8 @@ test_that("faster-rasters functions produce correct results", {
   shpRas2b_character <- raster::raster(raster::extent(shpRas2_character), # nolint
                                        res = raster::res(shpRas2_character), vals = 0)
   shpRas2b_character[] <- shpRas2_character[]
-  expect_identical(shpRas1_character, shpRas2b_character)
+  #expect_identical(shpRas1_character, shpRas2b_character)
+  expect_equal(shpRas1_character, shpRas2b_character)
 
   ## numeric
   expect_false(identical(shpRas1_numeric, shpRas2_numeric)) # because of "layer" label in rasterize
