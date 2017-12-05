@@ -72,7 +72,7 @@
 #' newStack2 <- fastMask(stack = origStack, polygon = shp)
 #'
 #' # test all equal
-#' identical(newStack1, newStack2)
+#' identical(newStack1, newStack2) ## TRUE
 #' newStack1 <- stack(newStack1)
 #' newStack2 <- stack(newStack2)
 #'
