@@ -18,7 +18,7 @@
 #' @rdname getOGR
 #'
 getOGR <- function(layer, path, ...) {
-  orig.dir <- getwd()
-  setwd(path); on.exit(setwd(orig.dir))
+  cwd <- getwd()
+  setwd(path); on.exit(setwd(cwd))
   readOGR(dsn = ".", layer = layer, ...)
 }

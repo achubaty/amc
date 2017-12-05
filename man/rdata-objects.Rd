@@ -7,9 +7,11 @@
 \alias{rmObjects}
 \title{Load, save, and remove .RData objects}
 \usage{
-loadObjects(objects, path = NULL, ext = ".RData", quiet = TRUE)
+loadObjects(objects, path = NULL, ext = ".RData", quiet = TRUE,
+  envir = parent.frame())
 
-saveObjects(objects, path = NULL, ext = ".RData", quiet = TRUE)
+saveObjects(objects, path = NULL, ext = ".RData", quiet = TRUE,
+  envir = parent.frame())
 
 rmObjects(objects, path = NULL, ext = ".RData", quiet = TRUE)
 }
@@ -23,6 +25,9 @@ constructed using \code{\link{file.path}}.}
 \item{ext}{The file extension to use (default is \code{.RData}).}
 
 \item{quiet}{Logical. Should output be suppressed? Default is \code{TRUE}.}
+
+\item{envir}{The environment in which to look for and load objects
+(default: the environment from which the function was called).}
 }
 \value{
 Invisibly if \code{quiet=TRUE}. Either a list of objects loaded,

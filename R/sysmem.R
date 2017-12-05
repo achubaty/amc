@@ -22,37 +22,38 @@ sysmem <- function(x = "GB") {
   allowed <- c("KB", "MB", "GB")
   if (!(x %in% allowed)) {
     last <- length(allowed)
-    err.msg <- paste("specify", paste(allowed[-last], collapse = ", "), "or", allowed[last], sep = " ")
-    stop(err.msg)
+    errmsg <- paste("specify", paste(allowed[-last], collapse = ", "), "or",
+                    allowed[last], sep = " ")
+    stop(errmsg)
   }
 
   # check OS and determine total RAM
-  OS <- Sys.info()[["sysname"]]
-  if (OS == "Darwin") {
+  os <- Sys.info()[["sysname"]]
+  if (os == "Darwin") {
     mem <- system("sysctl hw.memsize", intern = TRUE)
     mem <- as.numeric(strsplit(mem, " ")[[1]][2])
-    ram.kb <- mem / 1024
-    ram.mb <- floor(ram.kb / 1024)
-    ram.gb <- floor(ram.mb / 1024)
-  } else if (OS == "Linux") {
+    ramKB <- mem / 1024
+    ramMB <- floor(ramKB / 1024)
+    ramGB <- floor(ramMB / 1024)
+  } else if (os == "Linux") {
     mem <- system("grep MemTotal /proc/meminfo", intern = TRUE)
     mem <- strsplit(mem, " ")
     mem <- mem[[1]][which(mem[[1]] != "")]
-    ram.kb <- as.numeric(mem[2])
-    ram.mb <- floor(ram.kb / 1024)
-    ram.gb <- floor(ram.mb / 1024)
-  } else if (OS == "Windows") {
-    ram.mb <- memory.limit() # total RAM in MB
-    ram.gb <- floor(ram.mb / 1024)
-    ram.kb <- floor(ram.mb * 1024)
+    ramKB <- as.numeric(mem[2])
+    ramMB <- floor(ramKB / 1024)
+    ramGB <- floor(ramMB / 1024)
+  } else if (os == "Windows") {
+    ramMB <- memory.limit() # total RAM in MB
+    ramGB <- floor(ramMB / 1024)
+    ramKB <- floor(ramMB * 1024)
   } else {
     stop("Unable to determine total RAM.")
   }
 
   switch(x,
-         "KB" = ram.kb,
-         "MB" = ram.mb,
-         "GB" = ram.gb,
+         "KB" = ramKB,
+         "MB" = ramMB,
+         "GB" = ramGB,
          NA_character_
   )
 }

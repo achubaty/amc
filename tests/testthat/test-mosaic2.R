@@ -12,7 +12,7 @@ test_that("mosaic2 works correctly", {
 
   expect_equivalent(m, m2)
   expect_equal(sp::proj4string(m), sp::proj4string(2 * r))
-  #expect_equal(sp::proj4string(m), sp::proj4string(m2)) ## should be the same!!
+  #expect_equal(sp::proj4string(m), sp::proj4string(m2)) ## should be the same!! # nolint
 
   ## note: NAs get converted to zeroes in `masoic`
   m[which(m[] == 0)] <- NA
