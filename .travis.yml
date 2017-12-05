@@ -9,8 +9,11 @@ matrix:
     r: oldrel
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
         - libgdal1-dev
+        - libgeos-dev
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
@@ -23,8 +26,11 @@ matrix:
     r: release
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
         - libgdal1-dev
+        - libgeos-dev
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
@@ -44,8 +50,11 @@ matrix:
     r: devel
     addons:
       apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
         - libgdal1-dev
+        - libgeos-dev
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
