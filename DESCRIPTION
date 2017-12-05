@@ -33,6 +33,7 @@ Imports:
 Suggests:
   hunspell,
   knitr,
+  maptools,
   rmarkdown,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
