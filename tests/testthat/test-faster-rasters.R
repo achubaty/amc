@@ -33,7 +33,8 @@ test_that("faster-rasters functions produce correct results", {
   shpRas2b_character <- raster::raster(raster::extent(shpRas2_character), # nolint
                                        res = raster::res(shpRas2_character), vals = 0)
   shpRas2b_character[] <- shpRas2_character[]
-  expect_true(identical(shpRas1_character, shpRas2b_character)) # because no label
+  #expect_identical(shpRas1_character, shpRas2b_character)
+  expect_equal(shpRas1_character, shpRas2b_character)
 
   ## numeric
   expect_false(identical(shpRas1_numeric, shpRas2_numeric)) # because of "layer" label in rasterize
@@ -41,7 +42,8 @@ test_that("faster-rasters functions produce correct results", {
   raster::dataType(shpRas2_numeric) <- "FLT4S"
   shpRas2_numeric@file@nodatavalue <- -Inf
 
-  expect_identical(shpRas1_numeric, shpRas2_numeric)
+  #expect_identical(shpRas1_numeric, shpRas2_numeric)
+  expect_equal(shpRas1_numeric, shpRas2_numeric)
   expect_equivalent(shpRas1_multiF, shpRas2_multiF)
   expect_equivalent(shpRas1_missingF, shpRas2_missingF)
 
@@ -58,17 +60,17 @@ test_that("faster-rasters functions produce correct results", {
   shpRas2b_character <- raster::raster(raster::extent(shpRas2_character), # nolint
                                        res = raster::res(shpRas2_character), vals = 0)
   shpRas2b_character[] <- shpRas2_character[]
-  expect_true(identical(shpRas1_character, shpRas2b_character)) # because no label
+  expect_identical(shpRas1_character, shpRas2b_character)
 
   ## numeric
   expect_false(identical(shpRas1_numeric, shpRas2_numeric)) # because of "layer" label in rasterize
   shpRas2_numeric@data@names <- ""
-  dataType(shpRas2_numeric) <- "FLT4S"
+  raster::dataType(shpRas2_numeric) <- "FLT4S"
   shpRas2_numeric@file@nodatavalue <- -Inf
   shpRas2_numeric@file@blockcols <- 0L
   shpRas2_numeric@file@blockrows <- 0L
 
-  expect_identical(shpRas1_numeric, shpRas2_numeric)
+  expect_equivalent(shpRas1_numeric, shpRas2_numeric)
   expect_equivalent(shpRas1_multiF, shpRas2_multiF)
   expect_equivalent(shpRas1_missingF, shpRas2_missingF)
 

@@ -210,8 +210,9 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
                               rstFilename, ot = datatypeGdal)
     a <- raster(rstFilename)
   } else {
-    v1 <- velox(ras) # velox package is much faster than raster package for rasterize function,
+    # velox package is much faster than raster package for rasterize function,
     # but not as fast as gdal_rasterize for large polygons
+    v1 <- velox(ras)
     v1$rasterize(polygon, field = fieldTmp, background = NA_integer_)
     a <- v1$as.RasterLayer(band = 1)
   }
