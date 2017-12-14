@@ -102,7 +102,11 @@ test_that("faster-rasters functions produce correct results", {
 
   ## mask
   newStack1 <- raster::mask(origStack, mask = shp)
-  newStack2 <- fastMask(stack = origStack, polygon = shp)
+  newStack2 <- fastMask(x = origStack, polygon = shp)
+  expect_identical(newStack1, newStack2)
+
+  newStack1 <- raster::mask(origStack[[2]], mask = shp)
+  newStack2 <- fastMask(x = origStack[[2]], polygon = shp)
   expect_identical(newStack1, newStack2)
 })
 
@@ -130,4 +134,7 @@ test_that("fastCrop", {
 
   rc2 <- fastCrop(r, ext)
   expect_equivalent(rc, rc2)
+
+
+
 })

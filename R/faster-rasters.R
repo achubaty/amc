@@ -17,9 +17,9 @@
 #' created via \code{beginCluster} will be much faster than \code{mask}.
 #'
 #' @note This is experimental and not all combinations of parameters or object
-#' types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
+#' types will work.
 #'
-#' @param stack    A \code{RasterStack} object.
+#' @param x    A \code{Raster*} object.
 #'
 #' @param polygon  A \code{SpatialPolygons} object.
 #'
@@ -69,7 +69,7 @@
 #' newStack1 <- mask(origStack, mask = shp)
 #'
 #' # fastMask uses cluster
-#' newStack2 <- fastMask(stack = origStack, polygon = shp)
+#' newStack2 <- fastMask(x = origStack, polygon = shp)
 #'
 #' # test all equal
 #' identical(newStack1, newStack2)
@@ -82,14 +82,19 @@
 #' }
 #' }
 #'
-fastMask <- function(stack, polygon) {
-  croppedStack <- crop(stack, polygon)
+fastMask <- function(x, polygon) {
+  isStack <- is(x, "RasterStack")
+  croppedStack <- crop(x, polygon)
   nonNACellIDs <- extract(croppedStack[[1]], polygon, cellnumbers = TRUE)
   nonNACellIDs <- do.call(rbind, nonNACellIDs)
   singleRas <- raster(croppedStack[[1]])
   suppressWarnings(singleRas[] <- NA_integer_) # for some reason can't handle a raster with all NA
-  maskedStack <- stack(lapply(seq_len(nlayers(stack)), function(x) singleRas))
-  names(maskedStack) <- names(stack)
+  if(isStack) {
+    maskedStack <- stack(lapply(seq_len(nlayers(x)), function(x) singleRas))
+  } else {
+    maskedStack <- singleRas
+  }
+  names(maskedStack) <- names(x)
   suppressWarnings(maskedStack[nonNACellIDs[, "cell"]] <- croppedStack[nonNACellIDs[, "cell"]])
   maskedStack
 }
