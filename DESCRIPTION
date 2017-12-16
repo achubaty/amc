@@ -19,6 +19,7 @@ Imports:
   base64enc,
   data.table,
   digest,
+  fasterize,
   gdalUtils,
   httr,
   magrittr,
@@ -27,6 +28,7 @@ Imports:
   plyr,
   raster,
   rgdal,
+  sf,
   sp,
   utils,
   velox
@@ -35,6 +37,8 @@ Suggests:
   knitr,
   rmarkdown,
   testthat
+Remotes: 
+  "ecohealthalliance/fasterize"
 BugReports: https://github.com/achubaty/amc/issues
 License: GPL-3
 ByteCompile: yes

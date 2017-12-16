@@ -12,9 +12,8 @@
 #' \code{fastRasterize} will try to keep the object in memory or on disk,
 #' depending on whether the input raster was on disk.
 #'
-#' For \code{fastMask}, the function uses use \code{raster::extract} internally,
-#' which is parallel-aware. So, using this function with a cluster having been
-#' created via \code{beginCluster} will be much faster than \code{mask}.
+#' For \code{fastMask}, it is using \code{fasterize::fasterize} from
+#' "ecohealthalliance/fasterize" on GitHub.com.
 #'
 #' @note This is experimental and not all combinations of parameters or object
 #' types will work.
@@ -29,6 +28,8 @@
 #' @docType methods
 #' @export
 #' @importFrom raster crop extract nlayers raster stack
+#' @importFrom fasterize fasterize
+#' @importFrom sf st_as_sf
 #' @rdname faster-rasters
 #'
 #' @examples
@@ -67,12 +68,10 @@
 #'
 #' # original mask function in raster
 #' newStack1 <- mask(origStack, mask = shp)
-#'
-#' # fastMask uses cluster
 #' newStack2 <- fastMask(x = origStack, polygon = shp)
-#'
 #' # test all equal
-#' identical(newStack1, newStack2)
+#' all.equal(newStack1, newStack2)
+#'
 #' newStack1 <- stack(newStack1)
 #' newStack2 <- stack(newStack2)
 #'
@@ -83,20 +82,15 @@
 #' }
 #'
 fastMask <- function(x, polygon) {
-  isStack <- is(x, "RasterStack")
-  croppedStack <- crop(x, polygon)
-  nonNACellIDs <- extract(croppedStack[[1]], polygon, cellnumbers = TRUE)
-  nonNACellIDs <- do.call(rbind, nonNACellIDs)
-  singleRas <- raster(croppedStack[[1]])
-  suppressWarnings(singleRas[] <- NA_integer_) # for some reason can't handle a raster with all NA
-  if(isStack) {
-    maskedStack <- stack(lapply(seq_len(nlayers(x)), function(x) singleRas))
-  } else {
-    maskedStack <- singleRas
-  }
-  names(maskedStack) <- names(x)
-  suppressWarnings(maskedStack[nonNACellIDs[, "cell"]] <- croppedStack[nonNACellIDs[, "cell"]])
-  maskedStack
+    numericfield <- names(polygon)[which(unlist(lapply(names(polygon), function(x) is.numeric(polygon[[x]]))))[1]]
+    a <- fasterize(st_as_sf(polygon), raster = x[[1]], field = numericfield)
+    m <- is.na(a[])
+    x[m] <- NA
+    if(nlayers(x)>1) {
+      stack(x)
+    } else {
+      x
+    }
 }
 
 #' @param ras      A \code{RasterLayer} object.

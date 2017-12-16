@@ -1,7 +1,7 @@
 test_that("faster-rasters functions produce correct results", {
   Sr1 <- sp::Polygon(cbind(c(2, 4, 4, 0.9, 2), c(2, 3, 5, 4, 2))) # nolint
   Sr2 <- sp::Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2))) # nolint
-  Sr3 <- sp::Polygon(cbind(c(4, 4, 5, 10, 4), c(5, 3, 2, 5, 5))) # nolint
+  Sr3 <- sp::Polygon(cbind(c(4, 4, 5, 7.5, 4), c(5, 3, 2, 5, 5))) # nolint
 
   Srs1 <- sp::Polygons(list(Sr1), "s1") # nolint
   Srs2 <- sp::Polygons(list(Sr2), "s2") # nolint
@@ -80,7 +80,7 @@ test_that("faster-rasters functions produce correct results", {
   ##  -- there is one difference here in Sr1 1 instead of 0.9
   Sr1 <- sp::Polygon(cbind(c(2, 4, 4, 1, 2), c(2, 3, 5, 4, 2))) # nolint
   Sr2 <- sp::Polygon(cbind(c(5, 4, 2, 5), c(2, 3, 2, 2))) # nolint
-  Sr3 <- sp::Polygon(cbind(c(4, 4, 5, 10, 4), c(5, 3, 2, 5, 5))) # nolint
+  Sr3 <- sp::Polygon(cbind(c(4, 4, 5, 7.4, 4), c(5, 3, 2, 5, 5))) # nolint
 
   Srs1 <- sp::Polygons(list(Sr1), "s1") # nolint
   Srs2 <- sp::Polygons(list(Sr2), "s2") # nolint
@@ -101,13 +101,13 @@ test_that("faster-rasters functions produce correct results", {
   expect_false(identical(shpRas1_numeric[], shpRas2_numeric[]))
 
   ## mask
-  newStack1 <- raster::mask(origStack, mask = shp)
+  newStack1 <- stack(raster::mask(origStack, mask = shp))
   newStack2 <- fastMask(x = origStack, polygon = shp)
-  expect_identical(newStack1, newStack2)
+  expect_equal(newStack1, newStack2)
 
   newStack1 <- raster::mask(origStack[[2]], mask = shp)
   newStack2 <- fastMask(x = origStack[[2]], polygon = shp)
-  expect_identical(newStack1, newStack2)
+  expect_equal(newStack1, newStack2)
 })
 
 test_that("fastCrop", {

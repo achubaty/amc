@@ -6,12 +6,12 @@
 \alias{fastRasterize}
 \title{Faster operations on rasters}
 \usage{
-fastMask(stack, polygon)
+fastMask(x, polygon)
 
 fastRasterize(polygon, ras, field, filename, useGDAL, datatype)
 }
 \arguments{
-\item{stack}{A \code{RasterStack} object.}
+\item{x}{A \code{Raster*} object.}
 
 \item{polygon}{A \code{SpatialPolygons} object.}
 
@@ -45,13 +45,12 @@ The user can specify whether to use \code{GDAL} with the \code{useGDAL} argument
 \code{fastRasterize} will try to keep the object in memory or on disk,
 depending on whether the input raster was on disk.
 
-For \code{fastMask}, the function uses use \code{raster::extract} internally,
-which is parallel-aware. So, using this function with a cluster having been
-created via \code{beginCluster} will be much faster than \code{mask}.
+For \code{fastMask}, it is using \code{fasterize::fasterize} from
+"ecohealthalliance/fasterize" on GitHub.com.
 }
 \note{
 This is experimental and not all combinations of parameters or object
-types will work, e.g., \code{fastMask} must be given a \code{RasterStack}.
+types will work.
 }
 \examples{
 \dontrun{
@@ -89,12 +88,10 @@ if (interactive()) plot(shpRas2)
 
 # original mask function in raster
 newStack1 <- mask(origStack, mask = shp)
-
-# fastMask uses cluster
-newStack2 <- fastMask(stack = origStack, polygon = shp)
-
+newStack2 <- fastMask(x = origStack, polygon = shp)
 # test all equal
-identical(newStack1, newStack2)
+all.equal(newStack1, newStack2)
+
 newStack1 <- stack(newStack1)
 newStack2 <- stack(newStack2)
 
