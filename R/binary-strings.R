@@ -9,7 +9,6 @@
 #' @return Character vector.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname binstr
 #'

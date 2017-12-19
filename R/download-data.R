@@ -9,7 +9,6 @@
 #' @param unzip     Logical indicating whether the file should be unzipped after download.
 #'
 #' @author Alex Chubaty and Eliot Mcintire
-#' @docType methods
 #' @export
 #' @importFrom digest digest
 #' @importFrom utils download.file installed.packages read.table write.table

@@ -17,7 +17,6 @@
 #'
 #' @author Josh O'Brien
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>%
 #' @rdname get_deps
@@ -67,7 +66,6 @@ get_deps <- function(path, dependencies = NA) { # nolint
 #'
 #' @seealso \code{\link{require}}.
 #'
-#' @docType methods
 #' @importFrom utils install.packages
 #' @export
 #' @rdname loadPackages
@@ -124,7 +122,6 @@ setMethod("loadPackages",
 #' @param package  The name of a currently attached package.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname detachPackage
 #' @seealso \code{\link{detach}}

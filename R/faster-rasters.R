@@ -25,7 +25,6 @@
 #' @return A \code{Raster*} object.
 #'
 #' @author Eliot Mcintire
-#' @docType methods
 #' @export
 #' @importFrom fasterize fasterize
 #' @importFrom raster crop extract nlayers raster stack
@@ -69,6 +68,7 @@
 #' # original mask function in raster
 #' newStack1 <- mask(origStack, mask = shp)
 #' newStack2 <- fastMask(x = origStack, polygon = shp)
+#'
 #' # test all equal
 #' all.equal(newStack1, newStack2)
 #'
@@ -79,6 +79,8 @@
 #'   plot(newStack2[[1]])
 #'   plot(shp, add = TRUE)
 #' }
+#'
+#' file.remove("newMap.tif")
 #' }
 #'
 fastMask <- function(x, polygon) {
@@ -250,18 +252,22 @@ fastRasterize <- function(polygon, ras, field, filename, useGDAL, datatype) {
 
 #' fastCrop
 #'
-#' This function is a wrapper around velox crop function.
+#' This function is a wrapper around \code{velox}'s \code{crop}.
+#'
+#' @param x Raster to crop
+#'
+#' @inheritParams raster::crop
+#'
+#' @details
+#'
+#' \code{fastRasterize} will try to keep the object in memory or on disk,
+#' depending on whether the input raster was on disk.
 #'
 #' @export
 #' @importFrom raster extent
 #' @importClassesFrom velox VeloxRaster
 #' @importFrom velox velox
-#' @param x Raster to crop
-#' @inheritParams raster::crop
-#' @details
-#' \code{fastRasterize} will try to keep the object in memory or on disk,
-#' depending on whether the input raster was on disk.
-#'
+#' @seealso \code{\link[velox]{VeloxRaster_crop}}
 fastCrop <- function(x, y, ...) {
   v1 <- velox(x) # velox package is much faster than raster package for rasterize function,
   # but not as fast as gdal_rasterize for large polygons
@@ -280,10 +286,9 @@ fastCrop <- function(x, y, ...) {
 #' @return \code{numeric_version}
 #'
 #' @author Alex Chubaty and  Eliot McIntire
+#' @export
 #' @importFrom magrittr %>%
 #' @importFrom rgdal getGDALVersionInfo
-#' @docType methods
-#' @export
 #'
 getGDALVersion <-  function() {
   vers <- tryCatch(getGDALVersionInfo(), error = function(x) NA_real_)
@@ -303,9 +308,7 @@ getGDALVersion <-  function() {
 #'
 #' @return Logical.
 #'
-#' @author Alex Chubaty
-#' @author Eliot McIntire
-#' @docType methods
+#' @author Eliot McIntire and Alex Chubaty
 #' @export
 #'
 checkGDALVersion <- function(version) {

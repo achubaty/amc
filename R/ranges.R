@@ -10,7 +10,6 @@
 #' @return Logical vectors. \code{NA} values in \code{x} are retained.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom methods is
 #' @importFrom raster getValues
@@ -50,7 +49,6 @@ inRange <- function(x, a = 0, b = 1) {
 #'
 #' @author Jeffery Evans
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom raster getValues maxValue minValue
 #' @rdname rescale

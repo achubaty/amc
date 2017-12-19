@@ -12,7 +12,6 @@
 #' @return A Spatial object.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom rgdal readOGR
 #' @rdname getOGR

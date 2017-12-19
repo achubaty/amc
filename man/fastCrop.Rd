@@ -14,9 +14,12 @@ fastCrop(x, y, ...)
 \item{...}{Additional arguments as for \code{\link{writeRaster}}}
 }
 \description{
-This function is a wrapper around velox crop function.
+This function is a wrapper around \code{velox}'s \code{crop}.
 }
 \details{
 \code{fastRasterize} will try to keep the object in memory or on disk,
 depending on whether the input raster was on disk.
+}
+\seealso{
+\code{\link[velox]{VeloxRaster_crop}}
 }

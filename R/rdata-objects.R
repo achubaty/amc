@@ -30,7 +30,6 @@ if (getRversion() >= "3.1.0") {
 #' @seealso \code{\link{file.path}}, \code{\link{load}}, \code{\link{save}}, \code{\link{unlink}}
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom methods is
 #' @importFrom raster brick filename raster stack

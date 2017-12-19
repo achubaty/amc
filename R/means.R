@@ -11,7 +11,6 @@
 #' @return A numeric vector of length one.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname means
 #'

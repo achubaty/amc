@@ -28,7 +28,6 @@ utils::globalVariables(c("ID", "VALUE"))
 #' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
 #'
 #' @author Alex Chubaty and Eliot Mcintire
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>% set_names
 #' @importFrom raster crop projectRaster stack writeRaster
@@ -135,7 +134,6 @@ setMethod(
 #' @return A \code{RasterLayer} object.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom data.table ':=' data.table setkey
 #' @importFrom sp SpatialPoints
@@ -184,7 +182,6 @@ dt2raster <- function(dt, r, val) {
 #'                   using temporary files.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>% set_names
 #' @importFrom raster mosaic writeRaster
