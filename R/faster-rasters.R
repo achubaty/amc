@@ -18,7 +18,7 @@
 #' @note This is experimental and not all combinations of parameters or object
 #' types will work.
 #'
-#' @param x    A \code{Raster*} object.
+#' @param x        A \code{Raster*} object.
 #'
 #' @param polygon  A \code{SpatialPolygons} object.
 #'
@@ -27,8 +27,8 @@
 #' @author Eliot Mcintire
 #' @docType methods
 #' @export
-#' @importFrom raster crop extract nlayers raster stack
 #' @importFrom fasterize fasterize
+#' @importFrom raster crop extract nlayers raster stack
 #' @importFrom sf st_as_sf
 #' @rdname faster-rasters
 #'
@@ -82,11 +82,13 @@
 #' }
 #'
 fastMask <- function(x, polygon) {
-    numericfield <- names(polygon)[which(unlist(lapply(names(polygon), function(x) is.numeric(polygon[[x]]))))[1]]
+    numericfield <- names(polygon)[which(unlist(lapply(names(polygon), function(x) {
+      is.numeric(polygon[[x]])
+    })))[1]]
     a <- fasterize(st_as_sf(polygon), raster = x[[1]], field = numericfield)
     m <- is.na(a[])
     x[m] <- NA
-    if(nlayers(x)>1) {
+    if (nlayers(x) > 1) {
       stack(x)
     } else {
       x

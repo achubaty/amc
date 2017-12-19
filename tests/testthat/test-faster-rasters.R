@@ -134,7 +134,4 @@ test_that("fastCrop", {
 
   rc2 <- fastCrop(r, ext)
   expect_equivalent(rc, rc2)
-
-
-
 })
