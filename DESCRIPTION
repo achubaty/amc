@@ -38,7 +38,7 @@ Suggests:
   rmarkdown,
   testthat
 Remotes: 
-  "ecohealthalliance/fasterize"
+  ecohealthalliance/fasterize
 BugReports: https://github.com/achubaty/amc/issues
 License: GPL-3
 ByteCompile: yes
