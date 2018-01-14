@@ -1,9 +1,11 @@
 test_that("cropReproj works correctly", {
   library(magrittr)
+  library(sp)
   library(raster)
   on.exit({
     detach("package:magrittr")
     detach("package:raster")
+    detach("package:sp")
   }, add = TRUE)
 
   f <- system.file("external/test.grd", package = "raster")
