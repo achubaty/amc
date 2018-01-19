@@ -7,8 +7,9 @@
 dt2raster(dt, r, val)
 }
 \arguments{
-\item{dt}{\code{data.table} object with columns \code{ID}, \code{X}, \code{Y},
-and the values to assign to the raster specified by column \code{val}.}
+\item{dt}{\code{data.table} object with columns \code{ID}, or both \code{X}
+and \code{Y}, and the values to assign to the raster specified by
+column \code{val}.}
 
 \item{r}{\code{Raster*} object.}
 
@@ -19,6 +20,23 @@ A \code{RasterLayer} object.
 }
 \description{
 DETAILED DESCRIPTION NEEDED
+}
+\examples{
+library(data.table)
+library(sp)
+library(raster)
+
+r <- raster(nrows = 10, ncols = 10)
+r[] <- 10
+
+# using x,y coordinates
+#dt1 <- data.table()
+
+# using pixel ids
+dt2 <- data.table(ID = 1L:ncell(r), VALUE = r[])
+dt2[, VALUE := sample(1L:10L, ncell(r1), replace = TRUE)]
+plot(dt2raster(dt2, r, "VALUE"))
+
 }
 \author{
 Alex Chubaty
