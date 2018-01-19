@@ -30,7 +30,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #' @author Alex Chubaty and Eliot Mcintire
 #' @export
 #' @importFrom magrittr %>% set_names
-#' @importFrom raster crop projectRaster stack writeRaster
+#' @importFrom raster crop projectRaster res stack writeRaster
 #' @importFrom sp CRS proj4string spTransform
 #' @rdname cropReproj
 #'
@@ -60,7 +60,7 @@ setMethod(
     a <- set_names(x, layerNames)
     b <- spTransform(studyArea, CRSobj = CRS(proj4string(a)))
     out <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
-      projectRaster(crs = CRS(proj4string(studyArea)), method = "ngb",
+      projectRaster(res = res(a), crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[2]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[3]], overwrite = TRUE) %>%
       set_names(layerNames) %>%
@@ -88,10 +88,10 @@ setMethod(
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
-    b <- projectRaster(studyArea, a, method = "ngb",
+    b <- projectRaster(studyArea, a, res = res(a), method = "ngb",
                        filename = tempfiles[[1]], overwrite = TRUE)
     out <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
-      projectRaster(crs = CRS(proj4string(studyArea)), method = "ngb",
+      projectRaster(res = res(a), crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[3]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
       set_names(layerNames) %>%
