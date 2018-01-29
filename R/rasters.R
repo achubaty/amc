@@ -8,7 +8,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #' as normally, the system temp directory is only emptied on reboot.
 #'
 #' @note Currently, only works with a \code{RasterStack} object from file, and
-#' is only tested using \code{studyArea} as a  \code{SpatialPolygonsDataFrame}.
+#' is only tested using \code{studyArea} as a \code{SpatialPolygonsDataFrame}.
 #'
 #' @param x          \code{RasterStack} object or the filepath to such object.
 #'
