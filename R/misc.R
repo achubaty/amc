@@ -12,7 +12,7 @@
 hill <- function(a, b, z) {
   stopifnot(is.numeric(a), is.numeric(b), is.numeric(z))
 
-  exp(a) * z^b / (1 + exp(a) * z^b)
+  exp(a) * z ^ b / (1 + exp(a) * z ^ b)
 }
 
 #' Logit function

@@ -22,7 +22,7 @@ test_that("cropReproj works correctly", {
   ext.prj.spdf <- spTransform(ext.spdf, CRS(prj)) # nolint
 
   ## character,RasterLayer
-  sa.rast <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>%
+  sa.rast <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>% # nolint
     crop(ext.prj)
   rc0 <- cropReproj(f, sa.rast, layerNames = "test")
 
@@ -52,7 +52,7 @@ test_that("cropReproj works correctly", {
   }
 
   ## RasterLayer,SpatialPolygonsDataFrame
-  sa.spdf <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>%
+  sa.spdf <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>% # nolint
     crop(ext.prj.spdf)
   rc2 <- cropReproj(r, ext.prj.spdf, layerNames = "test")
   expect_true(is(rc2, "RasterStack"))
@@ -61,7 +61,7 @@ test_that("cropReproj works correctly", {
 
   ## RasterStack,RasterLayer
   sln <- c("one", "two", "three")
-  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>%
+  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% # nolint
     set_names(sln)
   sc1 <- cropReproj(s, sa.rast, layerNames = sln)
   expect_true(is(sc1, "RasterStack"))
