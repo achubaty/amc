@@ -30,7 +30,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #' @author Alex Chubaty and Eliot Mcintire
 #' @export
 #' @importFrom magrittr %>% set_names
-#' @importFrom raster crop projectRaster res stack writeRaster
+#' @importFrom raster crop nlayers projectRaster res stack writeRaster
 #' @importFrom sp CRS proj4string spTransform
 #' @rdname cropReproj
 #'
