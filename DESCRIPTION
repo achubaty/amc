@@ -19,8 +19,6 @@ Imports:
   base64enc,
   data.table,
   digest,
-  fasterize,
-  gdalUtils,
   httr,
   magrittr,
   methods,
@@ -28,10 +26,8 @@ Imports:
   plyr,
   raster,
   rgdal,
-  sf,
   sp,
-  utils,
-  velox
+  utils
 Suggests:
   hunspell,
   knitr,
