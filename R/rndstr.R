@@ -11,7 +11,6 @@
 #' @return Character vector of random strings.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname rndstr
 #'

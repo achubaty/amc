@@ -1,9 +1,11 @@
 test_that("cropReproj works correctly", {
   library(magrittr)
+  library(sp)
   library(raster)
   on.exit({
     detach("package:magrittr")
     detach("package:raster")
+    detach("package:sp")
   }, add = TRUE)
 
   f <- system.file("external/test.grd", package = "raster")
@@ -20,10 +22,12 @@ test_that("cropReproj works correctly", {
   ext.prj.spdf <- spTransform(ext.spdf, CRS(prj)) # nolint
 
   ## character,RasterLayer
-  sa.rast <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj) # nolint
+  sa.rast <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>% # nolint
+    crop(ext.prj)
   rc0 <- cropReproj(f, sa.rast, layerNames = "test")
 
   expect_true(is(rc0, "RasterStack"))
+  expect_equal(res(r), res(rc0))
   expect_equivalent(stack(sa.rast), rc0)
   expect_equivalent(sa.rast, unstack(rc0)[[1]])
 
@@ -31,6 +35,7 @@ test_that("cropReproj works correctly", {
   rc1 <- cropReproj(r, sa.rast, layerNames = "test")
 
   expect_true(is(rc1, "RasterStack"))
+  expect_equal(res(r), res(rc1))
   expect_equivalent(stack(sa.rast), rc1)
   expect_equivalent(sa.rast, unstack(rc1)[[1]])
 
@@ -47,24 +52,24 @@ test_that("cropReproj works correctly", {
   }
 
   ## RasterLayer,SpatialPolygonsDataFrame
-  sa.spdf <- projectRaster(r, crs = CRS(prj), method = "ngb") %>% crop(ext.prj.spdf) # nolint
-  rc2 <- cropReproj(r, ext.spdf, layerNames = "test")
+  sa.spdf <- projectRaster(r, res = res(r), crs = CRS(prj), method = "ngb") %>% # nolint
+    crop(ext.prj.spdf)
+  rc2 <- cropReproj(r, ext.prj.spdf, layerNames = "test")
   expect_true(is(rc2, "RasterStack"))
+  expect_equal(res(r), res(rc2))
   expect_equivalent(stack(sa.spdf), rc2)
 
   ## RasterStack,RasterLayer
   sln <- c("one", "two", "three")
-  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% set_names(sln) # nolint
+  sa.stck <- stack(sa.rast, sa.rast * 2, sa.rast * 3) %>% # nolint
+    set_names(sln)
   sc1 <- cropReproj(s, sa.rast, layerNames = sln)
   expect_true(is(sc1, "RasterStack"))
+  expect_equal(res(s), res(sc1))
   expect_equivalent(sa.stck, sc1)
 
   ## RasterStack,SpatialPolygonsDataFrame
   sc2 <- cropReproj(s, ext.spdf, layerNames = sln)
   expect_true(is(sc2, "RasterStack"))
-  expect_equivalent(sa.stck, sc2)
-
-  ## compare raster vs spdf outputs
-  expect_equivalent(rc1, rc2)
-  expect_equivalent(sc1, sc2)
+  expect_equal(res(s), res(sc2))
 })

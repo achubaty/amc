@@ -6,6 +6,26 @@ matrix:
   include:
   - os: linux
     dist: trusty
+    r: 3.3.0
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+        packages:
+        - libgdal1-dev
+        - libgeos-dev
+        - libnlopt-dev
+        - libproj-dev
+        - libudunits2-dev
+        - gdal-bin
+    before_install:
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
+    r_packages:
+    - rgdal
+  - os: linux
+    dist: trusty
     r: oldrel
     addons:
       apt:
@@ -17,12 +37,13 @@ matrix:
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
+        - gdal-bin
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
     - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
-    before_script:
-    - Rscript -e "install.packages('rgdal', type = 'source')"
+    r_packages:
+    - rgdal
   - os: linux
     dist: trusty
     r: release
@@ -36,6 +57,7 @@ matrix:
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
+        - gdal-bin
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
@@ -44,6 +66,8 @@ matrix:
       - covr
     r_github_packages:
       - jimhester/lintr
+    r_packages:
+    - rgdal
     after_success:
     - Rscript -e 'covr::coveralls(type = "all", quiet = FALSE)'
     - Rscript -e 'lintr::lint_package()'
@@ -60,10 +84,14 @@ matrix:
         - libnlopt-dev
         - libproj-dev
         - libudunits2-dev
+        - gdal-bin
     before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
     - echo "options(repos = c(CRAN='https://cran.rstudio.com'))" >> ~/.Rprofile
+    r_packages:
+    - devtools
+    - rgdal
   - os: osx
     osx_image: xcode9
     latex: false

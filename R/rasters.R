@@ -8,7 +8,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #' as normally, the system temp directory is only emptied on reboot.
 #'
 #' @note Currently, only works with a \code{RasterStack} object from file, and
-#' is only tested using \code{studyArea} as a  \code{SpatialPolygonsDataFrame}.
+#' is only tested using \code{studyArea} as a \code{SpatialPolygonsDataFrame}.
 #'
 #' @param x          \code{RasterStack} object or the filepath to such object.
 #'
@@ -28,10 +28,9 @@ utils::globalVariables(c("ID", "VALUE"))
 #' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
 #'
 #' @author Alex Chubaty and Eliot Mcintire
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>% set_names
-#' @importFrom raster crop projectRaster stack writeRaster
+#' @importFrom raster crop nlayers projectRaster res stack writeRaster
 #' @importFrom sp CRS proj4string spTransform
 #' @rdname cropReproj
 #'
@@ -61,7 +60,7 @@ setMethod(
     a <- set_names(x, layerNames)
     b <- spTransform(studyArea, CRSobj = CRS(proj4string(a)))
     out <- crop(a, b, filename = tempfiles[[1]], overwrite = TRUE) %>%
-      projectRaster(crs = CRS(proj4string(studyArea)), method = "ngb",
+      projectRaster(res = res(a), crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[2]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[3]], overwrite = TRUE) %>%
       set_names(layerNames) %>%
@@ -89,10 +88,10 @@ setMethod(
 
     ## TO DO: can this part be made parallel?
     a <- set_names(x, layerNames)
-    b <- projectRaster(studyArea, a, method = "ngb",
+    b <- projectRaster(studyArea, a, res = res(a), method = "ngb",
                        filename = tempfiles[[1]], overwrite = TRUE)
     out <- crop(a, b, filename = tempfiles[[2]], overwrite = TRUE) %>%
-      projectRaster(crs = CRS(proj4string(studyArea)), method = "ngb",
+      projectRaster(res = res(a), crs = CRS(proj4string(studyArea)), method = "ngb",
                     filename = tempfiles[[3]], overwrite = TRUE) %>%
       crop(studyArea, filename = tempfiles[[4]], overwrite = TRUE) %>%
       set_names(layerNames) %>%
@@ -125,8 +124,9 @@ setMethod(
 #'
 #' DETAILED DESCRIPTION NEEDED
 #'
-#' @param dt  \code{data.table} object with columns \code{ID}, \code{X}, \code{Y},
-#'            and the values to assign to the raster specified by column \code{val}.
+#' @param dt  \code{data.table} object with columns \code{ID}, or both \code{X}
+#'            and \code{Y}, and the values to assign to the raster specified by
+#'            column \code{val}.
 #'
 #' @param r   \code{Raster*} object.
 #'
@@ -135,30 +135,51 @@ setMethod(
 #' @return A \code{RasterLayer} object.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom data.table ':=' data.table setkey
 #' @importFrom sp SpatialPoints
 #' @importFrom raster cellFromXY ncell
 #' @rdname dt2raster
 #'
-# @examples
+#' @examples
+#' library(data.table)
+#' library(sp)
+#' library(raster)
+#'
+#' r <- raster(nrows = 10, ncols = 10)
+#' r[] <- 10
+#'
+#' # using x,y coordinates
+#' #dt1 <- data.table()
+#'
+#' # using pixel ids
+#' dt2 <- data.table(ID = 1L:ncell(r), VALUE = r[])
+#' dt2[, VALUE := sample(1L:10L, ncell(r), replace = TRUE)]
+#' plot(dt2raster(dt2, r, "VALUE"))
 #'
 dt2raster <- function(dt, r, val) {
   stopifnot(is(dt, "data.table"),
-            all(c("ID", "X", "Y") %in% colnames(dt)),
             is(r, "Raster"),
             is.character(val))
 
-  xy <- SpatialPoints(cbind(dt$X, dt$Y))
-  ids <- cellFromXY(r, xy)
-  tmp <- data.table(ID  = ids, VALUE = dt[[val]])
-  tmp <- tmp[, VALUE := sum(VALUE), by = ID] # nolint
-  setkey(tmp, ID)
-
   rout <- r
-  if (length(tmp$ID)) rout[tmp$ID] <- tmp$VALUE
-  if (ncell(rout) - length(tmp$ID) > 0) rout[!tmp$ID] <- NA
+
+  if (all(c("X", "Y") %in% colnames(dt))) {
+    xy <- SpatialPoints(cbind(dt$X, dt$Y))
+    ids <- cellFromXY(r, xy)
+    tmp <- data.table(ID  = ids, VALUE = dt[[val]])
+    tmp <- tmp[, VALUE := sum(VALUE), by = ID] # nolint
+    setkey(tmp, ID)
+
+    if (length(tmp$ID)) rout[tmp$ID] <- tmp$VALUE
+    if (ncell(rout) - length(tmp$ID) > 0) rout[!tmp$ID] <- NA
+  } else if ("ID" %in% colnames(dt)) {
+    if (length(dt$ID)) rout[dt$ID] <- dt$VALUE
+    if (ncell(rout) - length(dt$ID) > 0) rout[!dt$ID] <- NA
+  } else {
+    stop("dt must have columns X and Y, or column ID.")
+  }
+
   return(rout)
 }
 
@@ -184,7 +205,6 @@ dt2raster <- function(dt, r, val) {
 #'                   using temporary files.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>% set_names
 #' @importFrom raster mosaic writeRaster

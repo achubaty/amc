@@ -8,7 +8,6 @@
 #' @return  Character string indicating the filepath to the newly created file.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname tf
 #'

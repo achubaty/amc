@@ -9,7 +9,6 @@
 #' @return Total amount of system memory (RAM) in \code{units}.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom utils memory.limit
 #' @rdname sysmem
@@ -76,7 +75,6 @@ sysmem <- function(x = "GB") {
 #' @return Integer. Number of CPUs to allocate to cluster.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname guesstimate
 #'
@@ -107,7 +105,6 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
 #' unallocated memory manually.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @rdname gc
 #' @seealso \code{\link{gc}}

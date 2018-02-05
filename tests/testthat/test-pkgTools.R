@@ -19,7 +19,12 @@ test_that("get_deps is happy", {
   expect_identical(deps,
                    c("caret", "foreach", "iterators", "mlbench", "parallel", "rpart", "utils"))
 
-  expect_warning(get_deps(file.path(tmpdir, "doParallel"), dependencies = NULL))
+  ## TEMPORARY: R-devel no solnger throws warnings
+  if (grepl("development", R.version.string)) {
+    expect_identical(get_deps(file.path(tmpdir, "doParallel"), dependencies = NULL), character(0))
+  } else {
+    expect_warning(get_deps(file.path(tmpdir, "doParallel"), dependencies = NULL))
+  }
   expect_error(get_deps(file.path(tmpdir, "doParallel"), dependencies = "turkey"))
 
   ## BH doesn't have any deps

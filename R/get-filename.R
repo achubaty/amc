@@ -9,7 +9,6 @@
 #' @return Character string representing the filename.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @export
 #' @importFrom magrittr %>%
 #' @rdname getFileName

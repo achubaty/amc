@@ -12,7 +12,6 @@
 #' See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.
 #'
 #' @author Alex Chubaty
-#' @docType methods
 #' @importFrom base64enc base64decode
 #' @importFrom httr add_headers content GET stop_for_status
 #' @importFrom magrittr %>%

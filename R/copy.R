@@ -11,7 +11,6 @@
 #' @author Zach Foster
 #' @author Alex Chubaty
 #'
-#' @docType methods
 #' @export
 #' @rdname dir_copy
 #'
