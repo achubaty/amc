@@ -17,7 +17,7 @@
 #' library(datasets)
 #' library(magrittr)
 #'
-#' tmpDir <- file.path(tmpDir(), 'symlink-test') %>%
+#' tmpDir <- file.path(tempdir(), 'symlink-test') %>%
 #'   normalizePath(winslash = '/', mustWork = FALSE)
 #' dir.create(tmpDir)
 #'

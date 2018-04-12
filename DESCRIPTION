@@ -16,6 +16,7 @@ Depends:
 Imports:
   base64enc,
   data.table,
+  datasets,
   digest,
   httr,
   magrittr,
