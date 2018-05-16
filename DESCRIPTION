@@ -28,12 +28,11 @@ Imports:
   sp,
   utils
 Suggests:
+  covr,
   hunspell,
   knitr,
   rmarkdown,
   testthat
-Remotes: 
-  ecohealthalliance/fasterize
 BugReports: https://github.com/achubaty/amc/issues
 License: GPL-3
 ByteCompile: yes
