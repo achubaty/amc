@@ -42,7 +42,10 @@ environment:
   - R_VERSION: release
 
   - R_VERSION: oldrel
-    RTOOLS_VERSION: 33
+    RTOOLS_VERSION: 34
+
+  - R_VERSION: 3.4.0
+    RTOOLS_VERSION: 34
 
   - R_VERSION: 3.3.0
     RTOOLS_VERSION: 33
@@ -52,12 +55,10 @@ branches:
     - master
     - development
 
-  except:
-    - gh-pages
-
 clone_depth: 5
 
 build_script:
+  - Rscript -e "install.packages(c('data.table', 'devtools'), repos = 'https://cran.rstudio.com', type = 'source')"
   - travis-tool.sh install_deps
 
 test_script:
