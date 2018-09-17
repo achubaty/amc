@@ -1,10 +1,13 @@
 #' Draw convex hull around polygons
 #'
 #' Draws a convex hull around vertice points of a polygon shapefile,
-#' creating a singl polygon.
+#' creating a single polygon.
+#' If a buffer distance is supplied, will buffer the convex hull inwards or
+#' outwards depending on the sign of the distance value.
 #'
 #' @param x   A \code{SpatialPolygons*} object
-#' @param b   Distance to buffer.
+#' @param b   Optional. Distance to buffer. If the value is negative, the buffer
+#'            will be drawn inwards.
 #'
 #' @return A \code{SpatialPolygons} object.
 #'
@@ -14,7 +17,7 @@
 #' @importFrom methods as
 #' @importFrom raster buffer
 #' @importFrom sp polygons proj4string proj4string<- SpatialPoints
-#'
+#' @seealso \code{\link[raster]{buffer}}
 outerBuffer <- function(x, b = NULL) {
   stopifnot(is(x, "SpatialPolygons"))
   ## Get polygon vertices

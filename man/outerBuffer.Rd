@@ -9,14 +9,20 @@ outerBuffer(x, b = NULL)
 \arguments{
 \item{x}{A \code{SpatialPolygons*} object}
 
-\item{b}{Distance to buffer.}
+\item{b}{Optional. Distance to buffer. If the value is negative, the buffer
+will be drawn inwards.}
 }
 \value{
 A \code{SpatialPolygons} object.
 }
 \description{
 Draws a convex hull around vertice points of a polygon shapefile,
-creating a singl polygon.
+creating a single polygon.
+If a buffer distance is supplied, will buffer the convex hull inwards or
+outwards depending on the sign of the distance value.
+}
+\seealso{
+\code{\link[raster]{buffer}}
 }
 \author{
 Ceres Barros and Alex Chubaty
