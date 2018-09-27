@@ -65,15 +65,15 @@ f3 <- system.file("external/test.grd", package = "raster")
 r3 <- raster(f3)
 f4 <- file.path(tmpDir, "raster4.grd")
 flink(f3, f4, FALSE) ## hardlink the grd and gri files
-flink(f3, extension(f4, "gri"), FALSE)
+flink(extension(f3, "gri"), extension(f4, "gri"), FALSE)
 
 file.exists(f4) ## TRUE
 file.exists(extension(f4, "gri")) ## TRUE
-r4 <- suppressWarnings(raster(f4)) ## hardlink gives warning, but does load the raster
+r4 <- raster(f4) ## hardlink
 
 f5 <- file.path(tmpDir, "raster5.grd")
 flink(f3, f5, TRUE) ## symlink the grd and gri files
-flink(f3, extension(f5, "gri"), TRUE)
+flink(extension(f3, "gri"), extension(f5, "gri"), TRUE)
 file.exists(f5) ## TRUE
 file.exists(extension(f5, "gri")) ## TRUE
 r5 <- raster(f5) ## symlink works
