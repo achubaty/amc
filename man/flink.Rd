@@ -4,39 +4,44 @@
 \alias{flink}
 \title{Create a link to a file}
 \usage{
-flink(from, to)
+flink(from, to, symlink = FALSE)
 }
 \arguments{
 \item{from, to}{character vectors, containing file names or paths (can alternatively
 be the path to a single existing directory).}
+
+\item{symlink}{Logical indicating whether to use symlink (instead of hardlink).
+Default \code{FALSE}.}
 }
 \description{
-Creates a symbolic link (symlink) to a file if possible, falling back to a hardlink
-if creating a symlink is not possible (usually on Windows).
+Creates a hard link to a file if possible, falling back to a symbolic link (symlink).
+Hard links are for files only, and won't work across different physical drives.
+Symlinks won't work on Windows without admin privileges.
 }
 \note{
-This has not been well tested on Windows!
+Use caution with files-backed objects (e.g., rasters). See examples.
 }
 \examples{
 library(datasets)
 library(magrittr)
+library(raster)
 
 tmpDir <- file.path(tempdir(), 'symlink-test') \%>\%
   normalizePath(winslash = '/', mustWork = FALSE)
 dir.create(tmpDir)
 
-f0 <- file.path(tmpDir, 'file0.csv')
+f0 <- file.path(tmpDir, "file0.csv")
 write.csv(iris, f0)
 
-d1 <- file.path(tmpDir, 'dir1')
+d1 <- file.path(tmpDir, "dir1")
 dir.create(d1)
 write.csv(iris, file.path(d1, "file1.csv"))
 
-d2 <- file.path(tmpDir, 'dir2')
-f2 <- file.path(tmpDir, 'file2.csv')
+d2 <- file.path(tmpDir, "dir2")
+f2 <- file.path(tmpDir, "file2.csv")
 
 ## create a link to the the directory; d2 should look like d1
-flink(d1, d2)
+flink(d1, d2)  ## SYMLINK
 dir.exists(d2) ## TRUE
 identical(d1, Sys.readlink(d2)) ## TRUE
 file.exists(file.path(d2, "file1.csv")) ## TRUE
@@ -54,6 +59,21 @@ file.exists(file.path(d1, "file1.csv")) ## TRUE
 unlink(f2)
 file.exists(f2) ## FALSE
 file.exists(f0) ## TRUE
+
+## using rasters and other file-backed objects
+f3 <- system.file("external/test.grd", package = "raster")
+r3 <- raster(f3)
+f4 <- file.path(tmpDir, "raster4.grd")
+flink(f3, f4, FALSE) ## hardlink
+
+file.exists(f4) ## TRUE
+r4 <- try(raster(f4)) ## hardlink fails
+
+f5 <- file.path(tmpDir, "raster5.grd")
+flink(f3, f5, TRUE) ## SYMLINK
+file.exists(f5) ## TRUE
+r5 <- raster(f5) ## symlink works
+identical(r3, r5) ## TRUE
 
 ## cleanup
 unlink(tmpDir, recursive = TRUE)
