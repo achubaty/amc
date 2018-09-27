@@ -49,7 +49,7 @@ file.exists(file.path(d2, "file1.csv")) ## TRUE
 ## create link to a file
 flink(f0, f2) ## symlink
 file.exists(f2) ## TRUE
-identical(f0, Sys.readlink(f2)) ## TRUE
+identical(read.csv(f0), read.csv(f2)) ## TRUE
 
 ## deleting the link shouldn't delete the original file
 unlink(d2, recursive = TRUE)
