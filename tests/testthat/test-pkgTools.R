@@ -17,7 +17,7 @@ test_that("get_deps is happy", {
 
   deps <- get_deps(file.path(tmpdir, "doParallel"), dependencies = TRUE)
   expect_identical(deps,
-                   c("caret", "foreach", "iterators", "mlbench", "parallel", "rpart", "utils"))
+                   c("caret", "foreach", "iterators", "mlbench", "parallel", "rpart", "RUnit", "utils"))
 
   ## R >= 3.5.0 no longer throws warnings
   if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "3.5.0") {
