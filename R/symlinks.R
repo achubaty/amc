@@ -59,14 +59,18 @@
 #' f3 <- system.file("external/test.grd", package = "raster")
 #' r3 <- raster(f3)
 #' f4 <- file.path(tmpDir, "raster4.grd")
-#' flink(f3, f4, FALSE) ## hardlink
+#' flink(f3, f4, FALSE) ## hardlink the grd and gri files
+#' flink(f3, extension(f4, "gri"), FALSE)
 #'
 #' file.exists(f4) ## TRUE
-#' r4 <- try(raster(f4)) ## hardlink fails
+#' file.exists(extension(f4, "gri")) ## TRUE
+#' r4 <- suppressWarnings(raster(f4)) ## hardlink gives warning, but does load the raster
 #'
 #' f5 <- file.path(tmpDir, "raster5.grd")
-#' flink(f3, f5, TRUE) ## SYMLINK
+#' flink(f3, f5, TRUE) ## symlink the grd and gri files
+#' flink(f3, extension(f5, "gri"), TRUE)
 #' file.exists(f5) ## TRUE
+#' file.exists(extension(f5, "gri")) ## TRUE
 #' r5 <- raster(f5) ## symlink works
 #' identical(r3, r5) ## TRUE
 #'
