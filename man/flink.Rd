@@ -4,17 +4,17 @@
 \alias{flink}
 \title{Create a link to a file}
 \usage{
-flink(from, to, symlink = FALSE)
+flink(from, to, symlink = TRUE)
 }
 \arguments{
 \item{from, to}{character vectors, containing file names or paths (can alternatively
 be the path to a single existing directory).}
 
 \item{symlink}{Logical indicating whether to use symlink (instead of hardlink).
-Default \code{FALSE}.}
+Default \code{TRUE}.}
 }
 \description{
-Creates a hard link to a file if possible, falling back to a symbolic link (symlink).
+Creates a symbolic link (symlink) to a file if possible, possibly falling back to a hard link.
 Hard links are for files only, and won't work across different physical drives.
 Symlinks won't work on Windows without admin privileges.
 }
@@ -41,13 +41,13 @@ d2 <- file.path(tmpDir, "dir2")
 f2 <- file.path(tmpDir, "file2.csv")
 
 ## create a link to the the directory; d2 should look like d1
-flink(d1, d2)  ## SYMLINK
+flink(d1, d2)  ## symlink
 dir.exists(d2) ## TRUE
 identical(d1, Sys.readlink(d2)) ## TRUE
 file.exists(file.path(d2, "file1.csv")) ## TRUE
 
 ## create link to a file
-flink(f0, f2)
+flink(f0, f2) ## symlink
 file.exists(f2) ## TRUE
 identical(f0, Sys.readlink(f2)) ## TRUE
 
