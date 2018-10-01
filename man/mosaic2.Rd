@@ -8,8 +8,9 @@
 \usage{
 mosaic2(x, y, ...)
 
-\S4method{mosaic2}{RasterLayer,RasterLayer}(x, y, ..., fun, tolerance = 0.05,
-  filename = NULL, layerName = "layer", inRAM = FALSE)
+\S4method{mosaic2}{RasterLayer,RasterLayer}(x, y, ..., fun,
+  tolerance = 0.05, filename = NULL, layerName = "layer",
+  inRAM = FALSE)
 }
 \arguments{
 \item{x}{\code{Raster*} object}

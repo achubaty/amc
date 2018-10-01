@@ -1,14 +1,15 @@
 Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
-Date: 2018-06-06
-Version: 0.1.4
+Version: 0.1.5
+Date: 2018-10-01
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("ctb")),
-    person(c("Josh"), "O'Brien", role = c("ctb"))
+    person("Ceres", "Barros", email = "ceresvbarros@hotmail.com", role = c("ctb")),
+    person("Josh", "O'Brien", role = c("ctb"))
     )
 Description: A collection of variously useful functions.
 Depends:
@@ -18,6 +19,7 @@ Imports:
   data.table,
   datasets,
   digest,
+  dismo,
   httr,
   magrittr,
   methods,
@@ -39,4 +41,4 @@ ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

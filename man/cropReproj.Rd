@@ -14,8 +14,8 @@ cropReproj(x, studyArea, ...)
 \S4method{cropReproj}{RasterStack,SpatialPolygonsDataFrame}(x, studyArea,
   layerNames, filename, inRAM = FALSE, ...)
 
-\S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames, filename,
-  inRAM = FALSE, ...)
+\S4method{cropReproj}{RasterStack,Raster}(x, studyArea, layerNames,
+  filename, inRAM = FALSE, ...)
 
 \S4method{cropReproj}{RasterLayer,ANY}(x, studyArea, layerNames, filename,
   inRAM = FALSE, ...)
