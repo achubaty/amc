@@ -121,6 +121,11 @@ matrix:
     before_script:
     - Rscript -e "install.packages('rgdal', type = 'source')"
   - os: windows
+    r: oldrel
+  - os: windows
+    r: release
+  - os: windows
+    r: devel
 r_build_args: '--compact-vignettes="gs+qpdf"'
 r_check_args: '--as-cran'
 warnings_are_errors: true
