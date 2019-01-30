@@ -25,6 +25,7 @@ Imports:
   methods,
   parallel,
   plyr,
+  reproducible,
   raster,
   rgdal,
   sp,
