@@ -9,13 +9,25 @@
 #' @return A \code{SpatialPolygonsDataFrame}
 #'
 #' @export
+#' @importFrom raster shapefile
+#' @importFrom rgdal readOGR writeOGR
 #' @importFrom sp spTransform
-#' @importFrom rgdal readOGR
+#' @importFrom tools file_path_sans_ext
 loadStudyArea <- function(path = NULL, filename = NULL, proj = NULL) {
   if (is.null(path) | is.null(filename) | !file.exists(file.path(path, filename)))
     stop("'filename' and 'path' must be provided and must exist.")
 
-  studyArea <- rgdal::readOGR(file.path(path, filename))
+  fullPath <- file.path(path, filename)
+
+  if (tools::file_ext(fullPath) == "kml") {
+    ## convert to shapefile (so raster doesn't have a fit)
+    studyArea <- rgdal::readOGR(fullPath)
+    writeOGR(studyArea, path, driver = "ESRI Shapefile", overwrite_layer = TRUE,
+             layer = tools::file_path_sans_ext(filename))
+    shpfile <- fullPath
+    raster::extension(shpfile) <- "shp"
+    studyArea <- raster::shapefile(shpfile)
+  }
 
   if (!is.null(proj))
     studyArea <- sp::spTransform(studyArea, proj)
