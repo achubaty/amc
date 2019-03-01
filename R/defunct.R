@@ -13,7 +13,7 @@ fastCrop <- function() {
 #' @rdname amc-defunct
 #'
 fastMask <- function() {
-  .Defunct("fastMask", package = "SpaDES.tools")
+  .Defunct("fastMask", package = "reproducible")
 }
 
 #' @export
@@ -23,4 +23,11 @@ fastRasterize <- function() {
   .Defunct("rasterize", package = "fasterize",
            paste("Use fasterize instead.\n",
                  "see https://github.com/ecohealthalliance/fasterize"))
+}
+
+#' @export
+#' @rdname amc-defunct
+#'
+loadPackages <- function() {
+  .Defunct("loadPackages", package = "SpaDES.core")
 }

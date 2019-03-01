@@ -4,6 +4,7 @@
 \alias{fastCrop}
 \alias{fastMask}
 \alias{fastRasterize}
+\alias{loadPackages}
 \title{Defunct functions}
 \usage{
 fastCrop()
@@ -11,6 +12,8 @@ fastCrop()
 fastMask()
 
 fastRasterize()
+
+loadPackages()
 }
 \description{
 These functions have been removed.
