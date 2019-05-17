@@ -44,12 +44,6 @@ environment:
   - R_VERSION: oldrel
     RTOOLS_VERSION: 35
 
-  - R_VERSION: 3.4.0
-    RTOOLS_VERSION: 34
-
-  - R_VERSION: 3.3.0
-    RTOOLS_VERSION: 33
-
 branches:
   only:
     - master
