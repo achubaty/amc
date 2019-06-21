@@ -3,43 +3,39 @@ language: r
 cache: packages
 cran: https://cran.rstudio.com/
   - os: linux
-    dist: trusty
+    dist: xenial
     r: oldrel
     addons:
       apt:
         sources:
-        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
-        - libgdal1-dev
-        - libgeos-dev
-        - libnlopt-dev
-        - libproj-dev
-        - libudunits2-dev
-        - gdal-bin
-    before_script:
-      - "export DISPLAY=:99.0"
-      - "sh -e /etc/init.d/xvfb start"
-      - sleep 3 # give xvfb some time to start
+          - libgdal-dev
+          - libgeos-dev
+          - libglpk-dev
+          - libnlopt-dev
+          - libproj-dev
+          - libudunits2-dev
+    services:
+      - xvfb
     r_packages:
       - rgdal
   - os: linux
-    dist: trusty
+    dist: xenial
     r: release
     addons:
       apt:
         sources:
-        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
-        - libgdal1-dev
-        - libgeos-dev
-        - libnlopt-dev
-        - libproj-dev
-        - libudunits2-dev
-        - gdal-bin
-    before_script:
-      - "export DISPLAY=:99.0"
-      - "sh -e /etc/init.d/xvfb start"
-      - sleep 3 # give xvfb some time to start
+          - libgdal-dev
+          - libgeos-dev
+          - libglpk-dev
+          - libnlopt-dev
+          - libproj-dev
+          - libudunits2-dev
+    services:
+      - xvfb
     r_packages:
       - covr
       - rgdal
@@ -52,25 +48,24 @@ cran: https://cran.rstudio.com/
     dist: trusty
     r: devel
     addons:
+    addons:
       apt:
         sources:
-        - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+          - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
-        - libgdal1-dev
-        - libgeos-dev
-        - libnlopt-dev
-        - libproj-dev
-        - libudunits2-dev
-        - gdal-bin
-    before_script:
-      - "export DISPLAY=:99.0"
-      - "sh -e /etc/init.d/xvfb start"
-      - sleep 3 # give xvfb some time to start
+          - libgdal-dev
+          - libgeos-dev
+          - libglpk-dev
+          - libnlopt-dev
+          - libproj-dev
+          - libudunits2-dev
+    services:
+      - xvfb
     r_packages:
       - devtools
       - rgdal
   - os: osx
-    osx_image: xcode9
+    osx_image: xcode9.4
     latex: false
     r_build_args: '--no-build-vignettes'
     r_check_args: '--as-cran --ignore-vignettes --no-examples'
