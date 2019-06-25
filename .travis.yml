@@ -10,6 +10,7 @@ cran: https://cran.rstudio.com/
         sources:
           - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
+          - gdal-bin
           - libgdal-dev
           - libgeos-dev
           - libglpk-dev
@@ -28,6 +29,7 @@ cran: https://cran.rstudio.com/
         sources:
           - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
+          - gdal-bin
           - libgdal-dev
           - libgeos-dev
           - libglpk-dev
@@ -53,6 +55,7 @@ cran: https://cran.rstudio.com/
         sources:
           - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
         packages:
+          - gdal-bin
           - libgdal-dev
           - libgeos-dev
           - libglpk-dev
