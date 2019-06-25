@@ -2,6 +2,8 @@ sudo: required
 language: r
 cache: packages
 cran: https://cran.rstudio.com/
+matrix:
+  include:
   - os: linux
     dist: xenial
     r: oldrel
