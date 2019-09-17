@@ -57,8 +57,7 @@ get_deps <- function(path, dependencies = NA) { # nolint
 #' @author Alex Chubaty
 #' @export
 #' @rdname detachPackage
-#' @seealso \code{\link{detach}}
-#'
+#' @seealso \code{\link{detach}}, \code{\link{detachAllPackages}}
 detachPackage <- function(package) {
   pkg <- deparse(substitute(package))
   pkg <- paste(unlist(strsplit(pkg, "\"")), collapse = "")
@@ -67,4 +66,17 @@ detachPackage <- function(package) {
     c$message <- paste0("Package ", pkg, " is not attached.\n")
     message(c)
   })
+}
+
+#' Forcibly detach all packages
+#'
+#' Based on \url{https://stackoverflow.com/a/39235076/1380598}.
+#'
+#' @author mmfrgmpds
+#' @importFrom utils sessionInfo
+#' @rdname detachAllPackages
+#' @seealso \code{\link{detach}}, \code{\link{detachPackage}}
+detachAllPackages <- function() {
+  invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)),
+                   detach, character.only = TRUE, unload = TRUE, force = TRUE))
 }
