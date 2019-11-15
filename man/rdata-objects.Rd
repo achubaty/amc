@@ -6,11 +6,21 @@
 \alias{rmObjects}
 \title{Load, save, and remove .RData objects}
 \usage{
-loadObjects(objects, path = NULL, ext = ".RData", quiet = TRUE,
-  envir = parent.frame())
+loadObjects(
+  objects,
+  path = NULL,
+  ext = ".RData",
+  quiet = TRUE,
+  envir = parent.frame()
+)
 
-saveObjects(objects, path = NULL, ext = ".RData", quiet = TRUE,
-  envir = parent.frame())
+saveObjects(
+  objects,
+  path = NULL,
+  ext = ".RData",
+  quiet = TRUE,
+  envir = parent.frame()
+)
 
 rmObjects(objects, path = NULL, ext = ".RData", quiet = TRUE)
 }
