@@ -2,14 +2,15 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Version: 0.1.5.9000
-Date: 2019-05-17
+Date: 2019-09-28
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("ctb")),
     person("Ceres", "Barros", email = "ceresvbarros@hotmail.com", role = c("ctb")),
-    person("Josh", "O'Brien", role = c("ctb"))
+    person("Josh", "O'Brien", role = c("ctb")),
+    person("mmfrgmpds", role = c("ctb"))
     )
 Description: A collection of variously useful functions.
 Depends:
@@ -35,6 +36,7 @@ Suggests:
   hunspell,
   knitr,
   rmarkdown,
+  spelling,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
 License: GPL-3
@@ -42,4 +44,5 @@ ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 7.0.0
+Language: en-US

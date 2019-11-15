@@ -108,7 +108,6 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
 #' @export
 #' @rdname gc
 #' @seealso \code{\link{gc}}
-#'
 .gc <- function() {
   for (i in 1:10) gc()
 }

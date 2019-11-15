@@ -4,8 +4,7 @@
 \alias{source_github}
 \title{Source a file hosted in a pubic or private GitHub repo}
 \usage{
-source_github(repo, branch = "master", file,
-  auth = Sys.getenv("GITHUB_PAT"))
+source_github(repo, branch = "master", file, auth = Sys.getenv("GITHUB_PAT"))
 }
 \arguments{
 \item{repo}{Name of the GitHub repository in the form \code{"user/repo"}.}

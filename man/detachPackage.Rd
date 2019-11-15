@@ -13,7 +13,7 @@ detachPackage(package)
 A simple wrapper to \code{detach} using \code{unload = TRUE}.
 }
 \seealso{
-\code{\link{detach}}
+\code{\link{detach}}, \code{\link{detachAllPackages}}
 }
 \author{
 Alex Chubaty
