@@ -40,7 +40,7 @@ Suggests:
   spelling,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
-Language: en-CA
+Language: en-US
 License: GPL-3
 ByteCompile: yes
 Encoding: UTF-8
