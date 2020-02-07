@@ -4,7 +4,6 @@
 #'
 #' @export
 #' @rdname amc-deprecated
-#'
 .cleanup <- function() {
   .Deprecated(".gc", old = ".cleanup")
   .gc()

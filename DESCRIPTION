@@ -2,7 +2,7 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Version: 0.1.5.9000
-Date: 2019-09-28
+Date: 2020-02-07
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
     role = c("aut", "cre", "cph")),
@@ -30,6 +30,7 @@ Imports:
   raster,
   rgdal,
   sp,
+  tools,
   utils
 Suggests:
   covr,
@@ -39,10 +40,10 @@ Suggests:
   spelling,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
+Language: en-CA
 License: GPL-3
 ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.0.0
-Language: en-US
+RoxygenNote: 7.0.2
