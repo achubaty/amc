@@ -37,6 +37,7 @@ Suggests:
   hunspell,
   knitr,
   rmarkdown,
+  rstudioapi,
   spelling,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
@@ -46,4 +47,4 @@ ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
