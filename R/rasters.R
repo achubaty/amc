@@ -27,7 +27,7 @@ utils::globalVariables(c("ID", "VALUE"))
 #'
 #' @return \code{RasterStack} object (which can be \code{\link[raster]{unstack}}ed).
 #'
-#' @author Alex Chubaty and Eliot Mcintire
+#' @author Alex Chubaty and Eliot McIntire
 #' @export
 #' @importFrom magrittr %>% set_names
 #' @importFrom raster crop nlayers projectRaster res stack writeRaster
@@ -183,7 +183,7 @@ dt2raster <- function(dt, r, val) {
   return(rout)
 }
 
-#' Merge Raster* objects using a function for overlapping areas
+#' Merge \code{Raster*} objects using a function for overlapping areas
 #'
 #' Provides a wrapper around \code{\link[raster]{mosaic}} that cleans up any
 #' temporary intermediate files used, and sets the layer name of the resulting raster.
