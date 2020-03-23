@@ -69,8 +69,9 @@ rescale <- function(x, new.range = c(0, 1), old.range = NULL) { # nolint
   if (is.numeric(x)) {
     if (is.null(old.range)) {
       old.range <- c(min(x, na.rm = TRUE), max(x, na.rm = TRUE)) # nolint
-      if (old.range[1] == old.range[2]) {
-        stop("old.range must be specified for single values of x.")
+      if (isTRUE(all.equal(old.range[1], old.range[2]))) {
+        warning("Identical min and max values; returning original object.")
+        return(x)
       }
     }
 
@@ -83,8 +84,9 @@ rescale <- function(x, new.range = c(0, 1), old.range = NULL) { # nolint
   } else if (is(x, "Raster")) {
     if (is.null(old.range)) {
       old.range <- c(minValue(x), maxValue(x)) # nolint
-      if (old.range[1] == old.range[2]) {
-        stop("old.range must be specified for single values of x.")
+      if (isTRUE(all.equal(old.range[1], old.range[2]))) {
+        warning("Identical min and max values; returning original object.")
+        return(x)
       }
     }
 
