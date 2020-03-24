@@ -2,7 +2,7 @@
 #'
 #' Based on \url{https://stackoverflow.com/q/12389158/1380598}.
 #'
-#'
+#' @export
 isRstudio <- function() {
   Sys.getenv("RSTUDIO") == 1 ||
     .Platform$GUI == "RStudio" ||
