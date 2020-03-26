@@ -31,7 +31,6 @@ if (getRversion() >= "3.1.0") {
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom methods is
 #' @importFrom raster brick filename raster stack
 #' @rdname rdata-objects
 #'

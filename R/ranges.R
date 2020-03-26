@@ -11,7 +11,6 @@
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom methods is
 #' @importFrom raster getValues
 #' @rdname inRange
 #'
@@ -37,24 +36,21 @@ inRange <- function(x, a = 0, b = 1) {
 
 #' Rescale values to a new range
 #'
-#' Adapted from \url{https://gis.stackexchange.com/a/194838/47654}.
-#' This preserves the original distribution of the data.
+#' @param x    A numeric vector or \code{Raster*} object.
+#' @param to   The lower and upper bounds of the new range. Default \code{c(0,1)}.
+#' @param from (optional) The lower and upper bounds of the old range (calculated from \code{x}).
+#' @param ...  Additional arguments (not used).
 #'
-#' @param x         A numeric vector or \code{Raster*} object.
-#' @param new.range The lower and upper bounds of the new range. Default \code{c(0,1)}.
-#' @param old.range (optional) The lower and upper bounds of the old range.
-#'                  Default \code{c(min(x), max(x)}.
+#' @note Objects with values that are all equal (e.g., all zeroes) will be returned as-is.
+#'       This behaviour differs from \code{scales:rescale} which would return a value of \code{0.5}.
 #'
 #' @return A new object whose values have been rescaled.
 #'
-#' @author Jeffery Evans
-#' @author Alex Chubaty
 #' @export
-#' @importFrom raster getValues maxValue minValue
 #' @rdname rescale
 #'
 #' @examples
-#' rescale(50, old.range = c(0, 100), new.range = c(0, 1)) ## 0.5
+#' rescale(50, from = c(0, 100), to = c(0, 1)) ## 0.5
 #'
 #' x <- 0:100
 #' rescale(x) # defaults to new range [0,1]
@@ -65,40 +61,30 @@ inRange <- function(x, a = 0, b = 1) {
 #' rescale(r) # defaults to new range [0,1]
 #' rescale(r, c(-1, 1))
 #'
-rescale <- function(x, new.range = c(0, 1), old.range = NULL) { # nolint
-  if (is.numeric(x)) {
-    if (is.null(old.range)) {
-      old.range <- c(min(x, na.rm = TRUE), max(x, na.rm = TRUE)) # nolint
-      if (isTRUE(all.equal(old.range[1], old.range[2]))) {
-        warning("Identical min and max values; returning original object.")
-        return(x)
-      }
-    }
+rescale <- function(x, to, from, ...) {
+  UseMethod("rescale")
+}
 
-    x.min <- old.range[1] # nolint
-    x.max <- old.range[2] # nolint
-    new.max <- new.range[1] # nolint
-    new.min <- new.range[2] # nolint
-
-    return(new.min + (x - x.min) * ((new.max - new.min) / (x.max - x.min))) # nolint
-  } else if (is(x, "Raster")) {
-    if (is.null(old.range)) {
-      old.range <- c(minValue(x), maxValue(x)) # nolint
-      if (isTRUE(all.equal(old.range[1], old.range[2]))) {
-        warning("Identical min and max values; returning original object.")
-        return(x)
-      }
-    }
-
-    x.min <- old.range[1] # nolint
-    x.max <- old.range[2] # nolint
-    new.max <- new.range[1] # nolint
-    new.min <- new.range[2] # nolint
-
-    r <- x
-    r[] <- new.min + (x[] - x.min) * ((new.max - new.min) / (x.max - x.min)) # nolint
-    return(r)
+#' @export
+#' @rdname rescale
+rescale.numeric <- function(x, to = c(0, 1), from = range(x, na.rm = TRUE, finite = TRUE), ...) {
+  if (isTRUE(all.equal(from[1], from[2]))) {
+    return(x)
   } else {
-    stop("x must be a numeric vector or a Raster* object.")
+    xMin <- from[1]
+    xMax <- from[2]
+    newMin <- to[1]
+    newMax <- to[2]
+
+    return(newMin + (x - xMin) * ((newMax - newMin) / (xMax - xMin)))
   }
+}
+
+#' @export
+#' @importFrom raster getValues setValues
+#' @rdname rescale
+rescale.RasterLayer <- function(x, to = c(0, 1),
+                                from = range(getValues(x), na.rm = TRUE, finite = TRUE), ...) {
+  newVals <- rescale(getValues(x), to, from, ...)
+  return(setValues(x, newVals))
 }
