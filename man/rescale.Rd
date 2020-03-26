@@ -2,27 +2,42 @@
 % Please edit documentation in R/ranges.R
 \name{rescale}
 \alias{rescale}
+\alias{rescale.numeric}
+\alias{rescale.RasterLayer}
 \title{Rescale values to a new range}
 \usage{
-rescale(x, new.range = c(0, 1), old.range = NULL)
+rescale(x, to, from, ...)
+
+\method{rescale}{numeric}(x, to = c(0, 1), from = range(x, na.rm = TRUE, finite = TRUE), ...)
+
+\method{rescale}{RasterLayer}(
+  x,
+  to = c(0, 1),
+  from = range(getValues(x), na.rm = TRUE, finite = TRUE),
+  ...
+)
 }
 \arguments{
 \item{x}{A numeric vector or \code{Raster*} object.}
 
-\item{new.range}{The lower and upper bounds of the new range. Default \code{c(0,1)}.}
+\item{to}{The lower and upper bounds of the new range. Default \code{c(0,1)}.}
 
-\item{old.range}{(optional) The lower and upper bounds of the old range.
-Default \code{c(min(x), max(x)}.}
+\item{from}{(optional) The lower and upper bounds of the old range (calculated from \code{x}).}
+
+\item{...}{Additional arguments (not used).}
 }
 \value{
 A new object whose values have been rescaled.
 }
 \description{
-Adapted from \url{https://gis.stackexchange.com/a/194838/47654}.
-This preserves the original distribution of the data.
+Rescale values to a new range
+}
+\note{
+Objects with values that are all equal (e.g., all zeroes) will be returned as-is.
+      This behaviour differs from \code{scales:rescale} which would return a value of \code{0.5}.
 }
 \examples{
-rescale(50, old.range = c(0, 100), new.range = c(0, 1)) ## 0.5
+rescale(50, from = c(0, 100), to = c(0, 1)) ## 0.5
 
 x <- 0:100
 rescale(x) # defaults to new range [0,1]
@@ -33,9 +48,4 @@ r <- raster::raster(f)
 rescale(r) # defaults to new range [0,1]
 rescale(r, c(-1, 1))
 
-}
-\author{
-Jeffery Evans
-
-Alex Chubaty
 }

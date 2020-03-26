@@ -23,10 +23,8 @@ test_that("inRange handles various inputs", {
   expect_error(inRange(-0.5, 0, NULL))
 })
 
-
 test_that("rescale works correctly", {
   # rescale a single value
-  expect_error(rescale(50))
   expect_equal(rescale(50, c(0, 1), c(0, 100)), 0.5)
   expect_equal(rescale(50, c(-1, 1), c(0, 100)), 0)
 
@@ -34,10 +32,12 @@ test_that("rescale works correctly", {
   x <- 0:100
 
   x1 <- rescale(x)
+  expect_lt(min(x1), max(x1))
   expect_equal(min(x1), 0)
   expect_equal(max(x1), 1)
 
   x2 <- rescale(x, c(-1, 1))
+  expect_lt(min(x2), max(x2))
   expect_equal(min(x2), -1)
   expect_equal(max(x2), 1)
 
@@ -46,10 +46,16 @@ test_that("rescale works correctly", {
   r <- raster::raster(f)
 
   r1 <- rescale(r)
+  expect_lt(raster::minValue(r1), raster::maxValue(r1))
   expect_equal(raster::minValue(r1), 0)
   expect_equal(raster::maxValue(r1), 1)
 
   r2 <- rescale(r, c(-1, 1))
+  expect_lt(raster::minValue(r2), raster::maxValue(r2))
   expect_equal(raster::minValue(r2), -1)
   expect_equal(raster::maxValue(r2), 1)
+
+  r[] <- 0
+  r3 <- rescale(r)
+  expect_equal(r, r3)
 })

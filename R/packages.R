@@ -80,3 +80,48 @@ detachAllPackages <- function() {
   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)),
                    detach, character.only = TRUE, unload = TRUE, force = TRUE))
 }
+
+#' Determine a package's minimum R version requirement based on its dependencies
+#'
+#' Based on \url{https://stackoverflow.com/q/38686427}.
+#'
+#' @param package           Character string giving the name of a package whose
+#'                          dependencies should be checked.
+#'
+#' @param exclude_main_pkg  Logical indicating whether \code{package} should be
+#'                          excluded from the check. Default \code{TRUE}.
+#'
+#' @author hrbrmstr and Jack Wasey
+#' @export
+#' @importFrom magrittr %>%
+#' @importFrom tools package_dependencies
+#' @importFrom utils available.packages
+min_r_version <- function(package = NULL, exclude_main_pkg = TRUE) {
+  stopifnot(!is.null(package))
+
+  repo <- getOption("repo", "https://cloud.r-project.org")
+
+  avail <- utils::available.packages(utils::contrib.url(repo))
+  deps <- tools::package_dependencies(package, db = avail, recursive = TRUE)
+  if (is.null(deps))
+    stop("package '", package, "' not found.")
+
+  pkgs <- deps[[1]]
+
+  matches <- avail[ , "Package"] %in% pkgs
+  pkg_list <- avail[matches, "Depends"]
+  vers <- grep("^R$|^R \\(.*\\)$", pkg_list, value = TRUE)
+  vers <- gsub("[^0-9.]", "", vers)
+  if (length(vers) == 0)
+    return("Not specified")
+
+  max_ver <- vers[1]
+  if (length(vers) == 1)
+    return(max_ver)
+
+  for (v in 2:length(vers))
+    if (utils::compareVersion(vers[v], max_ver) > 0)
+      max_ver <- vers[v]
+
+  max_ver
+}

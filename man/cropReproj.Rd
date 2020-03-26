@@ -48,5 +48,5 @@ Currently, only works with a \code{RasterStack} object from file, and
 is only tested using \code{studyArea} as a \code{SpatialPolygonsDataFrame}.
 }
 \author{
-Alex Chubaty and Eliot Mcintire
+Alex Chubaty and Eliot McIntire
 }

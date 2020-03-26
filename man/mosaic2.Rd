@@ -3,7 +3,7 @@
 \name{mosaic2}
 \alias{mosaic2}
 \alias{mosaic2,RasterLayer,RasterLayer-method}
-\title{Merge Raster* objects using a function for overlapping areas}
+\title{Merge \code{Raster*} objects using a function for overlapping areas}
 \usage{
 mosaic2(x, y, ...)
 

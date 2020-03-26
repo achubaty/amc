@@ -14,7 +14,6 @@
 #' @author Ceres Barros and Alex Chubaty
 #' @export
 #' @importFrom dismo convHull
-#' @importFrom methods as
 #' @importFrom raster buffer
 #' @importFrom sp polygons proj4string proj4string<- SpatialPoints
 #' @seealso \code{\link[raster]{buffer}}
