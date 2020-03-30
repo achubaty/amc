@@ -125,3 +125,36 @@ min_r_version <- function(package = NULL, exclude_main_pkg = TRUE) {
 
   max_ver
 }
+
+#' Determine source of installed packages
+#'
+#' Which packages were installed from CRAN, GitHub, Bioconductor, etc.?
+#'
+#' @inheritParams utils::packageDescription
+#'
+#' @export
+#' @importFrom utils packageDescription
+#'
+#' @examples
+#' pkgs <- as.data.frame(installed.packages(), stringsAsFactors = FALSE)
+#' ids <- which(!(pkgs$Priority %in% c("base", "recommended")))
+#' pkgs <- pkgs[ids, ]
+#' pkgs <- pkgs$Package
+#' pkgs[pkgSrc(pkgs) == "CRAN"]
+#'
+pkgSrc <- Vectorize(function(pkg, lib.loc = NULL) {
+  desc <- utils::packageDescription(pkg, lib.loc)
+  w <- as.character(desc$Repository)
+  if (length(w) == 0) {
+    x <- as.character(desc$GithubUsername)
+    y <- as.character(desc$GithubRepo)
+    z <- as.character(desc$GithubRef)
+    if (length(y) == 0) {
+      return("Other")
+    } else {
+      return(paste0(x, "/", y, "@", z))
+    }
+  } else {
+    return(w)
+  }
+})
