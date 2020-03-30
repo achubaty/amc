@@ -7,6 +7,6 @@ An R package containing variously useful functions.
 ### Installation
 
 ```r
-devtools::install.packages("achubaty/amc")
+devtools::install_github("achubaty/amc")
 ```
 
