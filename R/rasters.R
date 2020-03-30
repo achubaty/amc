@@ -155,7 +155,9 @@ setMethod(
 #' # using pixel ids
 #' dt2 <- data.table(ID = 1L:ncell(r), VALUE = r[])
 #' dt2[, VALUE := sample(1L:10L, ncell(r), replace = TRUE)]
-#' plot(dt2raster(dt2, r, "VALUE"))
+#'
+#' if (interactive())
+#'   plot(dt2raster(dt2, r, "VALUE"))
 #'
 dt2raster <- function(dt, r, val) {
   stopifnot(is(dt, "data.table"),
