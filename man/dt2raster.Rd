@@ -30,7 +30,7 @@ r <- raster(nrows = 10, ncols = 10)
 r[] <- 10
 
 # using x,y coordinates
-#dt1 <- data.table()
+#dt1 <- data.table(X = , Y = , value = r[])
 
 # using pixel ids
 dt2 <- data.table(ID = 1L:ncell(r), VALUE = r[])
