@@ -150,7 +150,7 @@ setMethod(
 #' r[] <- 10
 #'
 #' # using x,y coordinates
-#' #dt1 <- data.table()
+#' #dt1 <- data.table(X = , Y = , value = r[])
 #'
 #' # using pixel ids
 #' dt2 <- data.table(ID = 1L:ncell(r), VALUE = r[])
@@ -160,9 +160,7 @@ setMethod(
 #'   plot(dt2raster(dt2, r, "VALUE"))
 #'
 dt2raster <- function(dt, r, val) {
-  stopifnot(is(dt, "data.table"),
-            is(r, "Raster"),
-            is.character(val))
+  stopifnot(is(dt, "data.table"), is(r, "Raster"), is.character(val))
 
   rout <- r
 
@@ -173,11 +171,11 @@ dt2raster <- function(dt, r, val) {
     tmp <- tmp[, VALUE := sum(VALUE), by = ID] # nolint
     setkey(tmp, ID)
 
-    if (length(tmp$ID)) rout[tmp$ID] <- tmp$VALUE
-    if (ncell(rout) - length(tmp$ID) > 0) rout[!tmp$ID] <- NA
+    if (length(tmp[["ID"]])) rout[tmp[["ID"]]] <- tmp[["VALUE"]]
+    if (ncell(rout) - length(tmp[["ID"]]) > 0) rout[!tmp[["ID"]]] <- NA
   } else if ("ID" %in% colnames(dt)) {
-    if (length(dt$ID)) rout[dt$ID] <- dt$VALUE
-    if (ncell(rout) - length(dt$ID) > 0) rout[!dt$ID] <- NA
+    if (length(dt[["ID"]])) rout[dt[["ID"]]] <- dt[[val]]
+    if (ncell(rout) - length(dt[["ID"]]) > 0) rout[!dt[["ID"]]] <- NA
   } else {
     stop("dt must have columns X and Y, or column ID.")
   }

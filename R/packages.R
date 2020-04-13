@@ -157,4 +157,4 @@ pkgSrc <- Vectorize(function(pkg, lib.loc = NULL) {
   } else {
     return(w)
   }
-})
+}, vectorize.args = "pkg")
