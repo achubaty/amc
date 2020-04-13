@@ -9,3 +9,6 @@
 ^LICENSE$
 ^vignettes/.*_cache$
 ^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
