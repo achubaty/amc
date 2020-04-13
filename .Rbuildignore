@@ -8,3 +8,4 @@
 ^gdallibs\.zip$
 ^LICENSE$
 ^vignettes/.*_cache$
+^\.github$
