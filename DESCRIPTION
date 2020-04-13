@@ -2,9 +2,9 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Version: 0.1.6.9000
-Date: 2020-03-26
+Date: 2020-04-13
 Authors@R: c(
-    person(c("Alex", "M"), "Chubaty", email = "alexander.chubaty@canada.ca",
+    person(c("Alex", "M"), "Chubaty", email = "alex.chubaty@gmail.com",
     role = c("aut", "cre", "cph")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
     role = c("ctb")),
@@ -12,7 +12,7 @@ Authors@R: c(
     person("Josh", "O'Brien", role = c("ctb")),
     person("mmfrgmpds", role = c("ctb"))
     )
-Description: A collection of variously useful functions.
+Description: A collection of variously useful functions and utilities.
 Depends:
   R (>= 3.5)
 Imports:
