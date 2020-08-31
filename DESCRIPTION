@@ -1,20 +1,20 @@
 Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
+Description: A collection of variously useful functions and utilities.
 Version: 0.1.6.9000
-Date: 2020-04-13
+Date: 2020-08-31
 Authors@R: c(
-    person(c("Alex", "M"), "Chubaty", email = "alex.chubaty@gmail.com",
-    role = c("aut", "cre", "cph")),
+    person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
+           role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
     person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
-    role = c("ctb")),
+           role = c("ctb")),
     person("Ceres", "Barros", email = "ceresvbarros@hotmail.com", role = c("ctb")),
     person("Josh", "O'Brien", role = c("ctb")),
     person("mmfrgmpds", role = c("ctb"))
     )
-Description: A collection of variously useful functions and utilities.
 Depends:
-  R (>= 3.5)
+  R (>= 3.6)
 Imports:
   base64enc,
   data.table,
@@ -27,24 +27,23 @@ Imports:
   parallel,
   plyr,
   reproducible,
-  raster,
+  raster (>= 	3.3-13),
   rgdal,
   sp,
   tools,
   utils
 Suggests:
   covr,
-  hunspell,
   knitr,
   rmarkdown,
   rstudioapi,
   spelling,
   testthat
 BugReports: https://github.com/achubaty/amc/issues
-Language: en-US
+Language: en-CA
 License: GPL-3
 ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

@@ -1,5 +1,10 @@
 Known issues: https://github.com/PredictiveEcology/amc/issues
 
+version 0.1.6.9000
+=============
+
+- drop support for R 3.5 (requirement of several dependencies)
+
 version 0.1.1
 =============
 
