@@ -6,7 +6,7 @@
 \alias{amc-package}
 \title{Alex's Miscellaneous Code}
 \description{
-A collection of variously useful functions.
+A collection of variously useful functions and utilities.
 }
 \seealso{
 Useful links:
@@ -16,7 +16,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alex M Chubaty \email{alexander.chubaty@canada.ca} [copyright holder]
+\strong{Maintainer}: Alex M Chubaty \email{achubaty@for-cast.ca} (\href{https://orcid.org/0000-0001-7146-8135}{ORCID}) [copyright holder]
 
 Other contributors:
 \itemize{

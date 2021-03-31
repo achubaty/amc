@@ -1,8 +1,9 @@
 # `amc`: Alex's miscellaneous code
 
-[![Build status](https://ci.appveyor.com/api/projects/status/y541xpu8dr5icy41/branch/master?svg=true)](https://ci.appveyor.com/project/achubaty/amc/branch/master)
-[![Build Status](https://travis-ci.org/achubaty/amc.svg?branch=master)](https://travis-ci.org/achubaty/amc) 
-[![Coverage Status](https://coveralls.io/repos/github/achubaty/amc/badge.svg?branch=master)](https://coveralls.io/github/achubaty/amc?branch=master)
+<!-- badges: start -->
+[![R build status](https://github.com/achubaty/amc/workflows/R-CMD-check/badge.svg)](https://github.com/achubaty/amc/actions)
+[![Codecov test coverage](https://codecov.io/gh/achubaty/amc/branch/master/graph/badge.svg)](https://codecov.io/gh/achubaty/amc?branch=master)
+<!-- badges: end -->
 
 ## Variously useful functions and utilities
 
@@ -36,4 +37,4 @@ The [`development`](https://github.com/achubaty/amc/tree/development) branch con
 
 To make a contribution to the package, just send a [pull request](https://help.github.com/articles/using-pull-requests/). 
 When you send your PR, make sure `development` is the destination branch on the [amc repository](https://github.com/achubaty/amc).
-Your PR should pass `R CMD check --as-cran`, which will also be checked by <a href="https://travis-ci.org/achubaty/amc">Travis CI</a> and <a href="https://ci.appveyor.com/project/achubaty/amc">AppVeyor CI</a> when the PR is submitted.
+Your PR should pass `R CMD check --as-cran`, which will also be checked by when the PR is submitted.

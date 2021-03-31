@@ -1,17 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.lintr$
-^\.travis\.yml$
-^_pkgdown\.yml$
-^appveyor\.yml$
-^appveyor_cache.txt$
-^docs$
-^gdalbin\.zip$
-^gdallibs\.zip$
 ^LICENSE$
 ^vignettes/.*_cache$
 ^\.github$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^codecov\.yml$
 
