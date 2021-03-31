@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detach and unload a package — detachPackage • amc</title>
+<title>Determine a package's minimum R version requirement based on its dependencies — min_r_version • amc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Detach and unload a package — detachPackage" />
-<meta property="og:description" content="A simple wrapper to detach using unload = TRUE." />
+<meta property="og:title" content="Determine a package's minimum R version requirement based on its dependencies — min_r_version" />
+<meta property="og:description" content="Based on https://stackoverflow.com/q/38686427." />
 
 
 
@@ -121,32 +121,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detach and unload a package</h1>
+    <h1>Determine a package's minimum R version requirement based on its dependencies</h1>
     <small class="dont-index">Source: <a href='https://github.com/achubaty/amc/blob/master/R/packages.R'><code>R/packages.R</code></a></small>
-    <div class="hidden name"><code>detachPackage.Rd</code></div>
+    <div class="hidden name"><code>min_r_version.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A simple wrapper to <code>detach</code> using <code>unload = TRUE</code>.</p>
+    <p>Based on <a href='https://stackoverflow.com/q/38686427'>https://stackoverflow.com/q/38686427</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>detachPackage</span><span class='op'>(</span><span class='va'>package</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>min_r_version</span><span class='op'>(</span>package <span class='op'>=</span> <span class='cn'>NULL</span>, exclude_main_pkg <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>package</th>
-      <td><p>The name of a currently attached package.</p></td>
+      <td><p>Character string giving the name of a package whose
+dependencies should be checked.</p></td>
+    </tr>
+    <tr>
+      <th>exclude_main_pkg</th>
+      <td><p>Logical indicating whether <code>package</code> should be
+excluded from the check. Default <code>TRUE</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/r/base/detach.html'>detach</a></code>, <code><a href='detachAllPackages.html'>detachAllPackages</a></code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Alex Chubaty</p>
+    <p>hrbrmstr and Jack Wasey</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

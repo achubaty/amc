@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detach and unload a package — detachPackage • amc</title>
+<title>Load kNN stand age map — loadkNNageMap • amc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Detach and unload a package — detachPackage" />
-<meta property="og:description" content="A simple wrapper to detach using unload = TRUE." />
+<meta property="og:title" content="Load kNN stand age map — loadkNNageMap" />
+<meta property="og:description" content="Load kNN stand age map" />
 
 
 
@@ -121,32 +121,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detach and unload a package</h1>
-    <small class="dont-index">Source: <a href='https://github.com/achubaty/amc/blob/master/R/packages.R'><code>R/packages.R</code></a></small>
-    <div class="hidden name"><code>detachPackage.Rd</code></div>
+    <h1>Load kNN stand age map</h1>
+    <small class="dont-index">Source: <a href='https://github.com/achubaty/amc/blob/master/R/standAgeMap.R'><code>R/standAgeMap.R</code></a></small>
+    <div class="hidden name"><code>loadkNNageMap.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A simple wrapper to <code>detach</code> using <code>unload = TRUE</code>.</p>
+    <p>Load kNN stand age map</p>
     </div>
 
-    <pre class="usage"><span class='fu'>detachPackage</span><span class='op'>(</span><span class='va'>package</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>loadkNNageMap</span><span class='op'>(</span><span class='va'>path</span>, url <span class='op'>=</span> <span class='cn'>NULL</span>, studyArea <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>package</th>
-      <td><p>The name of a currently attached package.</p></td>
+      <th>path</th>
+      <td><p>file path where raster will be saved.</p></td>
+    </tr>
+    <tr>
+      <th>url</th>
+      <td><p>URL from which to download the data (default provided if NULL).</p></td>
+    </tr>
+    <tr>
+      <th>studyArea</th>
+      <td><p><code>SpatialPolygonsDataFrame</code> giving the study area for which to extract ages.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments passed to <code>Cache</code> (only <code>userTags</code> currently used).</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/r/base/detach.html'>detach</a></code>, <code><a href='detachAllPackages.html'>detachAllPackages</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Alex Chubaty</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

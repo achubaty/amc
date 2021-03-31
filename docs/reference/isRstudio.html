@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Detach and unload a package — detachPackage • amc</title>
+<title>Check whether R is running in an Rstudio session — isRstudio • amc</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Detach and unload a package — detachPackage" />
-<meta property="og:description" content="A simple wrapper to detach using unload = TRUE." />
+<meta property="og:title" content="Check whether R is running in an Rstudio session — isRstudio" />
+<meta property="og:description" content="Based on https://stackoverflow.com/q/12389158/1380598." />
 
 
 
@@ -121,32 +121,18 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Detach and unload a package</h1>
-    <small class="dont-index">Source: <a href='https://github.com/achubaty/amc/blob/master/R/packages.R'><code>R/packages.R</code></a></small>
-    <div class="hidden name"><code>detachPackage.Rd</code></div>
+    <h1>Check whether R is running in an Rstudio session</h1>
+    <small class="dont-index">Source: <a href='https://github.com/achubaty/amc/blob/master/R/rstudio.R'><code>R/rstudio.R</code></a></small>
+    <div class="hidden name"><code>isRstudio.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A simple wrapper to <code>detach</code> using <code>unload = TRUE</code>.</p>
+    <p>Based on <a href='https://stackoverflow.com/q/12389158/1380598'>https://stackoverflow.com/q/12389158/1380598</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>detachPackage</span><span class='op'>(</span><span class='va'>package</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>isRstudio</span><span class='op'>(</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>package</th>
-      <td><p>The name of a currently attached package.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/r/base/detach.html'>detach</a></code>, <code><a href='detachAllPackages.html'>detachAllPackages</a></code></p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Alex Chubaty</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
