@@ -2,8 +2,8 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Description: A collection of variously useful functions and utilities.
-Version: 0.2.0
-Date: 2021-03-31
+Version: 0.2.1
+Date: 2021-04-14
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
@@ -14,32 +14,31 @@ Authors@R: c(
     person("mmfrgmpds", role = c("ctb"))
     )
 Depends:
-  R (>= 3.6)
+    R (>= 3.6)
 Imports:
-  base64enc,
-  data.table,
-  datasets,
-  digest,
-  dismo,
-  httr,
-  magrittr,
-  methods,
-  parallel,
-  plyr,
-  reproducible,
-  raster (>= 	3.3-13),
-  rgdal,
-  sp,
-  tools,
-  utils
+    base64enc,
+    data.table,
+    datasets,
+    digest,
+    dismo,
+    httr,
+    magrittr,
+    methods,
+    parallel,
+    plyr,
+    reproducible,
+    raster (>= 	3.3-13),
+    rgdal,
+    sp,
+    tools,
+    utils
 Suggests:
-  covr,
-  knitr,
-  rmarkdown,
-  rstudioapi,
-  slackr,
-  spelling,
-  testthat
+    covr,
+    knitr,
+    rmarkdown,
+    rstudioapi,
+    spelling,
+    testthat
 BugReports: https://github.com/achubaty/amc/issues
 Language: en-CA
 License: GPL-3

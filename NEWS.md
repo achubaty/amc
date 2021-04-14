@@ -1,5 +1,10 @@
 Known issues: https://github.com/PredictiveEcology/amc/issues
 
+version 0.2.1
+=============
+
+- move `notify_slack()` to `SpaDES.project`
+
 version 0.2.0
 =============
 
