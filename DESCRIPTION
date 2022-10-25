@@ -7,7 +7,7 @@ Date: 2021-04-14
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
-    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
+    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@nrcan-rncan.gc.ca",
            role = c("ctb")),
     person("Ceres", "Barros", email = "ceresvbarros@hotmail.com", role = c("ctb")),
     person("Josh", "O'Brien", role = c("ctb")),
