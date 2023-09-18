@@ -13,7 +13,7 @@ sysmem(x = "GB")
 Total amount of system memory (RAM) in \code{units}.
 }
 \description{
-This tells you the **TOTAL** system memory (RAM) available.
+This tells you the \strong{TOTAL} system memory (RAM) available.
 Other processes running on the computer will eat into this total,
 and as such, you should take these numbers with a grain of salt.
 }

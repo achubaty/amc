@@ -1,16 +1,10 @@
 #' Convert integer to binary string
 #'
-#' Description needed
+#' @param i        Positive integer <= 2^53 (<= 9.007199e+15).
 #'
-#' @param i         Positive integer <= 2^53 (<= 9.007199e+15).
-#'
-#' @param maxBits  Maximum number of bits to print (default \code{NA}).
+#' @param maxBits  Maximum number of bits to print (default `NA`).
 #'
 #' @return Character vector.
-#'
-#' @author Alex Chubaty
-#' @export
-#' @rdname binstr
 #'
 #' @examples
 #' x <- sample(0:9999, 10000)
@@ -30,6 +24,8 @@
 #'
 #' # see also `binary()` and `unbinary()` in the `composition` package (requires x11)
 #'
+#' @author Alex Chubaty
+#' @export
 binstr <- function(i, maxBits = NA) {
     if (is.na(maxBits)) maxBits <- ceiling(log2(max(i)))
 

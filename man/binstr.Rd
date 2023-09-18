@@ -15,7 +15,7 @@ binstr(i, maxBits = NA)
 Character vector.
 }
 \description{
-Description needed
+Convert integer to binary string
 }
 \examples{
 x <- sample(0:9999, 10000)

@@ -4,6 +4,7 @@
 \alias{rescale}
 \alias{rescale.numeric}
 \alias{rescale.RasterLayer}
+\alias{rescale.SpatRaster}
 \title{Rescale values to a new range}
 \usage{
 rescale(x, to, from, ...)
@@ -16,9 +17,16 @@ rescale(x, to, from, ...)
   from = range(getValues(x), na.rm = TRUE, finite = TRUE),
   ...
 )
+
+\method{rescale}{SpatRaster}(
+  x,
+  to = c(0, 1),
+  from = range(values(x), na.rm = TRUE, finite = TRUE),
+  ...
+)
 }
 \arguments{
-\item{x}{A numeric vector or \code{Raster*} object.}
+\item{x}{A numeric vector or \verb{Raster*} object.}
 
 \item{to}{The lower and upper bounds of the new range. Default \code{c(0,1)}.}
 
@@ -34,18 +42,23 @@ Rescale values to a new range
 }
 \note{
 Objects with values that are all equal (e.g., all zeroes) will be returned as-is.
-      This behaviour differs from \code{scales:rescale} which would return a value of \code{0.5}.
+This behaviour differs from \code{scales:rescale} which would return a value of \code{0.5}.
 }
 \examples{
 rescale(50, from = c(0, 100), to = c(0, 1)) ## 0.5
 
 x <- 0:100
-rescale(x) # defaults to new range [0,1]
+rescale(x) ## defaults to new range [0,1]
 rescale(x, c(-1, 1))
 
 f <- system.file("external/test.grd", package = "raster")
 r <- raster::raster(f)
-rescale(r) # defaults to new range [0,1]
+rescale(r) ## defaults to new range [0,1]
+rescale(r, c(-1, 1))
+
+f <- system.file("ex/test.grd", package = "terra")
+r <- terra::rast(f)
+rescale(r) ## defaults to new range [0,1]
 rescale(r, c(-1, 1))
 
 }

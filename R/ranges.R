@@ -1,13 +1,13 @@
-#' Test whether a number lies within range \code{[a,b]}
+#' Test whether a number lies within range `[a,b]`
 #'
-#' Default values of \code{a=0; b=1} allow for quick test if
-#' \code{x} is a probability.
+#' Default values of `a=0; b=1` allow for quick test if
+#' `x` is a probability.
 #'
 #' @param x   values to be tested
 #' @param a   lower bound (default 0)
 #' @param b   upper bound (default 1)
 #'
-#' @return Logical vectors. \code{NA} values in \code{x} are retained.
+#' @return Logical vectors. `NA` values in `x` are retained.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -36,13 +36,13 @@ inRange <- function(x, a = 0, b = 1) {
 
 #' Rescale values to a new range
 #'
-#' @param x    A numeric vector or \code{Raster*} object.
-#' @param to   The lower and upper bounds of the new range. Default \code{c(0,1)}.
-#' @param from (optional) The lower and upper bounds of the old range (calculated from \code{x}).
+#' @param x    A numeric vector or `Raster*` object.
+#' @param to   The lower and upper bounds of the new range. Default `c(0,1)`.
+#' @param from (optional) The lower and upper bounds of the old range (calculated from `x`).
 #' @param ...  Additional arguments (not used).
 #'
 #' @note Objects with values that are all equal (e.g., all zeroes) will be returned as-is.
-#'       This behaviour differs from \code{scales:rescale} which would return a value of \code{0.5}.
+#'       This behaviour differs from `scales:rescale` which would return a value of `0.5`.
 #'
 #' @return A new object whose values have been rescaled.
 #'
@@ -53,12 +53,17 @@ inRange <- function(x, a = 0, b = 1) {
 #' rescale(50, from = c(0, 100), to = c(0, 1)) ## 0.5
 #'
 #' x <- 0:100
-#' rescale(x) # defaults to new range [0,1]
+#' rescale(x) ## defaults to new range [0,1]
 #' rescale(x, c(-1, 1))
 #'
 #' f <- system.file("external/test.grd", package = "raster")
 #' r <- raster::raster(f)
-#' rescale(r) # defaults to new range [0,1]
+#' rescale(r) ## defaults to new range [0,1]
+#' rescale(r, c(-1, 1))
+#'
+#' f <- system.file("ex/test.grd", package = "terra")
+#' r <- terra::rast(f)
+#' rescale(r) ## defaults to new range [0,1]
 #' rescale(r, c(-1, 1))
 #'
 rescale <- function(x, to, from, ...) {
@@ -86,5 +91,14 @@ rescale.numeric <- function(x, to = c(0, 1), from = range(x, na.rm = TRUE, finit
 rescale.RasterLayer <- function(x, to = c(0, 1),
                                 from = range(getValues(x), na.rm = TRUE, finite = TRUE), ...) {
   newVals <- rescale(getValues(x), to, from, ...)
+  return(setValues(x, newVals))
+}
+
+#' @export
+#' @importFrom terra values setValues
+#' @rdname rescale
+rescale.SpatRaster <- function(x, to = c(0, 1),
+                               from = range(values(x), na.rm = TRUE, finite = TRUE), ...) {
+  newVals <- rescale(values(x), to, from, ...)
   return(setValues(x, newVals))
 }

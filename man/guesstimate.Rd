@@ -21,7 +21,7 @@ Take a wild stab at guessing how many CPUs to use in cluster when you have
 some idea of how much RAM is needed per CPU.
 }
 \details{
-Tries to be conservative by assuming no more than 80% system memory use.
+Tries to be conservative by assuming no more than 80\% system memory use.
 }
 \note{
 You should take these numbers with several grains of salt.

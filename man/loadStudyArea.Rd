@@ -9,13 +9,14 @@ loadStudyArea(path = NULL, filename = NULL, proj = NULL)
 \arguments{
 \item{path}{path to directory containing the file}
 
-\item{filename}{the name of the file.}
+\item{filename}{the name of the file}
 
 \item{proj}{(optional) a crs projection string to reproject the study area to.}
 }
 \value{
-A \code{SpatialPolygonsDataFrame}
+An \code{sf} object.
 }
 \description{
-Simple wrapper around \code{readOGR} to load a kml or shapefile.
+Simple wrapper around \code{\link[sf:st_read]{sf::st_read()}} to load a kml or shapefile,
+and optionally reproject it.
 }

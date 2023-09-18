@@ -1,6 +1,6 @@
 #' Source a file hosted in a pubic or private GitHub repo
 #'
-#' @param repo   Name of the GitHub repository in the form \code{"user/repo"}.
+#' @param repo   Name of the GitHub repository in the form `"user/repo"`.
 #'
 #' @param branch Branch from which to source the file (default master).
 #'
@@ -8,13 +8,12 @@
 #'
 #' @param auth   Personal Access Token to use for authorization.
 #'               Required to access files in private repositories.
-#'               By default, checks for \code{GITHUB_PAT} environment variable.
-#' See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.
+#'               By default, checks for `GITHUB_PAT` environment variable.
+#' See <https://help.github.com/articles/creating-an-access-token-for-command-line-use/>.
 #'
 #' @author Alex Chubaty
 #' @importFrom base64enc base64decode
 #' @importFrom httr add_headers content GET stop_for_status
-#' @importFrom magrittr %>%
 #' @export
 #' @rdname source_github
 #'
@@ -48,12 +47,12 @@ source_github <- function(repo, branch = "master", file, # nolint
                 "?ref=", branch)
 
   r <- httr::GET(url, config = list(
-    add_headers(Accept = header_accept, Authorization = header_auth)
+    httr::add_headers(Accept = header_accept, Authorization = header_auth)
   ))
   httr::stop_for_status(r)
 
-  httr::content(r)$content %>%
-    base64enc::base64decode %>%
+  httr::content(r)$content |>
+    base64enc::base64decode() |>
     writeBin(tmpfile)
 
   source(tmpfile)

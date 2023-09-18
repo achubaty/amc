@@ -1,18 +1,16 @@
 utils::globalVariables(c("ID", "VALUE"))
 
-#' Convert \code{data.table} to a \code{RasterLayer} for plotting, etc.
+#' Convert `data.table` to a `RasterLayer` for plotting, etc.
 #'
-#' DETAILED DESCRIPTION NEEDED
+#' @param dt  `data.table` object with columns `ID`, or both `X`
+#'            and `Y`, and the values to assign to the raster specified by
+#'            column `val`.
 #'
-#' @param dt  \code{data.table} object with columns \code{ID}, or both \code{X}
-#'            and \code{Y}, and the values to assign to the raster specified by
-#'            column \code{val}.
+#' @param r   `Raster*` object.
 #'
-#' @param r   \code{Raster*} object.
+#' @param val The name of the column in `dt` containing the values for the raster.
 #'
-#' @param val The name of the column in \code{dt} containing the values for the raster.
-#'
-#' @return A \code{RasterLayer} object.
+#' @return A `RasterLayer` object.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -63,38 +61,37 @@ dt2raster <- function(dt, r, val) {
   return(rout)
 }
 
-#' Merge \code{Raster*} objects using a function for overlapping areas
+#' Merge `Raster*` objects using a function for overlapping areas
 #'
-#' Provides a wrapper around \code{\link[raster]{mosaic}} that cleans up any
+#' Provides a wrapper around [raster::mosaic()] that cleans up any
 #' temporary intermediate files used, and sets the layer name of the resulting raster.
 #'
-#' @param x          \code{Raster*} object
-#' @param y          \code{Raster*} object
+#' @param x          `Raster*` object
+#' @param y          `Raster*` object
 #' @param ...        Additional Raster or Extent objects.
-#' @param fun        Function (e.g., \code{mean}, \code{min}, or \code{max}, that
-#'                   accepts a \code{na.rm} argument).
+#' @param fun        Function (e.g., `mean`, `min`, or `max`, that
+#'                   accepts a `na.rm` argument).
 #' @param tolerance  Numeric. Permissible difference in origin (relative to the
-#'                   cell resolution). See \code{\link{all.equal}}.
+#'                   cell resolution). See [all.equal()].
 #'
 #' @param filename   Character. Output filename (optional).
 #'
 #' @param layerName  Character. Name of the resulting raster layer.
 #'
-#' @param inRAM      Logical (default \code{FALSE}) indicating whether function
-#'                   operations should be performed in memory or, if \code{TRUE},
+#' @param inRAM      Logical (default `FALSE`) indicating whether function
+#'                   operations should be performed in memory or, if `TRUE`,
 #'                   using temporary files.
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom magrittr %>% set_names
-#' @importFrom raster mosaic writeRaster
 #' @rdname mosaic2
-setGeneric("mosaic2",
-           function(x, y, ...) {
+setGeneric("mosaic2", function(x, y, ...) {
   standardGeneric("mosaic2")
 })
 
 #' @export
+#' @importFrom raster mosaic writeRaster
+#' @importFrom stats setNames
 #' @rdname mosaic2
 setMethod(
   "mosaic2",
@@ -112,9 +109,36 @@ setMethod(
     }
 
     ## TO DO: can this part be made parallel?
-    out <- mosaic(x, y, ..., fun = fun, tolerance = tolerance,
-                  filename = tempfiles[[1]], overwrite = TRUE) %>%
-      writeRaster(filename = filename, overwrite = TRUE) %>%
-      set_names(layerName)
+    out <- raster::mosaic(x, y, ..., fun = fun, tolerance = tolerance,
+                          filename = tempfiles[[1]], overwrite = TRUE) |>
+      raster::writeRaster(filename = filename, overwrite = TRUE) |>
+      stats::setNames(layerName)
+    return(out)
+})
+
+#' @export
+#' @importFrom stats setNames
+#' @importFrom terra mosaic
+#' @rdname mosaic2
+setMethod(
+  "mosaic2",
+  signature("SpatRaster", "SpatRaster"),
+  definition = function(x, y, ..., fun, tolerance = 0.05, filename = NULL,
+                        layerName = "layer", inRAM = FALSE) {
+    if (missing(filename)) filename <- tf(".tif")
+    if (missing(layerName)) layerName <- names(x)
+
+    if (isTRUE(inRAM)) {
+      tempfiles <- list("")
+    } else {
+      tempfiles <- list(tf(".tif"))
+      on.exit(unlink(tempfiles))
+    }
+
+    ## TO DO: can this part be made parallel?
+    out <- terra::mosaic(x, y, ..., fun = fun,
+                         filename = tempfiles[[1]], overwrite = TRUE) |>
+      terra::writeRaster(filename = filename, overwrite = TRUE) |>
+      stats::setNames(layerName)
     return(out)
 })

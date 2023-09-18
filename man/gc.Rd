@@ -9,11 +9,11 @@
 \description{
 This shouldn't be necessary, since R (usually) handles this correctly and
 automatically. However, sometimes when working with large geospatial data
-(using \code{raster} and \code{sp} packages) it can help to free recently
+(e.g., using \code{raster} and \code{sp} packages) it can help to free recently
 unallocated memory manually.
 }
 \seealso{
-\code{\link{gc}}
+\code{\link[=gc]{gc()}}
 }
 \author{
 Alex Chubaty

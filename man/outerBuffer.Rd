@@ -7,7 +7,7 @@
 outerBuffer(x, b = NULL)
 }
 \arguments{
-\item{x}{A \code{SpatialPolygons*} object}
+\item{x}{A \verb{SpatialPolygons*} object}
 
 \item{b}{Optional. Distance to buffer. If the value is negative, the buffer
 will be drawn inwards.}
@@ -22,7 +22,7 @@ If a buffer distance is supplied, will buffer the convex hull inwards or
 outwards depending on the sign of the distance value.
 }
 \seealso{
-\code{\link[raster]{buffer}}
+\code{\link[raster:buffer]{raster::buffer()}}
 }
 \author{
 Ceres Barros and Alex Chubaty

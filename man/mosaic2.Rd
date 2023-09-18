@@ -3,7 +3,8 @@
 \name{mosaic2}
 \alias{mosaic2}
 \alias{mosaic2,RasterLayer,RasterLayer-method}
-\title{Merge \code{Raster*} objects using a function for overlapping areas}
+\alias{mosaic2,SpatRaster,SpatRaster-method}
+\title{Merge \verb{Raster*} objects using a function for overlapping areas}
 \usage{
 mosaic2(x, y, ...)
 
@@ -17,11 +18,22 @@ mosaic2(x, y, ...)
   layerName = "layer",
   inRAM = FALSE
 )
+
+\S4method{mosaic2}{SpatRaster,SpatRaster}(
+  x,
+  y,
+  ...,
+  fun,
+  tolerance = 0.05,
+  filename = NULL,
+  layerName = "layer",
+  inRAM = FALSE
+)
 }
 \arguments{
-\item{x}{\code{Raster*} object}
+\item{x}{\verb{Raster*} object}
 
-\item{y}{\code{Raster*} object}
+\item{y}{\verb{Raster*} object}
 
 \item{...}{Additional Raster or Extent objects.}
 
@@ -29,7 +41,7 @@ mosaic2(x, y, ...)
 accepts a \code{na.rm} argument).}
 
 \item{tolerance}{Numeric. Permissible difference in origin (relative to the
-cell resolution). See \code{\link{all.equal}}.}
+cell resolution). See \code{\link[=all.equal]{all.equal()}}.}
 
 \item{filename}{Character. Output filename (optional).}
 
@@ -40,7 +52,7 @@ operations should be performed in memory or, if \code{TRUE},
 using temporary files.}
 }
 \description{
-Provides a wrapper around \code{\link[raster]{mosaic}} that cleans up any
+Provides a wrapper around \code{\link[raster:mosaic]{raster::mosaic()}} that cleans up any
 temporary intermediate files used, and sets the layer name of the resulting raster.
 }
 \author{

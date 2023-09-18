@@ -4,9 +4,9 @@
 #' Other processes running on the computer will eat into this total,
 #' and as such, you should take these numbers with a grain of salt.
 #'
-#' @param  x  Units to use for output. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.
+#' @param  x  Units to use for output. One of either `"KB"`, `"MB"`, `"GB"`.
 #'
-#' @return Total amount of system memory (RAM) in \code{units}.
+#' @return Total amount of system memory (RAM) in `units`.
 #'
 #' @author Alex Chubaty
 #' @export
@@ -68,9 +68,9 @@ sysmem <- function(x = "GB") {
 #'
 #' @param ram  How much ram is required per CPU.
 #'
-#' @param prop  Proportion of overall RAM to devote to R. Default \code{0.80}.
+#' @param prop  Proportion of overall RAM to devote to R. Default `0.80`.
 #'
-#' @param units Units of memory. One of either \code{"KB"}, \code{"MB"}, \code{"GB"}.
+#' @param units Units of memory. One of either `"KB"`, `"MB"`, `"GB"`.
 #'
 #' @return Integer. Number of CPUs to allocate to cluster.
 #'
@@ -101,13 +101,13 @@ guesstimate <- function(ram, prop = 0.80, units = "gb") {
 #'
 #' This shouldn't be necessary, since R (usually) handles this correctly and
 #' automatically. However, sometimes when working with large geospatial data
-#' (using \code{raster} and \code{sp} packages) it can help to free recently
+#' (e.g., using `raster` and `sp` packages) it can help to free recently
 #' unallocated memory manually.
 #'
 #' @author Alex Chubaty
 #' @export
 #' @rdname gc
-#' @seealso \code{\link{gc}}
+#' @seealso [gc()]
 .gc <- function() {
   for (i in 1:10) gc()
 }

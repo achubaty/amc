@@ -1,6 +1,6 @@
 #' Check whether R is running in an Rstudio session
 #'
-#' Based on \url{https://stackoverflow.com/q/12389158/1380598}.
+#' Based on <https://stackoverflow.com/q/12389158/1380598>.
 #'
 #' @export
 isRstudio <- function() {

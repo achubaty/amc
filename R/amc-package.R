@@ -1,6 +1,7 @@
-#' Alex's Miscellaneous Code
-#'
-#' @import methods
-#' @name amc-package
-#'
+#' @keywords internal
 "_PACKAGE"
+
+## usethis namespace: start
+#' @import methods
+## usethis namespace: end
+NULL

@@ -14,8 +14,8 @@ source_github(repo, branch = "master", file, auth = Sys.getenv("GITHUB_PAT"))
 \item{file}{Filename to source, including relative path.}
 
 \item{auth}{Personal Access Token to use for authorization.
-              Required to access files in private repositories.
-              By default, checks for \code{GITHUB_PAT} environment variable.
+Required to access files in private repositories.
+By default, checks for \code{GITHUB_PAT} environment variable.
 See \url{https://help.github.com/articles/creating-an-access-token-for-command-line-use/}.}
 }
 \description{
