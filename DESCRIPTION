@@ -2,8 +2,8 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Description: A collection of variously useful functions and utilities.
-Version: 1.0.1
-Date: 2024-01-31
+Version: 1.0.2
+Date: 2025-04-23
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
@@ -16,7 +16,7 @@ Authors@R: c(
     person("mmfrgmpds", role = c("ctb"))
     )
 Depends:
-    R (>= 4.1)
+    R (>= 4.2)
 Imports:
     base64enc,
     data.table,
@@ -25,7 +25,7 @@ Imports:
     httr,
     methods,
     reproducible,
-    raster (>= 	3.3-13),
+    raster (>= 3.3-13),
     sf,
     sp,
     terra,
@@ -46,5 +46,5 @@ ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)

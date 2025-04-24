@@ -1,11 +1,14 @@
+# amc v1.0.2
+
+- drop support for R 4.1;
+
 # amc v1.0.0
 
-- drop support for R <+ 4.0;
+- drop support for R <= 4.0;
 - use native pipe instead of `magrittr`;
 - removed retiring geospatial dependencies (`rgdal`);
 - removed `getOGR()`, which relied on `rgdal`;
 - add `sf` and `terra` support;
-
 
 # amc v0.2.1
 
