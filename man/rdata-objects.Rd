@@ -29,7 +29,7 @@ rmObjects(objects, path = NULL, ext = ".RData", quiet = TRUE)
 
 \item{path}{The filepath to the directory in which to save or
 from which to load the objects. The path should be
-constructed using \code{\link{file.path}}.}
+constructed using \code{\link[=file.path]{file.path()}}.}
 
 \item{ext}{The file extension to use (default is \code{.RData}).}
 
@@ -40,19 +40,19 @@ constructed using \code{\link{file.path}}.}
 }
 \value{
 Invisibly if \code{quiet=TRUE}. Either a list of objects loaded,
-         empty list if saved, or if removed either \code{0} for success,
-         \code{1} for failure.
+empty list if saved, or if removed either \code{0} for success,
+\code{1} for failure.
 }
 \description{
-Wrapper functions to \code{\link{load}}, \code{\link{save}},
-and \code{\link{unlink}}, permitting lists of objects to be
+Wrapper functions to \code{\link[=load]{load()}}, \code{\link[=save]{save()}},
+and \code{\link[=unlink]{unlink()}}, permitting lists of objects to be
 loaded/saved/deleted all at once.
 }
 \details{
 By default, the extension \code{.RData} is used.
 }
 \seealso{
-\code{\link{file.path}}, \code{\link{load}}, \code{\link{save}}, \code{\link{unlink}}
+\code{\link[=file.path]{file.path()}}, \code{\link[=load]{load()}}, \code{\link[=save]{save()}}, \code{\link[=unlink]{unlink()}}
 }
 \author{
 Alex Chubaty

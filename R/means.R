@@ -2,11 +2,11 @@
 #'
 #' Description needed.
 #'
-#' @note these have not been thoroughly tested to handle \code{NA} values, etc.
+#' @note these have not been thoroughly tested to handle `NA` values, etc.
 #'
 #' @param x  A numeric vector.
 #'
-#' @param ... Additional arguments to \code{prod} or \code{mean}.
+#' @param ... Additional arguments to `prod` or `mean`.
 #'
 #' @return A numeric vector of length one.
 #'

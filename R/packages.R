@@ -1,24 +1,23 @@
 #' Get package dependencies (offline)
 #'
 #' Read a package's dependencies from file, rather than searching CRAN.
-#' Based on \url{http://stackoverflow.com/a/30225680/1380598}.
+#' Based on <http://stackoverflow.com/a/30225680/1380598>.
 #'
 #' @param path          A local file path to a package directory.
 #' @param dependencies  Logical indicating whether to also install uninstalled
 #'                      packages which these packages depend on/link to/import/suggest
 #'                      (and so on recursively).
 #'                      Can also be a character vector, a subset of
-#'                      \code{c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances")}.\cr
-#'                      The default, \code{NA}, means \code{c("Depends", "Imports", "LinkingTo")}.
-#'                      \code{TRUE} means to use
-#'                      \code{c("Depends", "Imports", "LinkingTo", "Suggests")}.
+#'                      `c("Depends", "Imports", "LinkingTo", "Suggests", "Enhances")`.\cr
+#'                      The default, `NA`, means `c("Depends", "Imports", "LinkingTo")`.
+#'                      `TRUE` means to use
+#'                      `c("Depends", "Imports", "LinkingTo", "Suggests")`.
 #'
 #' @return A character vector of package dependencies.
 #'
 #' @author Josh O'Brien
 #' @author Alex Chubaty
 #' @export
-#' @importFrom magrittr %>%
 #' @rdname get_deps
 #'
 #' @examples
@@ -37,11 +36,11 @@ get_deps <- function(path, dependencies = NA) { # nolint
 
   dcf <- read.dcf(file.path(path, "DESCRIPTION"))
   jj <- intersect(dependencies, colnames(dcf))
-  val <- unlist(strsplit(dcf[, jj], ","), use.names = FALSE) %>%
-    trimws() %>%
-    gsub("\\s.*", "", .) %>%
-    sapply(., strsplit, split = "\\(") %>%
-    sapply(., `[`, 1) %>%
+  val <- unlist(strsplit(dcf[, jj], ","), use.names = FALSE) |>
+    trimws() |>
+    gsub("\\s.*", "", x = _) |>
+    sapply(strsplit, split = "\\(") |>
+    sapply(`[`, 1) |>
     unname()
   val <- val[val != "R"]
   if (length(val) == 0L) val <- character(0)
@@ -50,14 +49,14 @@ get_deps <- function(path, dependencies = NA) { # nolint
 
 #' Detach and unload a package
 #'
-#' A simple wrapper to \code{detach} using \code{unload = TRUE}.
+#' A simple wrapper to `detach` using `unload = TRUE`.
 #'
 #' @param package  The name of a currently attached package.
 #'
 #' @author Alex Chubaty
 #' @export
 #' @rdname detachPackage
-#' @seealso \code{\link{detach}}, \code{\link{detachAllPackages}}
+#' @seealso [detach()], [detachAllPackages()]
 detachPackage <- function(package) {
   pkg <- deparse(substitute(package))
   pkg <- paste(unlist(strsplit(pkg, "\"")), collapse = "")
@@ -70,12 +69,12 @@ detachPackage <- function(package) {
 
 #' Forcibly detach all packages
 #'
-#' Based on \url{https://stackoverflow.com/a/39235076/1380598}.
+#' Based on <https://stackoverflow.com/a/39235076/1380598>.
 #'
 #' @author mmfrgmpds
 #' @importFrom utils sessionInfo
 #' @rdname detachAllPackages
-#' @seealso \code{\link{detach}}, \code{\link{detachPackage}}
+#' @seealso [detach()], [detachPackage()]
 detachAllPackages <- function() {
   invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)),
                    detach, character.only = TRUE, unload = TRUE, force = TRUE))
@@ -83,19 +82,18 @@ detachAllPackages <- function() {
 
 #' Determine a package's minimum R version requirement based on its dependencies
 #'
-#' Based on \url{https://stackoverflow.com/q/38686427}.
+#' Based on <https://stackoverflow.com/q/38686427>.
 #'
 #' @param package           Character string giving the name of a package whose
 #'                          dependencies should be checked.
 #'
-#' @param exclude_main_pkg  Logical indicating whether \code{package} should be
-#'                          excluded from the check. Default \code{TRUE}.
+#' @param exclude_main_pkg  Logical indicating whether `package` should be
+#'                          excluded from the check. Default `TRUE`.
 #'
 #' @author hrbrmstr and Jack Wasey
 #' @export
-#' @importFrom magrittr %>%
 #' @importFrom tools package_dependencies
-#' @importFrom utils available.packages
+#' @importFrom utils available.packages compareVersion contrib.url
 min_r_version <- function(package = NULL, exclude_main_pkg = TRUE) {
   stopifnot(!is.null(package))
 

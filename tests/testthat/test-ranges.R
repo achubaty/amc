@@ -14,6 +14,12 @@ test_that("inRange handles various inputs", {
   expect_equal(ids, c(1741L, 2774L, 3091L, 3092L, 3171L, 3645L, 3873L, 3878L, 3951L,
                       3952L, 4031L, 7486L, 7646L))
 
+  f <- system.file("ex/test.grd", package = "terra")
+  r <- raster::raster(f)
+  ids <- which(inRange(r, 850, 875))
+  expect_equal(ids, c(1741L, 2774L, 3091L, 3092L, 3171L, 3645L, 3873L, 3878L, 3951L,
+                      3952L, 4031L, 7486L, 7646L))
+
   # inputs for a & b
   expect_error(inRange(0.5, 1, 0))
   expect_error(inRange(-0.5, NA_integer_, 1))
@@ -42,7 +48,7 @@ test_that("rescale works correctly", {
   expect_equal(min(x2), -1)
   expect_equal(max(x2), 1)
 
-  ## rescaling values of a raster
+  ## rescaling values of a RasterLayer
   f <- system.file("external/test.grd", package = "raster")
   r <- raster::raster(f)
 
@@ -55,6 +61,24 @@ test_that("rescale works correctly", {
   expect_lt(raster::minValue(r2), raster::maxValue(r2))
   expect_equal(raster::minValue(r2), -1)
   expect_equal(raster::maxValue(r2), 1)
+
+  r[] <- 0
+  r3 <- rescale(r)
+  expect_equal(r, r3)
+
+  ## rescaling values of a SpatRaster
+  f <- system.file("ex/test.grd", package = "terra")
+  r <- terra::rast(f)
+
+  r1 <- rescale(r)
+  expect_lt(terra::minmax(r1)["min", ], terra::minmax(r1)["max", ])
+  expect_equal(terra::minmax(r1)["min", ], 0)
+  expect_equal(terra::minmax(r1)["max", ], 1)
+
+  r2 <- rescale(r, c(-1, 1))
+  expect_lt(terra::minmax(r2)["min", ], terra::minmax(r2)["max", ])
+  expect_equal(terra::minmax(r2)["min", ], -1)
+  expect_equal(terra::minmax(r2)["max", ], 1)
 
   r[] <- 0
   r3 <- rescale(r)

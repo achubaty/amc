@@ -4,7 +4,7 @@
 \name{amc-package}
 \alias{amc}
 \alias{amc-package}
-\title{Alex's Miscellaneous Code}
+\title{amc: Alex's Miscellaneous Code}
 \description{
 A collection of variously useful functions and utilities.
 }
@@ -20,10 +20,13 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Eliot J B McIntire \email{eliot.mcintire@canada.ca} [contributor]
+  \item Eliot J B McIntire \email{eliot.mcintire@nrcan-rncan.gc.ca} [contributor]
   \item Ceres Barros \email{ceresvbarros@hotmail.com} [contributor]
+  \item hrbrmstr [contributor]
+  \item Jack Wasey [contributor]
   \item Josh O'Brien [contributor]
   \item mmfrgmpds [contributor]
 }
 
 }
+\keyword{internal}

@@ -2,8 +2,8 @@
 #'
 #' @param path file path where raster will be saved.
 #' @param url URL from which to download the data (default provided if NULL).
-#' @param studyArea \code{SpatialPolygonsDataFrame} giving the study area for which to extract ages.
-#' @param ... Additional arguments passed to \code{Cache} (only \code{userTags} currently used).
+#' @param studyArea `SpatialPolygonsDataFrame` giving the study area for which to extract ages.
+#' @param ... Additional arguments passed to `Cache` (only `userTags` currently used).
 #'
 #' @export
 #' @importFrom reproducible Cache prepInputs

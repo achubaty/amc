@@ -2,44 +2,43 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Description: A collection of variously useful functions and utilities.
-Version: 0.2.0
-Date: 2021-03-31
+Version: 1.0.2
+Date: 2025-04-23
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
-    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@canada.ca",
+    person(c("Eliot", "J", "B"), "McIntire", email = "eliot.mcintire@nrcan-rncan.gc.ca",
            role = c("ctb")),
     person("Ceres", "Barros", email = "ceresvbarros@hotmail.com", role = c("ctb")),
+    person("hrbrmstr", role = c("ctb")),
+    person("Jack", "Wasey", role = c("ctb")),
     person("Josh", "O'Brien", role = c("ctb")),
     person("mmfrgmpds", role = c("ctb"))
     )
 Depends:
-  R (>= 3.6)
+    R (>= 4.2)
 Imports:
-  base64enc,
-  data.table,
-  datasets,
-  digest,
-  dismo,
-  httr,
-  magrittr,
-  methods,
-  parallel,
-  plyr,
-  reproducible,
-  raster (>= 	3.3-13),
-  rgdal,
-  sp,
-  tools,
-  utils
+    base64enc,
+    data.table,
+    digest,
+    dismo,
+    httr,
+    methods,
+    reproducible,
+    raster (>= 3.3-13),
+    sf,
+    sp,
+    terra,
+    tools,
+    utils
 Suggests:
-  covr,
-  knitr,
-  rmarkdown,
-  rstudioapi,
-  slackr,
-  spelling,
-  testthat
+    covr,
+    datasets,
+    knitr,
+    rmarkdown,
+    rstudioapi,
+    spelling,
+    testthat
 BugReports: https://github.com/achubaty/amc/issues
 Language: en-CA
 License: GPL-3
@@ -47,4 +46,5 @@ ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.2
+Roxygen: list(markdown = TRUE)

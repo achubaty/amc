@@ -10,7 +10,7 @@ detachAllPackages()
 Based on \url{https://stackoverflow.com/a/39235076/1380598}.
 }
 \seealso{
-\code{\link{detach}}, \code{\link{detachPackage}}
+\code{\link[=detach]{detach()}}, \code{\link[=detachPackage]{detachPackage()}}
 }
 \author{
 mmfrgmpds

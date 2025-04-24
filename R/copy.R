@@ -1,10 +1,10 @@
 #' Copy folders with links
 #'
-#' Copies folders like \code{file.copy} except it replicates links correctly on
-#' unix-like systems. Based on \url{http://stackoverflow.com/a/30107868/1380598}.
+#' Copies folders like `file.copy` except it replicates links correctly on
+#' unix-like systems. Based on <http://stackoverflow.com/a/30107868/1380598>.
 #'
-#' @param from  \code{character} indicating the path to the directory to be copied.
-#' @param to    \code{character} indicating the path to which the directory will be copied.
+#' @param from  `character` indicating the path to the directory to be copied.
+#' @param to    `character` indicating the path to which the directory will be copied.
 #'
 #' @return Logical indicating success or failure.
 #'

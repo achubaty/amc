@@ -11,7 +11,7 @@ dt2raster(dt, r, val)
 and \code{Y}, and the values to assign to the raster specified by
 column \code{val}.}
 
-\item{r}{\code{Raster*} object.}
+\item{r}{\verb{Raster*} object.}
 
 \item{val}{The name of the column in \code{dt} containing the values for the raster.}
 }
@@ -19,7 +19,7 @@ column \code{val}.}
 A \code{RasterLayer} object.
 }
 \description{
-DETAILED DESCRIPTION NEEDED
+Convert \code{data.table} to a \code{RasterLayer} for plotting, etc.
 }
 \examples{
 library(data.table)

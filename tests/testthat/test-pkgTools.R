@@ -1,9 +1,6 @@
 test_that("get_deps is happy", {
   skip_on_cran()
 
-  library(magrittr)
-  on.exit(detach("package:magrittr"))
-
   tmpdir <- file.path(tempdir(), "test_get_deps")
   dir.create(tmpdir)
   on.exit(unlink(tmpdir, recursive = TRUE), add = TRUE)

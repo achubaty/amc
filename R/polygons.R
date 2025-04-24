@@ -5,18 +5,18 @@
 #' If a buffer distance is supplied, will buffer the convex hull inwards or
 #' outwards depending on the sign of the distance value.
 #'
-#' @param x   A \code{SpatialPolygons*} object
+#' @param x   A `SpatialPolygons*` object
 #' @param b   Optional. Distance to buffer. If the value is negative, the buffer
 #'            will be drawn inwards.
 #'
-#' @return A \code{SpatialPolygons} object.
+#' @return A `SpatialPolygons` object.
 #'
 #' @author Ceres Barros and Alex Chubaty
 #' @export
 #' @importFrom dismo convHull
 #' @importFrom raster buffer
 #' @importFrom sp polygons proj4string proj4string<- SpatialPoints
-#' @seealso \code{\link[raster]{buffer}}
+#' @seealso [raster::buffer()]
 outerBuffer <- function(x, b = NULL) {
   stopifnot(is(x, "SpatialPolygons"))
   ## Get polygon vertices

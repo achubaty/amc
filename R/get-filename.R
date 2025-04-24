@@ -1,18 +1,16 @@
-#' Get the name of a \code{source}-ed file
+#' Get the name of a `source`-ed file
 #'
-#' Use \code{getFileName} in a file that is \code{source}-ed.
-#' Based on \url{http://stackoverflow.com/a/1816487/1380598}.
+#' Use `getFileName` in a file that is `source`-ed.
+#' Based on <http://stackoverflow.com/a/1816487/1380598>.
 #'
-#' @param fullname   Logical (default \code{FALSE}) indicating whether the full
+#' @param fullname   Logical (default `FALSE`) indicating whether the full
 #'                   path should be returned.
 #'
 #' @return Character string representing the filename.
 #'
 #' @author Alex Chubaty
 #' @export
-#' @importFrom magrittr %>%
 #' @rdname getFileName
-#'
 setGeneric("getFileName", function(fullname) {
   standardGeneric("getFileName")
 })
@@ -21,9 +19,9 @@ setGeneric("getFileName", function(fullname) {
 setMethod("getFileName",
           signature = "logical",
           definition = function(fullname) {
-            f <- lapply(sys.frames(), function(i) i$filename) %>%
-              Filter(Negate(is.null), .) %>%
-              unlist
+            f <- lapply(sys.frames(), function(i) i$filename) |>
+              Filter(Negate(is.null), x = _) |>
+              unlist()
             if (fullname) {
               f <- normalizePath(file.path(getwd(), f), winslash = "/")
             } else {
