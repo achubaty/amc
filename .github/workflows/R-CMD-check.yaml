@@ -14,7 +14,6 @@ name: R-CMD-check
 
 jobs:
   R-CMD-check:
-    if: "!contains(github.event.commits[0].message, '[skip-ci]')"
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -28,12 +27,10 @@ jobs:
           - {os: windows-latest, r: 'release'}
           - {os: windows-latest, r: 'oldrel-1'}
           - {os: windows-latest, r: 'oldrel-2'}
-          - {os: windows-latest, r: 'oldrel-3'}
           - {os: ubuntu-latest,   r: 'devel'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
           - {os: ubuntu-latest,   r: 'oldrel-2'}
-          - {os: ubuntu-latest,   r: 'oldrel-3'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

@@ -2,8 +2,8 @@ Package: amc
 Type: Package
 Title: Alex's Miscellaneous Code
 Description: A collection of variously useful functions and utilities.
-Version: 1.0.2
-Date: 2025-04-23
+Version: 1.0.3
+Date: 2025-07-28
 Authors@R: c(
     person(c("Alex", "M"), "Chubaty", email = "achubaty@for-cast.ca",
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-7146-8135")),
@@ -16,7 +16,7 @@ Authors@R: c(
     person("mmfrgmpds", role = c("ctb"))
     )
 Depends:
-    R (>= 4.2)
+    R (>= 4.3)
 Imports:
     base64enc,
     data.table,
@@ -34,17 +34,16 @@ Imports:
 Suggests:
     covr,
     datasets,
-    knitr,
-    rmarkdown,
     rstudioapi,
     spelling,
     testthat
+Remotes:
+    PredictiveEcology/reproducible@development
 BugReports: https://github.com/achubaty/amc/issues
 Language: en-CA
 License: GPL-3
 ByteCompile: yes
 Encoding: UTF-8
 LazyData: true
-VignetteBuilder: knitr, rmarkdown
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)

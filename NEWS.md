@@ -1,3 +1,8 @@
+# amc v1.0.3
+
+- drop support for R 4.2;
+- remove unused dependencies `knitr` and `rmarkdown`;
+
 # amc v1.0.2
 
 - drop support for R 4.1;
